@@ -1,6 +1,8 @@
 const cfg=window.APP_CONFIG;
 const $=id=>document.getElementById(id);
-const headers={apikey:cfg.SUPABASE_ANON_KEY,Authorization:`Bearer ${cfg.SUPABASE_ANON_KEY}`};
+// Supabase publishable keys (sb_publishable_...) are API keys, not JWTs.
+// Send them in the apikey header only.
+const headers={apikey:cfg.SUPABASE_PUBLISHABLE_KEY};
 
 async function load(){
   try{
