@@ -1,32 +1,38 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wastewater Flow Monitor</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wastewater • Inlet Flow</title>
 <style>
-:root{font-family:system-ui,sans-serif;color:#17202a;background:#f4f7f9}
-body{margin:0}.wrap{max-width:900px;margin:auto;padding:18px}.head{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:white;border:1px solid #dce3e8;border-radius:16px;padding:18px;margin:12px 0}
-.big{font-size:clamp(42px,10vw,76px);font-weight:750}.muted{color:#68737d}.ok{color:#087a55;font-weight:700}.bad{color:#b42318;font-weight:700}
-table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #e6eaed;text-align:left}
-canvas{width:100%;height:250px}.center{text-align:center}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="head"><div><h2>Wastewater Flow Monitor</h2><div class="muted">WWTP-FLOW-01</div></div><div id="status" class="bad">CONNECTING</div></div>
-  <section class="card center"><div class="muted">FLOW REAL-TIME</div><div><span id="flow" class="big">--</span> m³/h</div><div id="updated" class="muted">รอข้อมูล...</div></section>
-  <div class="grid">
-    <section class="card"><div class="muted">ค่าเฉลี่ย 24 ชม.</div><h2 id="avg">--</h2><div>m³/h</div></section>
-    <section class="card"><div class="muted">ค่าสูงสุด 24 ชม.</div><h2 id="max">--</h2><div>m³/h</div></section>
-    <section class="card"><div class="muted">จำนวนข้อมูล</div><h2 id="count">--</h2><div>records</div></section>
-  </div>
-  <section class="card"><h3>Flow 24 ชั่วโมงล่าสุด</h3><canvas id="chart" width="850" height="250"></canvas></section>
-  <section class="card"><h3>ข้อมูลล่าสุด</h3><table><thead><tr><th>เวลา</th><th>Flow (m³/h)</th></tr></thead><tbody id="rows"></tbody></table></section>
-</div>
-<script src="config.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+:root{font-family:Inter,"Noto Sans Thai",system-ui,sans-serif;color:#0c1720;background:#f5f7f8;--g:#16b985;--gb:#e2f7ef;--line:#e2e7ea;--muted:#65727c;--red:#c83226;--amber:#b7791f}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:1180px;margin:auto;padding:22px}.shell{background:#fff;border:1px solid var(--line);border-radius:34px;overflow:hidden;box-shadow:0 10px 35px #1020300a}
+.top{display:flex;justify-content:space-between;align-items:center;padding:27px 30px 14px}.live{letter-spacing:.2em;font-size:13px}.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--g);margin-right:10px}
+.hero{padding:35px 30px 28px}.eyebrow{letter-spacing:.22em;color:#40505c}.flowline{display:flex;align-items:end;gap:12px;margin:13px 0}.big{font-size:clamp(68px,12vw,104px);line-height:.95;font-weight:760;letter-spacing:-.05em}.unit{font-size:22px;color:#52616c;margin-bottom:13px}
+.pill{display:inline-flex;align-items:center;border-radius:99px;padding:9px 15px;background:var(--gb);color:#00875f;font-weight:700}.pill.bad{background:#fff0ee;color:var(--red)}.range{margin-left:14px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.stat{padding:26px 30px}.stat+.stat{border-left:1px solid var(--line)}.label{font-size:12px;color:#71808b;letter-spacing:.04em}.value{font-size:27px;font-weight:720;margin-top:12px}
+.grid{display:grid;grid-template-columns:.9fr 1.4fr;gap:18px;padding:26px 30px}.card{border:1px solid var(--line);border-radius:25px;padding:24px;background:#fff}.health{display:flex;gap:22px;align-items:center}.ring{--p:47;min-width:148px;height:148px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--g) calc(var(--p)*1%),#e8ecef 0);position:relative}.ring:before{content:"";position:absolute;width:112px;height:112px;background:#fff;border-radius:50%}.ringtext{position:relative;text-align:center}.ringtext b{font-size:29px}.small{font-size:11px;letter-spacing:.14em;color:#71808b}
+h2,h3{margin:0 0 8px}.muted{color:var(--muted)}.good{color:#00875f}.warn{color:var(--amber)}.badtext{color:var(--red)}
+.alert{margin-top:14px;padding:13px 15px;border-radius:14px;background:#f5f7f8}.alert.bad{background:#fff0ee}.alert.warn{background:#fff8e8}
+.tabs{display:flex;gap:8px;padding:0 30px 18px;overflow:auto}.tab{border:1px solid var(--line);background:#fff;padding:10px 16px;border-radius:99px;cursor:pointer}.tab.active{background:#0c1720;color:#fff}.panel{display:none;padding:0 30px 30px}.panel.active{display:block}
+table{width:100%;border-collapse:collapse}th,td{padding:13px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:#64727c;font-weight:600}
+.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;border:1px solid #d7dee2;border-radius:12px;padding:11px;background:#fff}textarea{min-height:80px}.btn{border:0;border-radius:12px;padding:12px 18px;background:#0c1720;color:#fff;font-weight:700;cursor:pointer}.btn.green{background:#00875f}.sectiontitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.badge{padding:5px 9px;border-radius:99px;background:#eef2f4;font-size:12px}
+canvas{width:100%;height:260px}.footer{padding:18px 30px 28px;color:#7a8790;font-size:12px}
+@media(max-width:760px){.wrap{padding:8px}.shell{border-radius:24px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.stat+.stat{border-left:0;border-top:1px solid var(--line)}.formgrid{grid-template-columns:1fr}.range{display:block;margin:10px 0 0}.top,.hero,.grid,.panel{padding-left:20px;padding-right:20px}.tabs{padding-left:20px}}
+</style></head>
+<body><div class="wrap"><main class="shell">
+<div class="top"><div class="live"><span class="dot"></span>LIVE OPERATIONS</div><div id="clock">--:--</div></div>
+<section class="hero"><div class="eyebrow">INLET FLOW</div><div class="flowline"><div id="flow" class="big">--.-</div><div class="unit">m³/h</div></div><span id="flowPill" class="pill">● CONNECTING</span><span class="range">Operating range 0–72 m³/h</span><div id="updated" class="muted" style="margin-top:14px">รอข้อมูล...</div></section>
+<section class="stats"><div class="stat"><div class="label">TODAY</div><div class="value"><span id="today">--</span> <small>m³</small></div></div><div class="stat"><div class="label">AVERAGE</div><div class="value"><span id="avg">--</span> <small>m³/h</small></div></div><div class="stat"><div class="label">PEAK</div><div class="value"><span id="peak">--</span> <small>m³/h</small></div></div></section>
+<section class="grid">
+<div class="card health"><div id="ring" class="ring"><div class="ringtext"><b id="capacity">--%</b><div class="small">CAPACITY</div></div></div><div><h2 id="healthTitle">System status</h2><div id="healthText" class="muted">กำลังตรวจสอบข้อมูล</div><div id="anomaly" class="alert">ยังไม่พบความผิดปกติ</div></div></div>
+<div class="card"><div class="sectiontitle"><div><h3>Flow Trend</h3><div class="muted">ข้อมูล 24 ชั่วโมงล่าสุด</div></div><span id="recordCount" class="badge">0 records</span></div><canvas id="chart" width="720" height="260"></canvas></div>
+</section>
+<div class="tabs"><button class="tab active" data-tab="hourly">บันทึก Flow รายชั่วโมง</button><button class="tab" data-tab="verify">ทวนสอบ / อนุมัติ</button><button class="tab" data-tab="alerts">ความผิดปกติ</button></div>
+<section id="hourly" class="panel active"><div class="card"><div class="sectiontitle"><div><h3>Automatic Hourly Flow Log</h3><div class="muted">สรุปค่า Flow อัตโนมัติแทนการเดินไปจดทุกชั่วโมง</div></div><button class="btn" onclick="exportCSV()">Export CSV</button></div><div style="overflow:auto"><table><thead><tr><th>ชั่วโมง</th><th>Flow เฉลี่ย</th><th>ต่ำสุด</th><th>สูงสุด</th><th>จำนวนข้อมูล</th><th>สถานะ</th></tr></thead><tbody id="hourRows"></tbody></table></div></div></section>
+<section id="verify" class="panel"><div class="card"><div class="sectiontitle"><div><h3>Workflow การตรวจสอบ</h3><div class="muted">พนักงานทวนสอบ → ผู้ช่วยตรวจสอบ → หัวหน้าแผนกอนุมัติ</div></div><span id="reviewStatus" class="badge">รอทวนสอบ</span></div>
+<div class="formgrid"><label>พนักงานทวนสอบ<input id="operator" placeholder="ชื่อ-นามสกุล"></label><label>ผู้ช่วยตรวจสอบ<input id="assistant" placeholder="ชื่อ-นามสกุล"></label><label>หัวหน้าแผนกอนุมัติ<input id="head" placeholder="ชื่อ-นามสกุล"></label></div>
+<label style="display:block;margin-top:12px">หมายเหตุ<textarea id="note" placeholder="บันทึกผลการทวนสอบ/เหตุผิดปกติ"></textarea></label>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn" onclick="saveReview('verified')">บันทึกการทวนสอบ</button><button class="btn" onclick="saveReview('checked')">ผู้ช่วยตรวจสอบ</button><button class="btn green" onclick="saveReview('approved')">หัวหน้าอนุมัติ</button></div><div id="reviewMsg" class="muted" style="margin-top:12px"></div></div></section>
+<section id="alerts" class="panel"><div class="card"><h3>ระบบตรวจความผิดปกติ</h3><p class="muted">ตรวจ Flow ต่ำ/สูงกว่าช่วงที่กำหนด, ข้อมูลหยุดส่งเกิน 3 นาที และการเปลี่ยนแปลงฉับพลันระหว่างจุดข้อมูล</p><div id="alertList"></div></div></section>
+<div class="footer">WWTP-FLOW-01 • Wastewater Treatment • Prototype Monitoring & Verification</div>
+</main></div><script src="config.js"></script><script src="app.js"></script></body></html>
