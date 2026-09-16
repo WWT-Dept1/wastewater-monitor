@@ -14,3 +14,12 @@ Dashboard ใหม่ตามแบบ INLET FLOW พร้อม:
 
 ## หมายเหตุ
 นี่เป็น Prototype. สิทธิ์ insert ของ anon เปิดไว้เพื่อทดสอบหน้าเว็บได้ง่าย ก่อนใช้งานจริงควรเพิ่ม Login และ Role-based access.
+
+
+## WOW additions
+- Smart Alert Center
+- Automatic hourly log
+- Daily Report + Print/PDF + CSV
+- Audit Trail
+- Equipment Health
+- Before/After workflow presentation
