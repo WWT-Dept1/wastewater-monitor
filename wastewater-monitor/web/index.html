@@ -1,4 +1,4 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WWT V13 Neo Industrial</title>
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wastewater Live Control System · Plant 1</title>
 <style>
 *{box-sizing:border-box} :root{--bg:#EEF1E9;--ink:#1D2A20;--muted:#758196;--mint:#0E7A5F;--dark:#1D2A20;--hi:#f9fffd;--lo:#D5DDD1;font-family:Inter,"Noto Sans Thai","Segoe UI",sans-serif}
 body{margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden}header{height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 31px;box-shadow:8px 8px 20px var(--lo),-8px -8px 20px var(--hi);position:relative;z-index:5}.brand{display:flex;gap:14px;align-items:center}.logo{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;color:#0E7A5F;font-weight:900;box-shadow:inset 3px 3px 7px #D9E0D6,inset -3px -3px 7px #fff}.brand b{font-size:15px}.brand small{display:block;font-size:9px;color:#7b8f93;margin-top:3px;letter-spacing:.08em}.tools{display:flex;gap:11px;align-items:center}.live{font-size:9px;font-weight:900;letter-spacing:.12em;color:#0E7A5F;padding:9px 12px;border-radius:99px;box-shadow:inset 2px 2px 5px #c8d3d0,inset -2px -2px 5px #fff}.round{width:40px;height:40px;border:0;border-radius:13px;background:var(--bg);color:#597177;box-shadow:5px 5px 11px #D7DED3,-5px -5px 11px #fff;cursor:pointer}.round:active,.nav:active{box-shadow:inset 3px 3px 7px #D4DCD1,inset -3px -3px 7px #fff}.shell{display:grid;grid-template-columns:84px 1fr;min-height:calc(100vh - 78px)}aside{padding:25px 14px;display:flex;flex-direction:column;gap:13px;align-items:center;border-right:1px solid #DEE4ED}.nav{width:51px;height:51px;border:0;border-radius:16px;background:var(--bg);font-size:17px;color:#71878c;box-shadow:4px 4px 10px #D7DED3,-4px -4px 10px #fff}.nav.on{color:#0E7A5F;box-shadow:inset 4px 4px 9px #D4DCD1,inset -4px -4px 9px #fff}.space{flex:1}main{padding:34px 38px;max-width:1400px;width:100%;margin:auto}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:23px}.heading h1{margin:0;font-size:29px;letter-spacing:-.045em}.heading p{margin:6px 0 0;color:#788c90;font-size:10px}.cycle{font-size:9px;color:#6d8186;padding:9px 13px;border-radius:99px;box-shadow:inset 2px 2px 5px #D9E0D6,inset -2px -2px 5px #fff}
@@ -2247,10 +2247,406 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
 *::selection{background:#cadbcc;color:#0b1711}
 </style>
 
+
+<style id="v15-44-fix">
+/* V15.44 final fix: remove background behind main flow number, formal browser tab title */
+.display{
+  background:transparent !important;
+  box-shadow:none !important;
+  border:none !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  width:auto !important;
+}
+.display::after{display:none !important}
+.value{
+  background:transparent !important;
+  box-shadow:none !important;
+  border:none !important;
+  text-shadow:none !important;
+}
+.value small{
+  background:transparent !important;
+}
+/* make flow header cleaner */
+.flow{overflow:hidden}
+</style>
+
+<style>
+/* V15.45 — bordered data clarity + daily summary approval */
+.lower{align-items:start!important}
+
+/* clearer borders across data blocks */
+.flow,.q,.neo-trend,.alert-response-center,.phase1-hourly,.daily-summary-card,
+.stat,.period,.alert-detail-btn,.alert-detail-panel,.hourly-row em{
+  border:1px solid rgba(47,82,59,.16)!important;
+}
+.stat,.q,.period,.daily-cell,.approval-row{
+  background:linear-gradient(145deg,#f7faf6,#edf3ed)!important;
+}
+.stat{box-shadow:5px 5px 12px rgba(150,169,155,.20),-4px -4px 10px rgba(255,255,255,.85)!important}
+
+.daily-summary-card{
+  grid-column:2;
+  margin-top:0;
+  border-radius:28px;
+  padding:22px;
+  background:linear-gradient(145deg,#f5f9f4,#e9f0e9);
+  box-shadow:12px 12px 26px rgba(147,166,151,.24),-10px -10px 22px rgba(255,255,255,.90);
+}
+.daily-summary-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid #c9d7cb}
+.daily-summary-head small{font:800 9px "Outfit",sans-serif;letter-spacing:.14em;color:#657a6c}
+.daily-summary-head h2{margin:5px 0 2px;font:800 25px "Noto Sans Thai","Outfit",sans-serif;color:#102219}
+.daily-summary-head p{margin:0;font:600 11px "Noto Sans Thai",sans-serif;color:#607367}
+.approval-overall{display:flex;align-items:center;gap:7px;white-space:nowrap;padding:8px 11px;border:1px solid #becdc1;border-radius:999px;background:#eef3ee;font:800 10px "Noto Sans Thai",sans-serif;color:#68786d}
+.approval-overall.approved{background:#dcecdf;color:#205f38;border-color:#a9c8b0;box-shadow:0 0 0 4px rgba(49,116,70,.07)}
+.approval-overall.approved span{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#2f7548;color:#fff}
+
+.daily-data-table{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px}
+.daily-cell{position:relative;min-height:78px;padding:12px 13px;border:1px solid #c5d3c7;border-radius:15px;box-shadow:3px 3px 8px rgba(157,175,161,.14),-3px -3px 7px rgba(255,255,255,.82)}
+.daily-cell small{display:block;font:800 10px "Noto Sans Thai",sans-serif;color:#63776a;margin-bottom:8px}
+.daily-cell b{font:850 22px/1 "Outfit","Noto Sans Thai",sans-serif;color:#102219}
+.daily-cell b span{font-size:10px;font-weight:700;color:#697c70}
+.daily-cell em{position:absolute;right:10px;top:10px;padding:4px 7px;border-radius:99px;border:1px solid #bbcfbf;background:#e7f2e9;color:#27643c;font:800 8px "Noto Sans Thai",sans-serif;font-style:normal}
+
+.approval-title{display:flex;justify-content:space-between;align-items:center;margin:18px 0 9px;padding-bottom:8px;border-bottom:1px solid #c9d7cb}
+.approval-title b{font:800 13px "Noto Sans Thai",sans-serif;color:#173023}.approval-title span{font:600 9px "Noto Sans Thai",sans-serif;color:#728279}
+.approval-chain{display:grid;gap:8px}
+.approval-row{display:grid;grid-template-columns:30px 1fr minmax(110px,1.2fr) 76px;gap:8px;align-items:center;padding:10px;border:1px solid #c5d3c7;border-radius:14px;transition:.2s ease}
+.approval-row.locked{opacity:.58}
+.approval-row.signed{border-color:#9ebfa7;background:linear-gradient(145deg,#edf7ef,#e1eee4)!important}
+.approval-step{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#dfe9e1;border:1px solid #bdccbf;color:#2a6340;font:800 11px "Outfit",sans-serif}
+.approval-row.signed .approval-step{background:#2f7548;color:#fff;border-color:#2f7548}
+.approval-role b{display:block;font:800 11px "Noto Sans Thai",sans-serif;color:#182b20}.approval-role span{display:block;margin-top:2px;font:600 8px "Noto Sans Thai",sans-serif;color:#66786c}
+.sign-name{width:100%;height:34px;border:1px solid #bdccc0;border-radius:10px;padding:0 9px;background:#fbfdfb;color:#14261b;font:700 9px "Noto Sans Thai",sans-serif;outline:none}.sign-name:focus{border-color:#4d8561;box-shadow:0 0 0 3px rgba(77,133,97,.08)}
+.sign-btn{height:34px;border:1px solid #aec2b3;border-radius:10px;background:linear-gradient(145deg,#eef5ef,#dfeae1);color:#295d3c;font:800 9px "Noto Sans Thai",sans-serif;cursor:pointer}.sign-btn:disabled{cursor:not-allowed}.approval-row:not(.locked) .sign-btn:hover{background:#315f43;color:#fff}
+.sign-state{grid-column:2/-1;font:700 8px "Noto Sans Thai",sans-serif;color:#78877d}.approval-row.signed .sign-state{color:#23633b}
+.daily-export-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.daily-export-actions button{height:40px;border:1px solid #afc0b2;border-radius:11px;background:linear-gradient(145deg,#eef5ef,#e0eae2);color:#234b34;font:850 9px "Outfit","Noto Sans Thai",sans-serif;letter-spacing:.05em;cursor:pointer;box-shadow:4px 4px 10px rgba(158,174,162,.18),-4px -4px 9px rgba(255,255,255,.86)}.daily-export-actions button:hover{background:#2f6546;color:#fff}
+
+@media(max-width:980px){.daily-summary-card{grid-column:1/-1}.approval-row{grid-template-columns:30px 1fr 88px}.sign-name{grid-column:2/-1}.sign-state{grid-column:2/-1}}
+@media(max-width:600px){.daily-data-table{grid-template-columns:1fr}.daily-summary-head{display:block}.approval-overall{display:inline-flex;margin-top:10px}.approval-row{grid-template-columns:30px 1fr}.sign-name,.sign-btn,.sign-state{grid-column:2/-1}.daily-export-actions{grid-template-columns:1fr}}
+
+@media print{
+ body *{visibility:hidden!important}
+ #dailySummaryCard,#dailySummaryCard *{visibility:visible!important}
+ #dailySummaryCard{position:absolute;left:0;top:0;width:100%!important;box-shadow:none!important;background:#fff!important;border:1px solid #999!important}
+ .daily-export-actions,.sign-btn{display:none!important}
+}
+</style>
+
+<style>
+/* V15.46 — formal daily report form */
+.daily-report-form{
+  grid-column:1/-1;margin-top:24px;padding:28px;border:1px solid #b9c9bc;border-radius:28px;
+  background:linear-gradient(145deg,#f8fbf8,#edf3ee);color:#122319;
+  box-shadow:12px 12px 28px rgba(151,170,157,.24),-10px -10px 24px rgba(255,255,255,.94)
+}
+.report-form-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:18px;border-bottom:2px solid #b7c8ba}
+.report-form-head small,.report-section-title small,.signature-section-head small{display:block;font:800 9px "Outfit",sans-serif;letter-spacing:.15em;color:#657b6d}
+.report-form-head h2{margin:5px 0 4px;font:800 27px "Noto Sans Thai",sans-serif;color:#102017}
+.report-form-head p{margin:0;font:600 11px "Noto Sans Thai",sans-serif;color:#536a5b}
+.report-approval-badge{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid #b7c8ba;border-radius:999px;background:#eef4ef;font:700 10px "Noto Sans Thai",sans-serif;color:#5d7063;white-space:nowrap}
+.report-approval-badge span{width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:#dbe6dd;color:#52695a}
+.report-approval-badge.approved{background:#dcecdf;color:#225e39;border-color:#95bda0}.report-approval-badge.approved span{background:#2f7548;color:#fff}
+.report-meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.report-meta-grid>div{min-height:68px;padding:12px 14px;border:1px solid #c4d1c6;border-radius:14px;background:#f7faf7}
+.report-meta-grid small{display:block;font:700 9px "Noto Sans Thai",sans-serif;color:#6b7d70;margin-bottom:5px}
+.report-meta-grid b{font:800 11px "Noto Sans Thai",sans-serif;color:#16291d}
+.report-section-title,.signature-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid #c2d0c4}
+.report-section-title b,.signature-section-head b{display:block;margin-top:3px;font:800 16px "Noto Sans Thai",sans-serif;color:#14261b}
+.report-section-title>span,.signature-section-head>span{font:600 9px "Noto Sans Thai",sans-serif;color:#718276}
+.report-table-wrap{max-height:460px;overflow:auto;border:1px solid #b9c9bc;border-radius:16px;background:#fbfdfb}
+.daily-hourly-table{width:100%;border-collapse:collapse;font-family:"Noto Sans Thai",sans-serif}
+.daily-hourly-table thead{position:sticky;top:0;z-index:2;background:#e2ece4}
+.daily-hourly-table th{padding:11px 12px;border-bottom:1px solid #aebfb1;text-align:left;font-size:10px;letter-spacing:.08em;color:#2f4d3a}
+.daily-hourly-table td{padding:10px 12px;border-bottom:1px solid #d8e1d9;font-size:11px;color:#1c3023}
+.daily-hourly-table tbody tr:nth-child(even){background:#f3f7f3}
+.report-status{display:inline-flex;align-items:center;min-height:25px;padding:0 9px;border-radius:999px;font:800 9px "Noto Sans Thai",sans-serif}
+.report-status.ok{background:#e2f0e5;color:#28633d;border:1px solid #afd0b7}
+.report-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.report-summary-cell{min-height:88px;padding:13px 14px;border:1px solid #b9c9bc;border-radius:15px;background:#f8fbf8}
+.report-summary-cell small{display:block;font:700 9px "Noto Sans Thai",sans-serif;color:#667a6c}
+.report-summary-cell b{display:block;margin-top:7px;font:850 22px "Outfit","Noto Sans Thai",sans-serif;color:#11271a}
+.report-summary-cell span{display:block;margin-top:3px;font:600 9px "Noto Sans Thai",sans-serif;color:#687c6e}
+.report-summary-cell .report-ready{font-size:14px;color:#2d6843}
+.report-note{margin-top:16px;padding:14px;border:1px solid #bdccbf;border-radius:15px;background:#f8fbf8}
+.report-note small{display:block;font:800 9px "Noto Sans Thai",sans-serif;color:#64786b;margin-bottom:7px}
+.report-note textarea{width:100%;min-height:72px;resize:vertical;border:1px solid #c5d2c7;border-radius:10px;background:#fff;padding:10px 12px;font:500 11px "Noto Sans Thai",sans-serif;color:#15271c;outline:none}
+.signature-section{margin-top:22px;padding-top:2px}
+.signature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.signature-box{position:relative;min-height:208px;padding:18px 14px 14px;border:1px solid #b9c9bc;border-radius:16px;background:#fbfdfb;text-align:center}
+.signature-box.locked{opacity:.56}
+.signature-box.signed{border:2px solid #67a578;background:linear-gradient(145deg,#f2faf4,#e7f3ea);opacity:1}
+.signature-mark{position:absolute;right:12px;top:12px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#dfe8e0;color:#456351;font:800 10px "Outfit",sans-serif;border:1px solid #c0cdc2}
+.signature-box.signed .signature-mark{background:#2f7548;color:#fff;border-color:#2f7548}
+.signature-box>small{display:block;font:700 10px "Noto Sans Thai",sans-serif;color:#6d7e72;margin-top:8px}
+.signature-box>b{display:block;font:800 13px "Noto Sans Thai",sans-serif;color:#17291d;margin-top:5px}
+.signature-line{margin:30px 4px 8px;padding-top:8px;border-top:1px solid #8ea195}
+.signature-line input{width:100%;border:0;background:transparent;text-align:center;font:700 11px "Noto Sans Thai",sans-serif;color:#17291d;outline:none}
+.sign-btn{min-width:94px;height:34px;border:1px solid #9eb9a5;border-radius:10px;background:linear-gradient(145deg,#eef5ef,#dfeae1);color:#265c3a;font:800 9px "Noto Sans Thai",sans-serif;cursor:pointer}
+.sign-btn:disabled{cursor:not-allowed}.signature-box:not(.locked) .sign-btn:hover{background:#315f43;color:#fff}
+.sign-state{margin-top:8px;min-height:25px;font:600 8px/1.45 "Noto Sans Thai",sans-serif;color:#728277}.signature-box.signed .sign-state{color:#23633b;font-weight:700}
+.report-footer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid #c2d0c4}
+.report-footer-actions button{min-height:44px;border:1px solid #aebfaf;border-radius:12px;background:linear-gradient(145deg,#eff5ef,#e0e9e1);color:#244d33;font:800 10px "Outfit","Noto Sans Thai",sans-serif;letter-spacing:.06em;cursor:pointer}
+.report-footer-actions button:hover{background:#315f43;color:#fff}
+@media(max-width:1000px){.report-meta-grid,.report-summary-grid{grid-template-columns:repeat(2,1fr)}.signature-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.daily-report-form{padding:18px 14px}.report-form-head{display:block}.report-approval-badge{display:inline-flex;margin-top:10px}.report-meta-grid,.report-summary-grid,.signature-grid{grid-template-columns:1fr}.report-section-title,.signature-section-head{display:block}.report-section-title>span,.signature-section-head>span{display:block;margin-top:4px}.report-footer-actions{grid-template-columns:1fr}}
+@media print{header,aside,.heading,.hero,.lower,.phase1-hourly,.wwt-drawer,.drawer-shade,.admin-panel{display:none!important}body{background:#fff!important}main{padding:0!important;max-width:none!important}.daily-report-form{box-shadow:none!important;border:0!important;margin:0!important;padding:0!important}.report-table-wrap{max-height:none!important;overflow:visible!important}.daily-hourly-table thead{position:static!important}.report-footer-actions{display:none!important}.signature-box{break-inside:avoid}}
+</style>
+
+
+
+
+<style>
+/* V15.48 — simulate the original F-WWT-003 paper form inside Daily Summary */
+.original-form-page{display:block;margin-top:8px}
+.form-sheet-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  padding:12px 14px;border:1px solid #b7c8ba;border-radius:16px;background:linear-gradient(145deg,#f6faf6,#e8efe9)
+}
+.form-sheet-toolbar small{display:block;font:800 9px "Outfit",sans-serif;letter-spacing:.14em;color:#657b6d}
+.form-sheet-toolbar b{display:block;margin-top:3px;font:800 15px "Noto Sans Thai",sans-serif;color:#16301f}
+.form-sheet-actions{display:flex;gap:8px}
+.form-sheet-actions button{
+  min-height:38px;padding:0 13px;border-radius:10px;border:1px solid #9fb3a2;background:#f5f8f5;
+  color:#254c34;font:800 9px "Outfit","Noto Sans Thai",sans-serif;cursor:pointer
+}
+.form-sheet-actions button:hover{background:#315f43;color:#fff}
+
+.paper-sheet{
+  background:#fff;border:1px solid #333;padding:12px;color:#111;box-shadow:0 15px 32px rgba(66,86,72,.16)
+}
+.form-title-grid{
+  display:grid;grid-template-columns:1.15fr 1.65fr 1.1fr;border:1px solid #333;border-bottom:0
+}
+.nrt-mark,.form-main-title,.form-code-box{min-height:90px;padding:8px;border-right:1px solid #333}
+.form-code-box{border-right:0}
+.nrt-mark{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.nrt-mark span{font:900 34px/1 "Outfit",sans-serif;letter-spacing:-.08em}
+.nrt-mark small{font:700 8px "Outfit",sans-serif;letter-spacing:.04em;margin-top:4px}
+.form-main-title{text-align:center;display:grid;place-content:center}
+.form-main-title>b{font:800 14px "Outfit",sans-serif}
+.form-main-title h2{margin:5px 0 0;font:700 22px "Noto Sans Thai",sans-serif}
+.form-code-box>div{display:flex;justify-content:space-between;gap:6px;padding:5px 3px;border-bottom:1px solid #333;font:700 9px "Noto Sans Thai",sans-serif}
+.form-code-box>div:last-child{border-bottom:0}.site-checks label{white-space:nowrap}
+.demo-note{
+  padding:7px 10px;border:1px solid #333;border-bottom:0;background:#fff9df;color:#5e4b11;
+  font:700 9px "Noto Sans Thai",sans-serif
+}
+
+.original-table-wrap{overflow:auto;border:1px solid #333}
+.original-wwt-form{
+  width:100%;min-width:1280px;border-collapse:collapse;table-layout:fixed;background:#fff;
+  font-family:"Noto Sans Thai","Segoe UI",sans-serif;color:#111
+}
+.original-wwt-form th,.original-wwt-form td{
+  border:1px solid #333;text-align:center;vertical-align:middle;padding:5px 4px
+}
+.original-wwt-form thead th{background:#f2f2f2;font-size:9px;font-weight:800}
+.original-wwt-form .group-row th{font-size:10px}
+.original-wwt-form .setting-row th{height:28px;background:#fafafa;font-size:9px}
+.original-wwt-form .subhead-row th{font-size:8px}
+.original-wwt-form .time-col{width:65px}
+.original-wwt-form tbody td{font-size:8.5px;height:28px;background:#fff}
+.original-wwt-form tbody tr:nth-child(even) td{background:#fcfcfc}
+.original-wwt-form .form-time{font-weight:800}
+.original-wwt-form .total-row td{font-weight:900;background:#efefef!important}
+.original-wwt-form small{font-size:7px}
+
+.form-remark{
+  display:grid;grid-template-columns:90px 1fr;align-items:stretch;border:1px solid #333;border-top:0;background:#fff
+}
+.form-remark>b{padding:8px;border-right:1px solid #333;font:800 9px "Noto Sans Thai",sans-serif}
+.form-remark textarea{
+  min-height:58px;padding:8px;border:0;resize:vertical;outline:none;font:500 9px "Noto Sans Thai",sans-serif;color:#111;background:#fff
+}
+
+.signature-bottom{margin-top:0;background:#fff;border:1px solid #333;border-top:0;padding:18px 12px 12px}
+.signature-group{display:grid;gap:10px}
+.responsible-group{grid-template-columns:repeat(3,1fr);padding-bottom:14px;border-bottom:1px solid #333}
+.approval-group{grid-template-columns:repeat(5,1fr);padding-top:14px}
+.paper-sign{text-align:center;position:relative;min-height:130px;padding:6px}
+.paper-sign.locked{opacity:.55}
+.paper-sign.signed{opacity:1}
+.paper-sign>small{display:block;font:800 9px "Noto Sans Thai",sans-serif}
+.paper-sign>b{display:block;margin-top:4px;font:700 8px "Noto Sans Thai",sans-serif}
+.paper-sign-line{margin:22px auto 5px;width:88%;border-bottom:1px dotted #333;padding-bottom:3px}
+.paper-sign-line input{
+  width:100%;border:0;outline:none;background:transparent;text-align:center;color:#111;font:600 9px "Noto Sans Thai",sans-serif
+}
+.paper-sign-line input:disabled{opacity:1;color:#111}
+.sign-btn{
+  min-height:30px;padding:0 10px;margin-top:8px;border:1px solid #7f9b85;border-radius:8px;background:#eef5ef;
+  color:#245536;font:800 8px "Noto Sans Thai",sans-serif;cursor:pointer
+}
+.sign-btn:disabled{cursor:not-allowed}
+.paper-sign.signed .sign-btn{background:#315f43;color:#fff}
+.sign-state{margin-top:6px;font:600 7px "Noto Sans Thai",sans-serif;color:#65736a}
+.done-static{color:#65736a}
+.paper-approval-status{
+  margin:14px auto 0;display:flex;width:max-content;align-items:center;gap:8px;padding:8px 12px;
+  border:1px solid #aaa;border-radius:999px;font:800 9px "Noto Sans Thai",sans-serif
+}
+.paper-approval-status.approved{border-color:#4f8a5e;background:#e6f1e8;color:#245d34}
+.paper-approval-status.approved span{font-size:14px}
+
+@media(max-width:900px){
+  .responsible-group{grid-template-columns:1fr}
+  .approval-group{grid-template-columns:1fr}
+  .form-title-grid{grid-template-columns:1fr}
+  .nrt-mark,.form-main-title,.form-code-box{border-right:0;border-bottom:1px solid #333}
+  .form-code-box{border-bottom:0}
+}
+@media print{
+  .top-view-tabs,.form-sheet-toolbar,header,aside,.heading,.live-view-shell,.wwt-drawer,.drawer-shade,.admin-panel{display:none!important}
+  body{background:#fff!important}
+  main{padding:0!important;max-width:none!important}
+  .daily-view-shell{display:block!important}
+  .paper-sheet{box-shadow:none!important;border:0!important;padding:0!important}
+  .original-table-wrap{overflow:visible!important}
+  .original-wwt-form{min-width:0!important;font-size:7px!important}
+}
+</style>
+
+
+<style>
+/* V15.49 — integrated daily summary sheet, no separate tab */
+.daily-summary-sheet{
+  grid-column:1/-1;
+  margin-top:24px;
+}
+.daily-sheet-head{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:18px;
+  padding:22px 24px 18px;
+  border:1px solid #afc2b3;border-bottom:0;
+  border-radius:26px 26px 0 0;
+  background:linear-gradient(145deg,#f8fbf8,#edf3ee);
+}
+.daily-sheet-head small,.sheet-section-head small{
+  display:block;font:800 9px "Outfit",sans-serif;letter-spacing:.14em;color:#587164;
+}
+.daily-sheet-head h2{
+  margin:4px 0 3px;font:800 24px "Noto Sans Thai",sans-serif;color:#102018;
+}
+.daily-sheet-head p{
+  margin:0;font:600 11px "Noto Sans Thai",sans-serif;color:#566b5c;
+}
+.daily-sheet-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.daily-sheet-head-actions button{
+  min-height:38px;padding:0 13px;border-radius:10px;border:1px solid #9fb3a2;
+  background:#f8faf8;color:#244c33;font:800 9px "Outfit","Noto Sans Thai",sans-serif;cursor:pointer;
+}
+.daily-sheet-head-actions button:hover{background:#315f43;color:#fff}
+.sheet-status{
+  padding:8px 11px;border:1px solid #a9c7b0;border-radius:999px;
+  background:#e6f1e8;color:#27613a;font:800 9px "Noto Sans Thai",sans-serif;
+}
+
+.daily-sheet-meta{
+  display:grid;grid-template-columns:1.4fr .8fr .8fr .6fr;
+  border-left:1px solid #afc2b3;border-right:1px solid #afc2b3;
+  background:#f7faf7;
+}
+.daily-sheet-meta>div{
+  padding:12px 14px;border-right:1px solid #cbd7cd;border-top:1px solid #cbd7cd;
+}
+.daily-sheet-meta>div:last-child{border-right:0}
+.daily-sheet-meta small{display:block;font:700 9px "Noto Sans Thai",sans-serif;color:#6a7e70}
+.daily-sheet-meta b{display:block;margin-top:4px;font:800 11px "Noto Sans Thai",sans-serif;color:#17301f}
+
+.modern-sheet{
+  border-radius:0 0 26px 26px!important;
+  border-top:0!important;
+  padding:20px!important;
+  box-shadow:12px 14px 28px rgba(151,170,157,.20)!important;
+}
+
+.sheet-section-head{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+  margin:0 0 10px;padding:0 0 8px;border-bottom:1px solid #bdcdbf;
+}
+.sheet-section-head b{
+  display:block;margin-top:3px;font:800 16px "Noto Sans Thai",sans-serif;color:#14281c;
+}
+.sheet-section-head>span{font:600 9px "Noto Sans Thai",sans-serif;color:#708174}
+
+.modern-hourly-wrap{
+  border:1px solid #b5c6b8;border-radius:16px;overflow:auto;max-height:520px;background:#fff;
+}
+.modern-hourly-table{width:100%;border-collapse:collapse;font-family:"Noto Sans Thai",sans-serif}
+.modern-hourly-table thead{position:sticky;top:0;z-index:2;background:#e3ece5}
+.modern-hourly-table th{
+  padding:11px 12px;text-align:left;border-bottom:1px solid #aebfaf;
+  font-size:10px;letter-spacing:.07em;color:#294737;
+}
+.modern-hourly-table td{
+  padding:10px 12px;border-bottom:1px solid #d8e2da;font-size:11px;color:#1b3022;
+}
+.modern-hourly-table tbody tr:nth-child(even){background:#f6f9f6}
+.row-status{
+  display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;
+  background:#e5f1e7;color:#28613b;border:1px solid #b6d3bd;font:800 9px "Noto Sans Thai",sans-serif;
+}
+
+.summary-head{margin-top:18px}
+.daily-total-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.daily-total-grid>div{
+  min-height:84px;padding:13px 14px;border:1px solid #b9c8bc;border-radius:14px;background:#f8fbf8;
+}
+.daily-total-grid small{display:block;font:700 9px "Noto Sans Thai",sans-serif;color:#65796b}
+.daily-total-grid b{display:block;margin-top:6px;font:850 21px "Outfit","Noto Sans Thai",sans-serif;color:#122719}
+.daily-total-grid span{display:block;margin-top:3px;font:600 9px "Noto Sans Thai",sans-serif;color:#6b7d70}
+
+.form-remark{
+  margin-top:16px!important;border:1px solid #b8c7ba!important;border-radius:14px!important;overflow:hidden!important;
+}
+.modern-signatures{
+  margin-top:22px!important;
+  border:1px solid #b8c7ba!important;
+  border-radius:16px!important;
+  padding:18px 14px!important;
+}
+.responsible-group,.approval-group{border-color:#c2cec4!important}
+
+.sign-section-title{padding:4px 4px 12px;border-bottom:1px solid #cad7cb;margin-bottom:14px}
+.sign-section-title small,.subgroup-head small{display:block;font:800 9px "Outfit",sans-serif;letter-spacing:.14em;color:#607368}
+.sign-section-title b{display:block;margin-top:4px;font:800 18px "Noto Sans Thai",sans-serif;color:#16281c}
+.sign-section-title span{display:block;margin-top:4px;font:600 10px "Noto Sans Thai",sans-serif;color:#728377}
+.sign-subgroup{margin-top:14px}
+.subgroup-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed #c7d2c9}
+.subgroup-head b{font:800 14px "Noto Sans Thai",sans-serif;color:#193122}
+.three-shift-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:12px;padding:0!important;border:0!important}
+.final-approval-grid{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:12px;padding-top:4px;border:0!important}
+.paper-sign{border:1px solid #c7d5c9;border-radius:14px;padding:14px;background:#fbfdfb;min-height:184px;box-shadow:none!important}
+.paper-sign small{font:800 9px "Noto Sans Thai",sans-serif;color:#64786b}
+.paper-sign b{display:block;margin-top:10px;font:800 11px "Noto Sans Thai",sans-serif;color:#1d3224}
+.paper-sign-line{margin:18px 0 8px;padding-bottom:6px;border-bottom:1px dashed #87998b}
+.paper-sign-line input{width:100%;border:0;background:transparent;font:700 11px "Noto Sans Thai",sans-serif;color:#203325;outline:none}
+.sign-btn{margin-top:8px;min-height:34px;padding:0 12px;border:1px solid #9eb1a2;border-radius:10px;background:#f4f8f5;color:#234534;font:800 10px "Noto Sans Thai",sans-serif;cursor:pointer}
+.sign-state{margin-top:8px;font:700 9px "Noto Sans Thai",sans-serif;color:#6a7d6e}
+.approved-static{color:#1d6a40}
+.paper-approval-status.ready{margin-top:16px;padding:12px 14px;border:1px solid #b7c9ba;border-radius:12px;background:#f3faf4;color:#205b37;display:flex;gap:8px;align-items:center}
+.daily-sheet-meta{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1000px){.three-shift-grid,.final-approval-grid,.daily-sheet-meta{grid-template-columns:1fr!important}}
+
+
+@media(max-width:1000px){
+  .daily-sheet-head{align-items:flex-start}
+  .daily-sheet-meta{grid-template-columns:repeat(2,1fr)}
+  .daily-total-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+  .daily-sheet-head{display:block}
+  .daily-sheet-head-actions{margin-top:12px}
+  .daily-sheet-meta,.daily-total-grid{grid-template-columns:1fr}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">● LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside><button class="nav on">⌂</button><button class="nav">◉</button><button class="nav">!</button><button class="nav">≡</button><button class="nav">▤</button><div class="space"></div><button class="nav">⚙</button></aside><main>
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
+
 <section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h · LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
 <div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div></section>
 <section class="lower">
@@ -2336,6 +2732,354 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
   </div>
   <button class="view-day" id="viewDayBtn" type="button">VIEW FULL DAY <span>↓</span></button>
 </div>
+
+
+</div>
+
+<section class="daily-summary-sheet">
+  <section class="original-form-page" id="dailySummaryCard">
+    
+<div class="daily-sheet-head">
+  <div>
+    <small>DAILY OPERATIONS SUMMARY</small>
+    <h2>สรุปการเดินระบบประจำวัน</h2>
+    <p>สรุปข้อมูลประจำวันที่ 13/09/2569 · รอบรายงาน 05:00 ของวันที่ 13/09/2569 ถึง 05:00 ของวันที่ 14/09/2569</p>
+  </div>
+  <div class="daily-sheet-head-actions">
+    <span class="sheet-status">● ข้อมูลครบถ้วน</span>
+    <button type="button" id="exportDailyCsv">EXPORT CSV</button>
+    <button type="button" id="printDailySummary">PRINT / PDF</button>
+  </div>
+</div>
+
+<div class="daily-sheet-meta">
+  <div><small>วันที่รายงาน</small><b>13/09/2569</b></div>
+  <div><small>รอบการบันทึก</small><b>05:00 → 05:00 ของวันถัดไป</b></div>
+  <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
+  <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
+  <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
+  <div><small>สถานะรวม</small><b>ปกติ</b></div>
+</div>
+
+<div class="paper-sheet modern-sheet">
+
+
+      
+<div class="sheet-section-head">
+  <div><small>HOURLY RECORD</small><b>ตารางบันทึก Flow รายชั่วโมง</b></div>
+  <span>บันทึกอัตโนมัติจากระบบ</span>
+</div>
+
+<div class="modern-hourly-wrap">
+  <table class="modern-hourly-table">
+    <thead>
+      <tr>
+        <th>วันที่</th>
+        <th>เวลา</th>
+        <th>Flow Rate</th>
+        <th>Flow Setting</th>
+        <th>สถานะ</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td>13/09/2569</td>
+        <td>05:00</td>
+        <td><b>12.1</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>06:00</td>
+        <td><b>12.4</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>07:00</td>
+        <td><b>12.6</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>08:00</td>
+        <td><b>12.8</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>09:00</td>
+        <td><b>12.3</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>10:00</td>
+        <td><b>12.5</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>11:00</td>
+        <td><b>12.7</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>12:00</td>
+        <td><b>12.9</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>13:00</td>
+        <td><b>13.1</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>14:00</td>
+        <td><b>12.8</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>15:00</td>
+        <td><b>12.6</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>16:00</td>
+        <td><b>12.4</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>17:00</td>
+        <td><b>12.7</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>18:00</td>
+        <td><b>13.0</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>19:00</td>
+        <td><b>13.3</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>20:00</td>
+        <td><b>13.8</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>21:00</td>
+        <td><b>15.1</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>22:00</td>
+        <td><b>13.9</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>13/09/2569</td>
+        <td>23:00</td>
+        <td><b>13.1</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>00:00</td>
+        <td><b>12.5</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>01:00</td>
+        <td><b>11.9</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>02:00</td>
+        <td><b>10.5</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>03:00</td>
+        <td><b>11.2</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>04:00</td>
+        <td><b>11.8</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+      <tr>
+        <td>14/09/2569</td>
+        <td>05:00</td>
+        <td><b>12.2</b> m³/h</td>
+        <td>13.0 m³/h</td>
+        <td><span class="row-status">ปกติ</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sheet-section-head summary-head">
+  <div><small>DAILY TOTAL SUMMARY</small><b>สรุปผลรวมประจำวัน</b></div>
+  <span>คำนวณจากข้อมูลในรอบรายงาน</span>
+</div>
+
+<div class="daily-total-grid">
+  <div><small>ปริมาณน้ำรวม</small><b>301.0</b><span>m³/day</span></div>
+  <div><small>Flow เฉลี่ย</small><b>12.6</b><span>m³/h</span></div>
+  <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
+  <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
+  <div><small>Flow Setting</small><b>13.0</b><span>m³/h</span></div>
+  <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
+  <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
+  <div><small>Alerts</small><b>0</b><span>เหตุการณ์</span></div>
+</div>
+<div class="form-remark">
+        <b>หมายเหตุ</b>
+        <textarea id="dailyNote">ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 ไม่พบเหตุการณ์ผิดปกติในตัวอย่างข้อมูลจำลอง</textarea>
+      </div>
+
+      <section class="signature-bottom modern-signatures" id="signatureSection">
+  <div class="sign-section-title">
+    <small>SIGN-OFF WORKFLOW</small>
+    <b>ผู้รับผิดชอบ / ผู้ตรวจสอบ / ผู้ทวนสอบ / ผู้อนุมัติ</b>
+    <span>เลื่อนลงมาท้ายสรุปรายวันเพื่อบันทึกการลงชื่อ</span>
+  </div>
+
+  <div class="sign-subgroup">
+    <div class="subgroup-head">
+      <small>RESPONSIBLE OPERATOR</small>
+      <b>ผู้รับผิดชอบแต่ละกะ</b>
+    </div>
+    <div class="signature-group responsible-group three-shift-grid">
+      <div class="paper-sign">
+        <small>กะ A / A+</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
+        <b>ผู้รับผิดชอบ</b>
+        <button class="sign-btn" type="button">ลงชื่อ</button>
+        <div class="sign-state">รอลงชื่อ</div>
+      </div>
+      <div class="paper-sign">
+        <small>กะ B</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
+        <b>ผู้รับผิดชอบ</b>
+        <button class="sign-btn" type="button">ลงชื่อ</button>
+        <div class="sign-state">รอลงชื่อ</div>
+      </div>
+      <div class="paper-sign">
+        <small>กะ C / C+</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
+        <b>ผู้รับผิดชอบ</b>
+        <button class="sign-btn" type="button">ลงชื่อ</button>
+        <div class="sign-state">รอลงชื่อ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sign-subgroup">
+    <div class="subgroup-head">
+      <small>SHIFT REVIEW</small>
+      <b>ผู้ตรวจสอบแต่ละกะ</b>
+    </div>
+    <div class="signature-group approval-shift-group three-shift-grid">
+      <div class="paper-sign">
+        <small>กะ A / A+</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
+        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
+        <button class="sign-btn" type="button">ตรวจสอบ</button>
+        <div class="sign-state">รอตรวจสอบ</div>
+      </div>
+      <div class="paper-sign">
+        <small>กะ B</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
+        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
+        <button class="sign-btn" type="button">ตรวจสอบ</button>
+        <div class="sign-state">รอตรวจสอบ</div>
+      </div>
+      <div class="paper-sign">
+        <small>กะ C / C+</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
+        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
+        <button class="sign-btn" type="button">ตรวจสอบ</button>
+        <div class="sign-state">รอตรวจสอบ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sign-subgroup">
+    <div class="subgroup-head">
+      <small>FINAL REVIEW & APPROVAL</small>
+      <b>ผู้ทวนสอบและผู้อนุมัติ</b>
+    </div>
+    <div class="signature-group final-approval-grid">
+      <div class="paper-sign">
+        <small>รองหัวหน้าแผนก</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ทวนสอบ"></div>
+        <b>ผู้ทวนสอบ</b>
+        <button class="sign-btn" type="button">ทวนสอบ</button>
+        <div class="sign-state">รอทวนสอบ</div>
+      </div>
+      <div class="paper-sign">
+        <small>หัวหน้าแผนก</small>
+        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้อนุมัติ"></div>
+        <b>ผู้อนุมัติ</b>
+        <button class="sign-btn" type="button">อนุมัติ</button>
+        <div class="sign-state approved-static">พร้อมอนุมัติ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="paper-approval-status ready">
+    <span>●</span><b>เอกสารพร้อมสรุปรายวันและรองรับการอนุมัติครบทุกกะ</b>
+  </div>
+</section>
+    </div>
+  </section>
+</section>
+
 </main></div><div class="overlay" id="criticalAlert">
   <div class="emergency" id="emergencyPanel">
     <div class="emergency-grid"></div>
@@ -2486,4 +3230,48 @@ document.addEventListener("DOMContentLoaded",()=>{
  $("#exportCsv").onclick=csv;
  drawer.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;const g=b.dataset.go;if(g==="admin"){admin.classList.add("open");drawer.classList.remove("open");shade.classList.remove("open")}else if(g==="export")csv();else if(g==="flowlog"){document.querySelector(".phase1-hourly")?.scrollIntoView({behavior:"smooth"});drawer.classList.remove("open");shade.classList.remove("open")}else{window.scrollTo({top:0,behavior:"smooth"});drawer.classList.remove("open");shade.classList.remove("open")}});
 });
-</script></body></html>
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const rows=[...document.querySelectorAll('.paper-sign.approval-row')];
+  const overall=document.getElementById('approvalOverall');
+
+  function unlock(index){
+    const row=rows[index];
+    if(!row) return;
+    row.classList.remove('locked');
+    const input=row.querySelector('.sign-name');
+    const btn=row.querySelector('.sign-btn');
+    if(input) input.disabled=false;
+    if(btn) btn.disabled=false;
+  }
+
+  rows.forEach((row,index)=>{
+    const btn=row.querySelector('.sign-btn');
+    btn?.addEventListener('click',()=>{
+      const input=row.querySelector('.sign-name');
+      const name=input?.value.trim();
+      if(!name){ input?.focus(); return; }
+
+      row.classList.add('signed');
+      row.classList.remove('locked');
+      if(input) input.disabled=true;
+      if(btn){ btn.disabled=true; btn.textContent='✓ ลงชื่อแล้ว'; }
+      const state=row.querySelector('.sign-state');
+      if(state) state.textContent='ลงชื่อรับรองแล้ว';
+
+      unlock(index+1);
+
+      const allSigned=rows.every(r=>r.classList.contains('signed'));
+      if(allSigned && overall){
+        overall.classList.add('approved');
+        overall.innerHTML='<span>✓</span><b>เอกสารอนุมัติแล้ว</b>';
+      }
+    });
+  });
+});
+</script>
+
+</body></html>
