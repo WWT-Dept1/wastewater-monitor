@@ -2642,15 +2642,100 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
 }
 </style>
 
+
+<style>
+/* V15.51 — functional sidebar + System Health */
+.system-health-card{
+  align-self:start;
+  margin:22px 0;
+  padding:22px 24px;
+  border-radius:29px;
+  border:1px solid rgba(35,76,52,.10);
+  background:linear-gradient(145deg,#f4f8f4,#e8efe9);
+  box-shadow:14px 14px 30px rgba(110,130,115,.20),-12px -12px 26px rgba(255,255,255,.92);
+}
+.health-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  padding-bottom:14px;border-bottom:1px solid #c8d5ca;
+}
+.health-head small{
+  display:block;font:800 9px "Outfit",sans-serif;letter-spacing:.15em;color:#62786a;
+}
+.health-head h2{
+  margin:4px 0 0;font:800 22px "Noto Sans Thai",sans-serif;color:#12271a;
+}
+.health-overall{
+  display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 11px;
+  border:1px solid #acd0b5;border-radius:999px;background:#e5f2e8;
+  color:#23633b;font:800 9px "Noto Sans Thai",sans-serif;white-space:nowrap;
+}
+.health-overall i{
+  width:8px;height:8px;border-radius:50%;background:#3d9860;
+  box-shadow:0 0 0 5px rgba(61,152,96,.10);
+  animation:healthPulse 1.7s ease-in-out infinite;
+}
+.health-path{display:grid;gap:9px;margin-top:14px}
+.health-row{
+  display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:11px;
+  min-height:62px;padding:10px 11px;border:1px solid #c7d4c9;border-radius:15px;
+  background:linear-gradient(145deg,#f9fbf9,#edf3ee);
+}
+.health-icon{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#e7f1e8,#d8e5db);
+  border:1px solid #c3d2c6;color:#28573b;font:900 10px "Outfit",sans-serif;
+}
+.health-copy b{display:block;font:800 11px "Outfit","Noto Sans Thai",sans-serif;color:#183022}
+.health-copy span{display:block;margin-top:3px;font:600 9px "Noto Sans Thai",sans-serif;color:#6d8173}
+.health-ok{
+  font:900 8px "Outfit",sans-serif;letter-spacing:.08em;color:#27663d;
+  background:#e5f2e8;border:1px solid #b5d3bc;border-radius:999px;padding:6px 8px;
+}
+.health-footer{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid #c8d5ca;
+}
+.health-footer>div{
+  min-height:58px;padding:9px 10px;border:1px solid #cad6cc;border-radius:12px;background:#f7faf7;
+}
+.health-footer small{display:block;font:800 7px "Outfit",sans-serif;letter-spacing:.10em;color:#708176}
+.health-footer b{display:block;margin-top:5px;font:800 10px "Outfit","Noto Sans Thai",sans-serif;color:#183022}
+@keyframes healthPulse{50%{transform:scale(1.18);box-shadow:0 0 0 8px rgba(61,152,96,.04)}}
+
+/* Sidebar feedback */
+.nav{position:relative;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,color .16s ease}
+.nav:hover{transform:translateY(-2px);color:#214e35!important}
+.nav.on{
+  color:#174b2d!important;
+  border:1px solid rgba(34,79,51,.15)!important;
+  box-shadow:inset 4px 4px 9px rgba(182,198,187,.75),inset -4px -4px 9px rgba(255,255,255,.95)!important;
+}
+.nav.nav-flash{animation:navFlash .36s ease}
+@keyframes navFlash{50%{transform:scale(.92)}}
+html{scroll-behavior:smooth}
+#flowTrendSection,#alertCenterSection,#flowLogSection,#systemHealthSection,#dailySummarySection{scroll-margin-top:100px}
+
+@media(max-width:1050px){
+  .health-footer{grid-template-columns:1fr}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">● LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
-<div class="shell"><aside><button class="nav on">⌂</button><button class="nav">◉</button><button class="nav">!</button><button class="nav">≡</button><button class="nav">▤</button><div class="space"></div><button class="nav">⚙</button></aside><main>
+<div class="shell"><aside>
+<button class="nav on" type="button" data-nav-target="top" aria-label="Live Operations" title="Live Operations">⌂</button>
+<button class="nav" type="button" data-nav-target="trend" aria-label="Flow Analytics" title="Flow Analytics">◉</button>
+<button class="nav" type="button" data-nav-target="alerts" aria-label="Alert Center" title="Alert Center">!</button>
+<button class="nav" type="button" data-nav-target="flowlog" aria-label="Hourly Flow Log" title="Hourly Flow Log">≡</button>
+<button class="nav" type="button" data-nav-target="daily" aria-label="Daily Summary" title="Daily Summary">▤</button>
+<div class="space"></div>
+<button class="nav" type="button" data-nav-target="health" aria-label="System Health" title="System Health">⚙</button>
+</aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
 <section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h · LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
 <div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div></section>
 <section class="lower">
-<section class="neo-trend">
+<section class="neo-trend" id="flowTrendSection">
 <div class="neo-trend-head"><div><small>FLOW ANALYTICS</small><h2>24-Hour Flow Trend</h2></div><span>13/09/2569 05:00 → 14/09/2569 05:00 · m³/h</span></div>
 <div class="neo-chart">
 <svg viewBox="0 0 1000 160" preserveAspectRatio="none">
@@ -2661,7 +2746,7 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
 <circle class="neo-dot" cx="1000" cy="99" r="4"/>
 </svg><div class="neo-axis"><span>05:00</span><span>09:00</span><span>13:00</span><span>17:00</span><span>21:00</span><span>01:00</span><span>05:00</span></div></div>
 </section>
-<section class="alert-response-center">
+<section class="alert-response-center" id="alertCenterSection">
   <div class="arc-head">
     <div><small>SMART ALERT CENTER</small><h2>ศูนย์แจ้งเตือนระบบ</h2></div>
     <div class="arc-state"><i></i> กำลังเฝ้าระวัง</div>
@@ -2689,7 +2774,7 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
     </div>
   </div>
   </section>
-<div class="panel phase1-hourly">
+<div class="panel phase1-hourly" id="flowLogSection">
   <div class="hourly-title">
     <div>
       <small>AUTOMATIC · HOURLY RECORD</small>
@@ -2731,12 +2816,56 @@ svg text,.chart-label,.axis text{fill:var(--muted)!important;color:var(--muted)!
     <div class="hourly-row"><span>14/09/2569</span><time>05:00</time><b>32.7 <small>m³/h</small></b><em>NORMAL</em></div>
   </div>
   <button class="view-day" id="viewDayBtn" type="button">VIEW FULL DAY <span>↓</span></button>
-</div>
-
 
 </div>
 
-<section class="daily-summary-sheet">
+<section class="system-health-card" id="systemHealthSection">
+  <div class="health-head">
+    <div>
+      <small>SYSTEM HEALTH</small>
+      <h2>สถานะระบบ</h2>
+    </div>
+    <span class="health-overall"><i></i> ระบบพร้อมใช้งาน</span>
+  </div>
+
+  <div class="health-path">
+    <div class="health-row">
+      <div class="health-icon">FM</div>
+      <div class="health-copy"><b>FM-01 Flowmeter</b><span>น้ำเสียเข้าระบบบำบัด</span></div>
+      <strong class="health-ok">ONLINE</strong>
+    </div>
+    <div class="health-row">
+      <div class="health-icon">MV</div>
+      <div class="health-copy"><b>MV110 Converter</b><span>สัญญาณ 4–20 mA พร้อมใช้งาน</span></div>
+      <strong class="health-ok">SIGNAL OK</strong>
+    </div>
+    <div class="health-row">
+      <div class="health-icon">32</div>
+      <div class="health-copy"><b>ESP32 Gateway</b><span>ส่งข้อมูลผ่าน Wi-Fi</span></div>
+      <strong class="health-ok">ONLINE</strong>
+    </div>
+    <div class="health-row">
+      <div class="health-icon">DB</div>
+      <div class="health-copy"><b>Cloud Database</b><span>Supabase data service</span></div>
+      <strong class="health-ok">CONNECTED</strong>
+    </div>
+    <div class="health-row">
+      <div class="health-icon">GS</div>
+      <div class="health-copy"><b>Google Sheets</b><span>Hourly Flow Log</span></div>
+      <strong class="health-ok">SYNCED</strong>
+    </div>
+  </div>
+
+  <div class="health-footer">
+    <div><small>LAST DATA</small><b>16:00</b></div>
+    <div><small>NEXT HOURLY LOG</small><b>17:00</b></div>
+    <div><small>DEVICE</small><b>WWTP-FLOW-01</b></div>
+  </div>
+</section>
+
+</div>
+
+<section class="daily-summary-sheet" id="dailySummarySection">
   <section class="original-form-page" id="dailySummaryCard">
     
 <div class="daily-sheet-head">
@@ -3268,6 +3397,36 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(allSigned && overall){
         overall.classList.add('approved');
         overall.innerHTML='<span>✓</span><b>เอกสารอนุมัติแล้ว</b>';
+      }
+    });
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const navMap={
+    top: document.getElementById('liveTop'),
+    trend: document.getElementById('flowTrendSection'),
+    alerts: document.getElementById('alertCenterSection'),
+    flowlog: document.getElementById('flowLogSection'),
+    daily: document.getElementById('dailySummarySection'),
+    health: document.getElementById('systemHealthSection')
+  };
+
+  document.querySelectorAll('aside .nav[data-nav-target]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key=btn.dataset.navTarget;
+      const target=navMap[key];
+      document.querySelectorAll('aside .nav').forEach(n=>n.classList.remove('on'));
+      btn.classList.add('on','nav-flash');
+      setTimeout(()=>btn.classList.remove('nav-flash'),380);
+
+      if(key==='top'){
+        window.scrollTo({top:0,behavior:'smooth'});
+      }else{
+        target?.scrollIntoView({behavior:'smooth',block:'start'});
       }
     });
   });
