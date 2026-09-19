@@ -2719,8 +2719,134 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.53 — red blinking LIVE indicator */
+.live{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.live::before{
+  content:""!important;
+  width:8px!important;
+  height:8px!important;
+  flex:0 0 8px!important;
+  border-radius:50%!important;
+  background:#e53935!important;
+  box-shadow:0 0 0 4px rgba(229,57,53,.10),0 0 10px rgba(229,57,53,.55)!important;
+  animation:liveRedBlink 1.15s ease-in-out infinite!important;
+}
+@keyframes liveRedBlink{
+  0%,100%{
+    opacity:1;
+    transform:scale(1);
+    box-shadow:0 0 0 4px rgba(229,57,53,.10),0 0 10px rgba(229,57,53,.55);
+  }
+  50%{
+    opacity:.28;
+    transform:scale(.72);
+    box-shadow:0 0 0 8px rgba(229,57,53,.03),0 0 2px rgba(229,57,53,.18);
+  }
+}
+</style>
+
+
+<style>
+/* V15.55 — Daily Flow Electronic Form */
+.daily-eform-toolbar{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:12px 14px;margin-top:24px;
+  border:1px solid #c1cec3;border-radius:18px 18px 0 0;
+  background:linear-gradient(145deg,#fafcfa,#edf3ee);
+  box-shadow:0 8px 22px rgba(113,133,118,.10);
+}
+.eform-tabs,.eform-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.eform-tab{
+  min-height:36px;padding:0 13px;border:0;border-radius:12px;background:transparent;
+  color:#65786b;font:800 10px "Noto Sans Thai",sans-serif;cursor:pointer;
+}
+.eform-tab.active{
+  background:#e6eef8;color:#264c78;
+  box-shadow:inset 0 0 0 1px rgba(49,86,128,.08);
+}
+.eform-actions button{
+  min-height:36px;padding:0 13px;border:1px solid #9bb8a2;border-radius:999px;
+  background:#fff;color:#254d34;font:800 9px "Noto Sans Thai",sans-serif;cursor:pointer;
+}
+.eform-actions button:hover{background:#315f43;color:#fff}
+.eform-head{
+  margin-top:0!important;border-radius:0!important;border-top:0!important;
+  align-items:center!important;
+}
+.eform-doc{
+  min-width:245px;padding:12px 14px;border:1px solid #c2cfc4;border-radius:14px;
+  background:#f9fbf9;text-align:left;
+}
+.eform-doc span,.eform-doc small{display:block;font:700 9px "Noto Sans Thai",sans-serif;color:#6e8073}
+.eform-doc b{display:block;margin:4px 0;font:800 11px "Outfit","Noto Sans Thai",sans-serif;color:#183022}
+
+.daily-form-fields{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;border-left:1px solid #afc2b3;border-right:1px solid #afc2b3;background:#fff;
+}
+.field-group{
+  min-height:76px;padding:13px 15px;border-right:1px solid #d0dad2;border-top:1px solid #d0dad2;
+}
+.field-group:nth-child(3n){border-right:0}
+.field-group label{
+  display:block;font:800 9px "Noto Sans Thai",sans-serif;color:#65796b;margin-bottom:7px;
+}
+.field-value{
+  padding:7px 0 5px;border-bottom:1px solid #93a49a;
+  font:700 11px "Noto Sans Thai",sans-serif;color:#1b2d22;
+}
+
+.eform-sheet{
+  border-radius:0 0 26px 26px!important;
+  background:#fff!important;
+}
+.eform-sheet .sheet-section-head{
+  padding:11px 13px!important;margin:0 0 10px!important;
+  border:1px solid #d0d9d2!important;border-radius:12px!important;
+  background:#eef2f6!important;
+}
+.eform-sheet .sheet-section-head small{color:#58728c!important}
+.eform-sheet .sheet-section-head b{font-size:15px!important}
+
+.approval-summary{
+  display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:18px;
+  margin-top:18px;padding:14px 16px;border:1px solid #c1cec3;border-radius:14px;background:#f8faf8;
+}
+.approval-summary small{display:block;font:800 8px "Outfit",sans-serif;letter-spacing:.14em;color:#6c7c71}
+.approval-summary b{display:block;margin-top:3px;font:800 13px "Noto Sans Thai",sans-serif;color:#183022}
+.approval-flow-mini{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.approval-flow-mini span{
+  padding:6px 8px;border:1px solid #c8d3ca;border-radius:999px;background:#fff;
+  font:700 8px "Noto Sans Thai",sans-serif;color:#4c6253;
+}
+.approval-flow-mini i{font-style:normal;color:#7c8b80}
+.approval-summary strong{
+  padding:8px 11px;border-radius:999px;background:#fff1c8;color:#7a5900;
+  border:1px solid #ead286;font:800 9px "Noto Sans Thai",sans-serif;white-space:nowrap;
+}
+
+@media(max-width:1000px){
+  .daily-eform-toolbar,.eform-head{align-items:flex-start;flex-direction:column}
+  .daily-form-fields{grid-template-columns:repeat(2,1fr)}
+  .field-group:nth-child(3n){border-right:1px solid #d0dad2}
+  .field-group:nth-child(2n){border-right:0}
+  .approval-summary{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .daily-form-fields{grid-template-columns:1fr}
+  .field-group{border-right:0!important}
+  .eform-actions button{flex:1}
+}
+</style>
+
 </head><body>
-<header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">● LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
+<header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
 <button class="nav on" type="button" data-nav-target="top" aria-label="Live Operations" title="Live Operations">⌂</button>
 <button class="nav" type="button" data-nav-target="trend" aria-label="Flow Analytics" title="Flow Analytics">◉</button>
@@ -2732,7 +2858,7 @@ html{scroll-behavior:smooth}
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
-<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h · LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
+<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
 <div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div></section>
 <section class="lower">
 <section class="neo-trend" id="flowTrendSection">
@@ -2868,34 +2994,67 @@ html{scroll-behavior:smooth}
 <section class="daily-summary-sheet" id="dailySummarySection">
   <section class="original-form-page" id="dailySummaryCard">
     
-<div class="daily-sheet-head">
-  <div>
-    <small>DAILY OPERATIONS SUMMARY</small>
-    <h2>สรุปการเดินระบบประจำวัน</h2>
-    <p>สรุปข้อมูลประจำวันที่ 13/09/2569 · รอบรายงาน 05:00 ของวันที่ 13/09/2569 ถึง 05:00 ของวันที่ 14/09/2569</p>
+<div class="daily-eform-toolbar">
+  <div class="eform-tabs">
+    <button type="button" class="eform-tab active">รายละเอียด</button>
+    <button type="button" class="eform-tab">เอกสารแนบ (0)</button>
+    <button type="button" class="eform-tab">ลำดับอนุมัติ</button>
+    <button type="button" class="eform-tab">ประวัติ</button>
   </div>
-  <div class="daily-sheet-head-actions">
-    <span class="sheet-status">● ข้อมูลครบถ้วน</span>
-    <button type="button" id="exportDailyCsv">EXPORT CSV</button>
+  <div class="eform-actions">
+    <button type="button" id="previewDailyForm">ดูตัวอย่าง</button>
+    <button type="button" id="copyDailyForm">คัดลอกแบบฟอร์ม</button>
+    <button type="button" id="exportDailyCsv">ดาวน์โหลด CSV</button>
     <button type="button" id="printDailySummary">PRINT / PDF</button>
   </div>
 </div>
 
-<div class="daily-sheet-meta">
-  <div><small>วันที่รายงาน</small><b>13/09/2569</b></div>
-  <div><small>รอบการบันทึก</small><b>05:00 → 05:00 ของวันถัดไป</b></div>
-  <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
-  <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
-  <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
-  <div><small>สถานะรวม</small><b>ปกติ</b></div>
+<div class="daily-sheet-head eform-head">
+  <div>
+    <small>ELECTRONIC DAILY FLOW REPORT</small>
+    <h2>แบบฟอร์มสรุป Flow ประจำวัน</h2>
+    <p>สรุปข้อมูลประจำวันที่ 13/09/2569 · รอบรายงาน 05:00 ของวันที่ 13/09/2569 ถึง 05:00 ของวันที่ 14/09/2569</p>
+  </div>
+  <div class="eform-doc">
+    <span>เลขที่เอกสาร</span>
+    <b>F-WWT-FLOW-2026-000019</b>
+    <small>สถานะ: พร้อมตรวจสอบ</small>
+  </div>
 </div>
 
-<div class="paper-sheet modern-sheet">
+<div class="daily-form-fields">
+  <div class="field-group">
+    <label>วันที่รายงาน</label>
+    <div class="field-value">13 Sep 2026</div>
+  </div>
+  <div class="field-group">
+    <label>รอบการบันทึก</label>
+    <div class="field-value">05:00 → 05:00 ของวันถัดไป</div>
+  </div>
+  <div class="field-group">
+    <label>โรงงาน</label>
+    <div class="field-value">NRT 1</div>
+  </div>
+  <div class="field-group">
+    <label>แผนก/ฝ่าย</label>
+    <div class="field-value">บ่อบำบัดน้ำเสีย</div>
+  </div>
+  <div class="field-group">
+    <label>จุดตรวจวัด</label>
+    <div class="field-value">FM-01 · น้ำเสียเข้าระบบบำบัด</div>
+  </div>
+  <div class="field-group">
+    <label>Flow Setting</label>
+    <div class="field-value">13.0 m³/h</div>
+  </div>
+</div>
+
+<div class="paper-sheet modern-sheet eform-sheet">
 
 
       
 <div class="sheet-section-head">
-  <div><small>HOURLY RECORD</small><b>ตารางบันทึก Flow รายชั่วโมง</b></div>
+  <div><small>SECTION 1 · HOURLY FLOW RECORD</small><b>รายละเอียด Flow รายชั่วโมง</b></div>
   <span>บันทึกอัตโนมัติจากระบบ</span>
 </div>
 
@@ -3092,7 +3251,7 @@ html{scroll-behavior:smooth}
 </div>
 
 <div class="sheet-section-head summary-head">
-  <div><small>DAILY TOTAL SUMMARY</small><b>สรุปผลรวมประจำวัน</b></div>
+  <div><small>SECTION 2 · DAILY SUMMARY</small><b>สรุปรวมประจำวัน</b></div>
   <span>คำนวณจากข้อมูลในรอบรายงาน</span>
 </div>
 
@@ -3107,11 +3266,22 @@ html{scroll-behavior:smooth}
   <div><small>Alerts</small><b>0</b><span>เหตุการณ์</span></div>
 </div>
 <div class="form-remark">
-        <b>หมายเหตุ</b>
+        <b>Section 3 · หมายเหตุ / เหตุการณ์ประจำวัน</b>
         <textarea id="dailyNote">ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 ไม่พบเหตุการณ์ผิดปกติในตัวอย่างข้อมูลจำลอง</textarea>
       </div>
 
-      <section class="signature-bottom modern-signatures" id="signatureSection">
+      
+<div class="approval-summary">
+  <div><small>APPROVAL STATUS</small><b>สถานะการรับรองเอกสาร</b></div>
+  <div class="approval-flow-mini">
+    <span>พนักงาน 3 กะ</span><i>→</i>
+    <span>ผู้ตรวจสอบ 3 กะ</span><i>→</i>
+    <span>ผู้ทวนสอบ</span><i>→</i>
+    <span>ผู้อนุมัติ</span>
+  </div>
+  <strong>รอการลงชื่อ</strong>
+</div>
+<section class="signature-bottom modern-signatures" id="signatureSection">
   <div class="sign-section-title">
     <small>SIGN-OFF WORKFLOW</small>
     <b>ผู้รับผิดชอบ / ผู้ตรวจสอบ / ผู้ทวนสอบ / ผู้อนุมัติ</b>
@@ -3429,6 +3599,53 @@ document.addEventListener('DOMContentLoaded',()=>{
         target?.scrollIntoView({behavior:'smooth',block:'start'});
       }
     });
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const copyBtn=document.getElementById('copyDailyForm');
+  const previewBtn=document.getElementById('previewDailyForm');
+
+  copyBtn?.addEventListener('click', async ()=>{
+    const rows=[...document.querySelectorAll('.modern-hourly-table tbody tr')].map(tr=>
+      [...tr.children].map(td=>td.textContent.trim()).join(' | ')
+    ).join('\n');
+
+    const text=[
+      'แบบฟอร์มสรุป Flow ประจำวัน',
+      'วันที่รายงาน: 13/09/2569',
+      'รอบการบันทึก: 05:00 → 05:00 ของวันถัดไป',
+      'โรงงาน: NRT 1',
+      'แผนก/ฝ่าย: บ่อบำบัดน้ำเสีย',
+      'จุดตรวจวัด: FM-01 · น้ำเสียเข้าระบบบำบัด',
+      'Flow Setting: 13.0 m³/h',
+      '',
+      'รายละเอียด Flow รายชั่วโมง',
+      rows,
+      '',
+      'สรุปรวมประจำวัน',
+      'ปริมาณน้ำรวม: 301.0 m³/day',
+      'Flow เฉลี่ย: 12.6 m³/h',
+      'Flow ต่ำสุด: 10.5 m³/h',
+      'Flow สูงสุด: 15.1 m³/h',
+      'COD ล่าสุด: 11,800 mg/L · ปกติ',
+      'Zinc ล่าสุด: 354 mg/L · ปกติ'
+    ].join('\n');
+
+    try{
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent='✓ คัดลอกแล้ว';
+      setTimeout(()=>copyBtn.textContent='คัดลอกแบบฟอร์ม',1600);
+    }catch(e){
+      alert('ไม่สามารถคัดลอกอัตโนมัติได้');
+    }
+  });
+
+  previewBtn?.addEventListener('click',()=>{
+    document.getElementById('dailySummaryCard')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
 });
 </script>
