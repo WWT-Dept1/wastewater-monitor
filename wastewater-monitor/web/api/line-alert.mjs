@@ -38,31 +38,64 @@ const ALERTS = {
 };
 
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8"
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: {
+        "content-type": "application/json; charset=utf-8"
+      }
     }
-  });
+  );
 }
 
 export async function POST(request) {
+
   const accessToken =
     process.env.LINE_CHANNEL_ACCESS_TOKEN;
+
+  const groupId =
+    process.env.LINE_GROUP_ID;
 
   const userId =
     process.env.LINE_USER_ID;
 
-  if (!accessToken || !userId) {
+  // ใช้ Group ID ก่อน
+  // ถ้าไม่มี Group ID ค่อยใช้ User ID
+  const targetId =
+    groupId || userId;
+
+  const targetType =
+    groupId ? "group" : "user";
+
+
+  // ตรวจว่ามี Token หรือไม่
+  if (!accessToken) {
     return json(
       {
         ok: false,
-        error: "missing_line_environment_variables"
+        error: "missing_line_channel_access_token"
       },
       500
     );
   }
 
+
+  // ตรวจว่ามีปลายทางหรือไม่
+  if (!targetId) {
+    return json(
+      {
+        ok: false,
+        error: "missing_line_target",
+        message:
+          "ไม่พบ LINE_GROUP_ID หรือ LINE_USER_ID"
+      },
+      500
+    );
+  }
+
+
+  // รับข้อมูลจาก Dashboard
   let body = {};
 
   try {
@@ -71,28 +104,42 @@ export async function POST(request) {
     body = {};
   }
 
-  const type = body.type || "test";
-  const alert = ALERTS[type];
 
+  const type =
+    body.type || "test";
+
+  const alert =
+    ALERTS[type];
+
+
+  // ถ้าส่งประเภท Alert ที่ระบบไม่รู้จัก
   if (!alert) {
     return json(
       {
         ok: false,
-        error: "unsupported_alert_type"
+        error: "unsupported_alert_type",
+        type
       },
       400
     );
   }
 
-  const now = new Intl.DateTimeFormat(
-    "th-TH",
-    {
-      timeZone: "Asia/Bangkok",
-      dateStyle: "medium",
-      timeStyle: "medium"
-    }
-  ).format(new Date());
 
+  // เวลาไทย
+  const now =
+    new Intl.DateTimeFormat(
+      "th-TH",
+      {
+        timeZone: "Asia/Bangkok",
+        dateStyle: "medium",
+        timeStyle: "medium"
+      }
+    ).format(
+      new Date()
+    );
+
+
+  // ข้อความที่จะส่งเข้า LINE
   const message =
 `🚨 Wastewater Monitor
 
@@ -105,63 +152,148 @@ Flow: ${alert.value}
 
 ${alert.detail}`;
 
-  const lineResponse = await fetch(
-    LINE_PUSH_URL,
-    {
-      method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-      },
+  try {
 
-      body: JSON.stringify({
-        to: userId,
+    const lineResponse =
+      await fetch(
+        LINE_PUSH_URL,
+        {
+          method: "POST",
 
-        messages: [
-          {
-            type: "text",
-            text: message
-          }
-        ]
-      })
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              `Bearer ${accessToken}`
+          },
+
+          body:
+            JSON.stringify(
+              {
+                to: targetId,
+
+                messages: [
+                  {
+                    type: "text",
+                    text: message
+                  }
+                ]
+              }
+            )
+        }
+      );
+
+
+    const responseText =
+      await lineResponse.text();
+
+
+    // LINE ตอบกลับ Error
+    if (!lineResponse.ok) {
+
+      console.error(
+        "LINE push failed:",
+        lineResponse.status,
+        responseText
+      );
+
+
+      return json(
+        {
+          ok: false,
+
+          error:
+            "line_push_failed",
+
+          status:
+            lineResponse.status,
+
+          destination:
+            targetType,
+
+          detail:
+            responseText
+        },
+        502
+      );
     }
-  );
 
-  const responseText =
-    await lineResponse.text();
 
-  if (!lineResponse.ok) {
+    // ส่งสำเร็จ
+    return json(
+      {
+        ok: true,
+
+        type,
+
+        sent_to_line:
+          true,
+
+        destination:
+          targetType,
+
+        message:
+          targetType === "group"
+            ? "ส่งแจ้งเตือนไปยังกลุ่ม LINE สำเร็จ"
+            : "ส่งแจ้งเตือนไปยัง LINE ส่วนตัวสำเร็จ"
+      }
+    );
+
+  } catch (error) {
 
     console.error(
-      "LINE push failed:",
-      lineResponse.status,
-      responseText
+      "LINE API error:",
+      error
     );
+
 
     return json(
       {
         ok: false,
-        error: "line_push_failed",
-        status: lineResponse.status
+
+        error:
+          "line_api_exception",
+
+        message:
+          error.message
       },
-      502
+      500
     );
   }
-
-  return json({
-    ok: true,
-    type,
-    sent_to_line: true
-  });
 }
 
+
+// เปิด URL จาก Browser เพื่อตรวจว่า API ทำงานหรือไม่
 export function GET() {
 
-  return json({
-    ok: true,
-    service:
-      "Wastewater Monitor LINE Alert API",
-    method: "POST"
-  });
+  const groupConfigured =
+    Boolean(
+      process.env.LINE_GROUP_ID
+    );
+
+  const userConfigured =
+    Boolean(
+      process.env.LINE_USER_ID
+    );
+
+  return json(
+    {
+      ok: true,
+
+      service:
+        "Wastewater Monitor LINE Alert API",
+
+      method:
+        "POST",
+
+      destination:
+        groupConfigured
+          ? "LINE GROUP"
+          : userConfigured
+            ? "LINE USER"
+            : "NOT CONFIGURED"
+    }
+  );
 }
