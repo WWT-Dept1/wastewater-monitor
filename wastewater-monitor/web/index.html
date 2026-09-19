@@ -2948,6 +2948,199 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.57 — clean Flow Log header + full document preview */
+
+/* Fix overlapping Flow Log title / record period */
+.hourly-title{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:14px!important;
+  align-items:start!important;
+  margin-bottom:18px!important;
+}
+.hourly-title>div:first-child{
+  min-width:0!important;
+}
+.hourly-title>div:first-child b{
+  display:block!important;
+  margin-top:6px!important;
+  font-size:34px!important;
+  line-height:.95!important;
+  letter-spacing:-.045em!important;
+}
+.period{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:12px 14px!important;
+  border-radius:15px!important;
+  box-sizing:border-box!important;
+}
+.period small{
+  display:block!important;
+  margin-bottom:6px!important;
+}
+.period b{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+}
+.period strong{
+  font-size:14px!important;
+}
+.hourly-head{
+  margin-top:0!important;
+}
+
+/* Remove unused advice/placeholder space */
+.signature-placeholder{display:none!important}
+
+/* Full document preview */
+.full-preview-card{
+  width:min(1040px,96vw)!important;
+  max-height:94vh!important;
+  overflow:hidden!important;
+}
+.preview-scroll-area{
+  max-height:calc(94vh - 70px);
+  overflow:auto;
+  padding:18px;
+  background:#e8eeea;
+}
+.full-document{
+  margin:0 auto!important;
+  width:min(900px,100%)!important;
+  min-height:1100px;
+  padding:32px!important;
+  box-sizing:border-box;
+}
+.preview-title-block{
+  text-align:center;
+  padding:22px 0 18px;
+}
+.preview-title-block>small{
+  font:800 8px "Outfit",sans-serif;
+  letter-spacing:.16em;
+  color:#65786b;
+}
+.preview-title-block h2{
+  margin:5px 0 4px!important;
+}
+.preview-title-block p{
+  margin:0;
+  font:600 9px "Noto Sans Thai",sans-serif;
+  color:#63766a;
+}
+.preview-section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  margin:20px 0 8px;
+  padding:9px 10px;
+  border:1px solid #d0d9d2;
+  background:#eef3ef;
+}
+.preview-section-title b{
+  font:800 11px "Noto Sans Thai",sans-serif;
+  color:#203528;
+}
+.preview-section-title span{
+  font:600 8px "Noto Sans Thai",sans-serif;
+  color:#6d7d72;
+}
+.full-table{
+  max-height:none!important;
+  overflow:visible!important;
+}
+.full-table table{
+  font-size:8.5px!important;
+}
+.full-table th,.full-table td{
+  padding:7px 8px!important;
+}
+.pv-ok{
+  display:inline-block;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#e5f1e7;
+  color:#28613b;
+  border:1px solid #bdd6c2;
+  font-weight:800;
+}
+.full-summary{
+  grid-template-columns:repeat(3,1fr)!important;
+}
+.preview-note-box{
+  min-height:58px;
+  padding:12px;
+  border:1px solid #c9d4cb;
+  background:#fff;
+  font:600 9px/1.65 "Noto Sans Thai",sans-serif;
+  color:#34493b;
+}
+.preview-approval-chain{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+}
+.preview-approval-chain>div{
+  padding:12px 8px;
+  border:1px solid #c7d3c9;
+  border-radius:10px;
+  text-align:center;
+}
+.preview-approval-chain span{
+  width:24px;height:24px;
+  margin:0 auto 6px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#e5ece7;
+  font:800 9px "Outfit",sans-serif;
+}
+.preview-approval-chain b{
+  display:block;
+  font:800 9px "Noto Sans Thai",sans-serif;
+}
+.preview-approval-chain small{
+  display:block;
+  margin-top:3px;
+  font:600 7px "Noto Sans Thai",sans-serif;
+  color:#728278;
+}
+.preview-approval-chain i{
+  font-style:normal;
+  color:#819087;
+}
+.preview-document-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:22px;
+  padding-top:13px;
+  border-top:2px solid #334c3d;
+  font:700 9px "Noto Sans Thai",sans-serif;
+}
+.preview-document-footer b{
+  color:#795700;
+}
+
+@media(max-width:700px){
+  .hourly-title>div:first-child b{font-size:29px!important}
+  .period b,.period strong{font-size:12px!important}
+  .full-summary{grid-template-columns:repeat(2,1fr)!important}
+  .preview-approval-chain{grid-template-columns:1fr!important}
+  .preview-approval-chain i{transform:rotate(90deg)}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -3016,35 +3209,35 @@ html{scroll-behavior:smooth}
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>STATUS</span></div>
   <div id="hourlyPreview">
-    <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>31.8 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>32.4 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>07:00</time><b>12.3 <small>m³/h</small></b><em>NORMAL</em></div>
-  </div>
-  <div id="hourlyFull" class="hourly-full">
-    <div class="hourly-row"><span>13/09/2569</span><time>08:00</time><b>33.5 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>09:00</time><b>12.7 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>10:00</time><b>33.4 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>11:00</time><b>32.9 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>12:00</time><b>12.7 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>13:00</time><b>12.5 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>14:00</time><b>34.4 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>15:00</time><b>35.0 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>16:00</time><b>34.6 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>17:00</time><b>35.3 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>18:00</time><b>34.8 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>19:00</time><b>12.6 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>20:00</time><b>12.6 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>21:00</time><b>33.3 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>22:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>13/09/2569</span><time>23:00</time><b>32.5 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>00:00</time><b>32.1 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>01:00</time><b>31.9 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>02:00</time><b>10.5 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>03:00</time><b>31.9 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>04:00</time><b>32.3 <small>m³/h</small></b><em>NORMAL</em></div>
-    <div class="hourly-row"><span>14/09/2569</span><time>05:00</time><b>32.7 <small>m³/h</small></b><em>NORMAL</em></div>
-  </div>
-  <button class="view-day" id="viewDayBtn" type="button">VIEW FULL DAY <span>↓</span></button>
+<div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>07:00</time><b>12.6 <small>m³/h</small></b><em>NORMAL</em></div>
+</div>
+<div id="hourlyFull" class="hourly-full">
+<div class="hourly-row"><span>13/09/2569</span><time>08:00</time><b>12.8 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>09:00</time><b>12.3 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>10:00</time><b>12.5 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>11:00</time><b>12.7 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>12:00</time><b>12.9 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>13:00</time><b>13.1 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>14:00</time><b>12.8 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>15:00</time><b>12.6 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>16:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>17:00</time><b>12.7 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>18:00</time><b>13.0 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>19:00</time><b>13.3 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>20:00</time><b>13.8 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>21:00</time><b>15.1 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>22:00</time><b>13.9 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>13/09/2569</span><time>23:00</time><b>13.1 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>00:00</time><b>12.5 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>01:00</time><b>11.9 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>02:00</time><b>10.5 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>03:00</time><b>11.2 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>04:00</time><b>11.8 <small>m³/h</small></b><em>NORMAL</em></div>
+<div class="hourly-row"><span>14/09/2569</span><time>05:00</time><b>12.2 <small>m³/h</small></b><em>NORMAL</em></div>
+</div>
+<button class="view-day" id="viewDayBtn" type="button">VIEW FULL DAY <span>↓</span></button>
 
 </div>
 
@@ -3389,10 +3582,7 @@ html{scroll-behavior:smooth}
   <button type="button" class="open-sign-flow" id="openSignFlow">เริ่มลงชื่อ</button>
 </div>
 
-<div class="signature-placeholder">
-  <small>การลงชื่อถูกย้ายไปเป็นขั้นตอนแบบหน้าต่าง</small>
-  <b>ไม่ต้องเลื่อนลงยาวเพื่อเซ็นเอกสาร</b>
-</div>
+
 
     </div>
   </section>
@@ -3670,54 +3860,129 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
+
 <div class="eform-modal" id="dailyPreviewModal" aria-hidden="true">
-  <div class="eform-modal-card preview-card">
+  <div class="eform-modal-card preview-card full-preview-card">
     <div class="modal-head">
       <div>
         <small>DOCUMENT PREVIEW</small>
-        <b>ตัวอย่างแบบฟอร์มสรุป Flow ประจำวัน</b>
+        <b>ตัวอย่างเอกสารสรุป Flow ประจำวัน</b>
       </div>
       <button type="button" class="modal-close" data-close="dailyPreviewModal">×</button>
     </div>
-    <div class="preview-paper">
-      <div class="preview-doc-top">
-        <div>
-          <strong>Wastewater Live Control System</strong>
-          <span>แผนกบ่อบำบัดน้ำเสีย · NRT 1</span>
+
+    <div class="preview-scroll-area">
+      <div class="preview-paper full-document">
+        <div class="preview-doc-top">
+          <div>
+            <strong>Wastewater Live Control System</strong>
+            <span>แผนกบ่อบำบัดน้ำเสีย · NRT 1</span>
+          </div>
+          <div class="preview-doc-no">
+            <small>เลขที่เอกสาร</small>
+            <b>F-WWT-FLOW-2026-000019</b>
+            <span>วันที่จัดทำ 13/09/2569</span>
+          </div>
         </div>
-        <div class="preview-doc-no">
-          <small>เลขที่เอกสาร</small>
-          <b>F-WWT-FLOW-2026-000019</b>
+
+        <div class="preview-title-block">
+          <small>DAILY OPERATIONS REPORT</small>
+          <h2>แบบฟอร์มสรุป Flow ประจำวัน</h2>
+          <p>ประจำวันที่ 13/09/2569 · รอบรายงาน 05:00 วันที่ 13/09/2569 ถึง 05:00 วันที่ 14/09/2569</p>
+        </div>
+
+        <div class="preview-info-grid">
+          <div><small>โรงงาน</small><b>NRT 1</b></div>
+          <div><small>แผนก/ฝ่าย</small><b>บ่อบำบัดน้ำเสีย</b></div>
+          <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
+          <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
+        </div>
+
+        <div class="preview-section-title">
+          <b>Section 1 · รายละเอียด Flow รายชั่วโมง</b>
+          <span>บันทึกอัตโนมัติจากระบบ</span>
+        </div>
+
+        <div class="preview-table-wrap full-table">
+          <table>
+            <thead>
+              <tr>
+                <th>วันที่</th>
+                <th>เวลา</th>
+                <th>Flow Rate</th>
+                <th>Flow Setting</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>13/09/2569</td><td>05:00</td><td>12.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>06:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>07:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>08:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>09:00</td><td>12.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>10:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>11:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>12:00</td><td>12.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>13:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>14:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>15:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>16:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>17:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>18:00</td><td>13.0 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>19:00</td><td>13.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>20:00</td><td>13.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>21:00</td><td>15.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>22:00</td><td>13.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>13/09/2569</td><td>23:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>00:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>01:00</td><td>11.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>02:00</td><td>10.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>03:00</td><td>11.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>04:00</td><td>11.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+<tr><td>14/09/2569</td><td>05:00</td><td>12.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="preview-section-title">
+          <b>Section 2 · สรุปรวมประจำวัน</b>
+          <span>คำนวณจากข้อมูลในรอบรายงาน</span>
+        </div>
+
+        <div class="preview-summary-row full-summary">
+          <div><small>ปริมาณน้ำรวม</small><b>301.0</b><span>m³/day</span></div>
+          <div><small>Flow เฉลี่ย</small><b>12.6</b><span>m³/h</span></div>
+          <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
+          <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
+          <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
+          <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
+        </div>
+
+        <div class="preview-section-title">
+          <b>Section 3 · หมายเหตุ</b>
+        </div>
+        <div class="preview-note-box">
+          ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 และไม่พบเหตุการณ์ผิดปกติในข้อมูลตัวอย่าง
+        </div>
+
+        <div class="preview-section-title">
+          <b>Section 4 · ลำดับการรับรองเอกสาร</b>
+        </div>
+        <div class="preview-approval-chain">
+          <div><span>1</span><b>พนักงาน</b><small>รอลงชื่อ</small></div>
+          <i>→</i>
+          <div><span>2</span><b>ผู้ช่วยหัวหน้าแผนก</b><small>รอตรวจสอบ</small></div>
+          <i>→</i>
+          <div><span>3</span><b>รองหัวหน้าแผนก</b><small>รอทวนสอบ</small></div>
+          <i>→</i>
+          <div><span>4</span><b>หัวหน้าแผนก</b><small>รออนุมัติ</small></div>
+        </div>
+
+        <div class="preview-document-footer">
+          <span>สถานะเอกสาร</span>
+          <b>รอการลงชื่อรับรอง</b>
         </div>
       </div>
-      <h2>แบบฟอร์มสรุป Flow ประจำวัน</h2>
-      <p class="preview-period">ประจำวันที่ 13/09/2569 · รอบ 05:00 → 05:00 ของวันถัดไป</p>
-      <div class="preview-info-grid">
-        <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
-        <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
-        <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
-        <div><small>สถานะ</small><b>ปกติ</b></div>
-      </div>
-      <div class="preview-summary-row">
-        <div><small>AVG</small><b>12.6</b><span>m³/h</span></div>
-        <div><small>MIN</small><b>10.5</b><span>m³/h</span></div>
-        <div><small>MAX</small><b>15.1</b><span>m³/h</span></div>
-        <div><small>COD</small><b>11,800</b><span>mg/L</span></div>
-        <div><small>Zinc</small><b>354</b><span>mg/L</span></div>
-      </div>
-      <div class="preview-table-wrap">
-        <table>
-          <thead><tr><th>เวลา</th><th>Flow Rate</th><th>Flow Setting</th><th>สถานะ</th></tr></thead>
-          <tbody>
-            <tr><td>05:00</td><td>12.1 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
-            <tr><td>06:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
-            <tr><td>07:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
-            <tr><td colspan="4" class="preview-more">… ตารางจริงมีข้อมูลครบทุกชั่วโมง …</td></tr>
-            <tr><td>05:00</td><td>12.2 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="preview-sign-line">สถานะเอกสาร: <b>รอการลงชื่อรับรอง</b></div>
     </div>
   </div>
 </div>
