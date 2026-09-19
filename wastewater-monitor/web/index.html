@@ -2845,6 +2845,109 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.56 — real preview modal + compact sequential signature workflow */
+.compact-approval{grid-template-columns:auto 1fr auto!important}
+.open-sign-flow{
+  min-height:38px;padding:0 14px;border:1px solid #87a98f;border-radius:12px;
+  background:linear-gradient(145deg,#315f43,#254c34);color:#fff;
+  font:800 10px "Noto Sans Thai",sans-serif;cursor:pointer
+}
+.signature-placeholder{
+  margin-top:12px;padding:13px 14px;border:1px dashed #b7c8ba;border-radius:14px;
+  background:#f8faf8;color:#617266;text-align:center
+}
+.signature-placeholder small{display:block;font:600 9px "Noto Sans Thai",sans-serif}
+.signature-placeholder b{display:block;margin-top:3px;font:800 11px "Noto Sans Thai",sans-serif;color:#294936}
+
+.eform-modal{
+  position:fixed;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgba(20,35,26,.48);backdrop-filter:blur(8px)
+}
+.eform-modal.show{display:flex;animation:modalFade .18s ease}
+.eform-modal-card{
+  width:min(760px,96vw);max-height:90vh;overflow:auto;border-radius:22px;
+  background:#f7faf7;border:1px solid rgba(255,255,255,.65);
+  box-shadow:0 28px 70px rgba(17,36,24,.30);animation:modalUp .22s ease
+}
+.preview-card{width:min(900px,96vw)}
+.modal-head{
+  position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:16px 18px;border-bottom:1px solid #ccd8ce;background:rgba(247,250,247,.96);backdrop-filter:blur(8px)
+}
+.modal-head small{display:block;font:800 8px "Outfit",sans-serif;letter-spacing:.14em;color:#6e7f73}
+.modal-head b{display:block;margin-top:3px;font:800 15px "Noto Sans Thai",sans-serif;color:#172a1e}
+.modal-close{
+  width:36px;height:36px;border:0;border-radius:10px;background:#edf3ee;color:#304d39;font-size:24px;cursor:pointer
+}
+
+.preview-paper{margin:18px;padding:24px;background:#fff;border:1px solid #c8d2ca;box-shadow:0 8px 22px rgba(65,88,72,.08)}
+.preview-doc-top{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:2px solid #2e4f39}
+.preview-doc-top strong{display:block;font-size:15px}.preview-doc-top span{display:block;margin-top:3px;font-size:9px;color:#64766a}
+.preview-doc-no{text-align:right}.preview-doc-no small,.preview-doc-no b{display:block}.preview-doc-no b{font-size:10px;margin-top:3px}
+.preview-paper h2{text-align:center;margin:24px 0 4px;font:800 22px "Noto Sans Thai",sans-serif}
+.preview-period{text-align:center;margin:0 0 18px;font:600 10px "Noto Sans Thai",sans-serif;color:#5d7064}
+.preview-info-grid{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid #cbd6cd}
+.preview-info-grid>div{padding:10px 12px;border-right:1px solid #d3ddd5;border-bottom:1px solid #d3ddd5}
+.preview-info-grid small{display:block;font-size:8px;color:#718176}.preview-info-grid b{display:block;margin-top:4px;font-size:10px}
+.preview-summary-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+.preview-summary-row>div{padding:10px;border:1px solid #cbd6cd;border-radius:10px;text-align:center}
+.preview-summary-row small{display:block;font-size:7px;color:#6f8175}.preview-summary-row b{display:block;font-size:16px}.preview-summary-row span{font-size:7px;color:#718176}
+.preview-table-wrap{border:1px solid #c8d4ca;border-radius:10px;overflow:hidden}
+.preview-table-wrap table{width:100%;border-collapse:collapse;font-size:9px}
+.preview-table-wrap th,.preview-table-wrap td{padding:8px 9px;border-bottom:1px solid #d9e1da;text-align:left}
+.preview-table-wrap th{background:#edf3ee}.preview-more{text-align:center!important;color:#78897e}
+.preview-sign-line{margin-top:16px;padding-top:12px;border-top:1px solid #ccd7ce;font-size:9px}
+
+.sign-flow-card{width:min(620px,96vw);overflow:hidden}
+.step-progress{
+  display:flex;align-items:center;justify-content:center;gap:7px;padding:18px 18px 10px
+}
+.step-dot{display:grid;justify-items:center;gap:5px;color:#8b988e}
+.step-dot span{
+  width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid #c4d0c6;background:#edf2ee;font:800 10px "Outfit",sans-serif
+}
+.step-dot small{font:700 8px "Noto Sans Thai",sans-serif}
+.step-dot.active{color:#285c3b}.step-dot.active span{background:#315f43;color:#fff;border-color:#315f43}
+.step-dot.done{color:#285c3b}.step-dot.done span{background:#dcecdf;color:#285c3b;border-color:#a7c8b0}
+.step-progress i{width:34px;height:1px;background:#c7d2c9}
+
+.sign-step-panel{display:none;padding:18px 24px 24px}
+.sign-step-panel.active{display:block;animation:stepIn .2s ease}
+.sign-step-panel>small{display:block;font:800 8px "Outfit",sans-serif;letter-spacing:.14em;color:#728276}
+.sign-step-panel h3{margin:5px 0 6px;font:800 21px "Noto Sans Thai",sans-serif;color:#14271b}
+.sign-step-panel p{margin:0 0 18px;font:600 10px "Noto Sans Thai",sans-serif;color:#6a7c6f}
+.sign-step-panel label{display:block;margin:11px 0 5px;font:800 9px "Noto Sans Thai",sans-serif;color:#3e5546}
+.sign-step-panel input,.sign-step-panel select{
+  width:100%;min-height:43px;padding:0 11px;border:1px solid #bccbbf;border-radius:11px;background:#fff;
+  font:600 11px "Noto Sans Thai",sans-serif;color:#1f3225;outline:none
+}
+.step-next,.modal-close-final{
+  width:100%;min-height:45px;margin-top:18px;border:0;border-radius:12px;
+  background:linear-gradient(145deg,#315f43,#254c34);color:#fff;
+  font:800 10px "Noto Sans Thai",sans-serif;cursor:pointer
+}
+.approve-final{background:linear-gradient(145deg,#244b34,#183725)}
+.sign-complete{text-align:center;padding:34px 24px!important}
+.approved-seal{
+  width:68px;height:68px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;
+  background:#dcecdf;color:#2b7045;font-size:34px;font-weight:900;border:2px solid #8db69a
+}
+
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes modalUp{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes stepIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+
+@media(max-width:700px){
+  .compact-approval{grid-template-columns:1fr!important}
+  .approval-flow-mini{justify-content:flex-start}
+  .preview-summary-row{grid-template-columns:repeat(2,1fr)}
+  .preview-info-grid{grid-template-columns:1fr}
+  .step-progress i{width:12px}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -3271,110 +3374,26 @@ html{scroll-behavior:smooth}
       </div>
 
       
-<div class="approval-summary">
-  <div><small>APPROVAL STATUS</small><b>สถานะการรับรองเอกสาร</b></div>
+
+<div class="approval-summary compact-approval">
+  <div>
+    <small>APPROVAL WORKFLOW</small>
+    <b>ลำดับการลงชื่อรับรอง</b>
+  </div>
   <div class="approval-flow-mini">
-    <span>พนักงาน 3 กะ</span><i>→</i>
-    <span>ผู้ตรวจสอบ 3 กะ</span><i>→</i>
-    <span>ผู้ทวนสอบ</span><i>→</i>
-    <span>ผู้อนุมัติ</span>
+    <span class="flow-step current">1 พนักงาน</span><i>→</i>
+    <span>2 ผู้ช่วยหัวหน้าแผนก</span><i>→</i>
+    <span>3 รองหัวหน้าแผนก</span><i>→</i>
+    <span>4 หัวหน้าแผนก</span>
   </div>
-  <strong>รอการลงชื่อ</strong>
+  <button type="button" class="open-sign-flow" id="openSignFlow">เริ่มลงชื่อ</button>
 </div>
-<section class="signature-bottom modern-signatures" id="signatureSection">
-  <div class="sign-section-title">
-    <small>SIGN-OFF WORKFLOW</small>
-    <b>ผู้รับผิดชอบ / ผู้ตรวจสอบ / ผู้ทวนสอบ / ผู้อนุมัติ</b>
-    <span>เลื่อนลงมาท้ายสรุปรายวันเพื่อบันทึกการลงชื่อ</span>
-  </div>
 
-  <div class="sign-subgroup">
-    <div class="subgroup-head">
-      <small>RESPONSIBLE OPERATOR</small>
-      <b>ผู้รับผิดชอบแต่ละกะ</b>
-    </div>
-    <div class="signature-group responsible-group three-shift-grid">
-      <div class="paper-sign">
-        <small>กะ A / A+</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
-        <b>ผู้รับผิดชอบ</b>
-        <button class="sign-btn" type="button">ลงชื่อ</button>
-        <div class="sign-state">รอลงชื่อ</div>
-      </div>
-      <div class="paper-sign">
-        <small>กะ B</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
-        <b>ผู้รับผิดชอบ</b>
-        <button class="sign-btn" type="button">ลงชื่อ</button>
-        <div class="sign-state">รอลงชื่อ</div>
-      </div>
-      <div class="paper-sign">
-        <small>กะ C / C+</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้รับผิดชอบ"></div>
-        <b>ผู้รับผิดชอบ</b>
-        <button class="sign-btn" type="button">ลงชื่อ</button>
-        <div class="sign-state">รอลงชื่อ</div>
-      </div>
-    </div>
-  </div>
+<div class="signature-placeholder">
+  <small>การลงชื่อถูกย้ายไปเป็นขั้นตอนแบบหน้าต่าง</small>
+  <b>ไม่ต้องเลื่อนลงยาวเพื่อเซ็นเอกสาร</b>
+</div>
 
-  <div class="sign-subgroup">
-    <div class="subgroup-head">
-      <small>SHIFT REVIEW</small>
-      <b>ผู้ตรวจสอบแต่ละกะ</b>
-    </div>
-    <div class="signature-group approval-shift-group three-shift-grid">
-      <div class="paper-sign">
-        <small>กะ A / A+</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
-        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
-        <button class="sign-btn" type="button">ตรวจสอบ</button>
-        <div class="sign-state">รอตรวจสอบ</div>
-      </div>
-      <div class="paper-sign">
-        <small>กะ B</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
-        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
-        <button class="sign-btn" type="button">ตรวจสอบ</button>
-        <div class="sign-state">รอตรวจสอบ</div>
-      </div>
-      <div class="paper-sign">
-        <small>กะ C / C+</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ตรวจสอบ"></div>
-        <b>ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก</b>
-        <button class="sign-btn" type="button">ตรวจสอบ</button>
-        <div class="sign-state">รอตรวจสอบ</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sign-subgroup">
-    <div class="subgroup-head">
-      <small>FINAL REVIEW & APPROVAL</small>
-      <b>ผู้ทวนสอบและผู้อนุมัติ</b>
-    </div>
-    <div class="signature-group final-approval-grid">
-      <div class="paper-sign">
-        <small>รองหัวหน้าแผนก</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้ทวนสอบ"></div>
-        <b>ผู้ทวนสอบ</b>
-        <button class="sign-btn" type="button">ทวนสอบ</button>
-        <div class="sign-state">รอทวนสอบ</div>
-      </div>
-      <div class="paper-sign">
-        <small>หัวหน้าแผนก</small>
-        <div class="paper-sign-line"><input class="sign-name" placeholder="ชื่อ-นามสกุลผู้อนุมัติ"></div>
-        <b>ผู้อนุมัติ</b>
-        <button class="sign-btn" type="button">อนุมัติ</button>
-        <div class="sign-state approved-static">พร้อมอนุมัติ</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="paper-approval-status ready">
-    <span>●</span><b>เอกสารพร้อมสรุปรายวันและรองรับการอนุมัติครบทุกกะ</b>
-  </div>
-</section>
     </div>
   </section>
 </section>
@@ -3647,6 +3666,203 @@ document.addEventListener('DOMContentLoaded',()=>{
   previewBtn?.addEventListener('click',()=>{
     document.getElementById('dailySummaryCard')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
+});
+</script>
+
+
+<div class="eform-modal" id="dailyPreviewModal" aria-hidden="true">
+  <div class="eform-modal-card preview-card">
+    <div class="modal-head">
+      <div>
+        <small>DOCUMENT PREVIEW</small>
+        <b>ตัวอย่างแบบฟอร์มสรุป Flow ประจำวัน</b>
+      </div>
+      <button type="button" class="modal-close" data-close="dailyPreviewModal">×</button>
+    </div>
+    <div class="preview-paper">
+      <div class="preview-doc-top">
+        <div>
+          <strong>Wastewater Live Control System</strong>
+          <span>แผนกบ่อบำบัดน้ำเสีย · NRT 1</span>
+        </div>
+        <div class="preview-doc-no">
+          <small>เลขที่เอกสาร</small>
+          <b>F-WWT-FLOW-2026-000019</b>
+        </div>
+      </div>
+      <h2>แบบฟอร์มสรุป Flow ประจำวัน</h2>
+      <p class="preview-period">ประจำวันที่ 13/09/2569 · รอบ 05:00 → 05:00 ของวันถัดไป</p>
+      <div class="preview-info-grid">
+        <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
+        <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
+        <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
+        <div><small>สถานะ</small><b>ปกติ</b></div>
+      </div>
+      <div class="preview-summary-row">
+        <div><small>AVG</small><b>12.6</b><span>m³/h</span></div>
+        <div><small>MIN</small><b>10.5</b><span>m³/h</span></div>
+        <div><small>MAX</small><b>15.1</b><span>m³/h</span></div>
+        <div><small>COD</small><b>11,800</b><span>mg/L</span></div>
+        <div><small>Zinc</small><b>354</b><span>mg/L</span></div>
+      </div>
+      <div class="preview-table-wrap">
+        <table>
+          <thead><tr><th>เวลา</th><th>Flow Rate</th><th>Flow Setting</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>05:00</td><td>12.1 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
+            <tr><td>06:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
+            <tr><td>07:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
+            <tr><td colspan="4" class="preview-more">… ตารางจริงมีข้อมูลครบทุกชั่วโมง …</td></tr>
+            <tr><td>05:00</td><td>12.2 m³/h</td><td>13.0 m³/h</td><td>ปกติ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="preview-sign-line">สถานะเอกสาร: <b>รอการลงชื่อรับรอง</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="eform-modal" id="signatureFlowModal" aria-hidden="true">
+  <div class="eform-modal-card sign-flow-card">
+    <div class="modal-head">
+      <div>
+        <small>SIGN-OFF WORKFLOW</small>
+        <b>ลงชื่อรับรองเอกสาร</b>
+      </div>
+      <button type="button" class="modal-close" data-close="signatureFlowModal">×</button>
+    </div>
+
+    <div class="step-progress">
+      <div class="step-dot active" data-step-dot="1"><span>1</span><small>พนักงาน</small></div>
+      <i></i>
+      <div class="step-dot" data-step-dot="2"><span>2</span><small>ผู้ช่วย</small></div>
+      <i></i>
+      <div class="step-dot" data-step-dot="3"><span>3</span><small>รอง</small></div>
+      <i></i>
+      <div class="step-dot" data-step-dot="4"><span>4</span><small>หัวหน้า</small></div>
+    </div>
+
+    <div class="sign-step-panel active" data-sign-step="1">
+      <small>STEP 1 / 4</small>
+      <h3>พนักงานลงชื่อ</h3>
+      <p>ผู้รับผิดชอบประจำกะลงชื่อรับรองข้อมูลก่อนส่งตรวจสอบ</p>
+      <label>ชื่อ-นามสกุล</label>
+      <input type="text" id="signEmployee" placeholder="กรอกชื่อพนักงาน">
+      <label>กะการทำงาน</label>
+      <select id="signShift">
+        <option>A / A+</option><option>B</option><option>C / C+</option>
+      </select>
+      <button type="button" class="step-next" data-next-step="2">ลงชื่อและส่งให้ผู้ช่วยตรวจสอบ</button>
+    </div>
+
+    <div class="sign-step-panel" data-sign-step="2">
+      <small>STEP 2 / 4</small>
+      <h3>ผู้ช่วยหัวหน้าแผนกตรวจสอบ</h3>
+      <p>ตรวจสอบข้อมูล Flow และการบันทึกประจำวันก่อนส่งทวนสอบ</p>
+      <label>ชื่อ-นามสกุล</label>
+      <input type="text" id="signAssistant" placeholder="กรอกชื่อผู้ช่วยหัวหน้าแผนก">
+      <button type="button" class="step-next" data-next-step="3">ตรวจสอบแล้ว · ส่งให้รองหัวหน้าแผนก</button>
+    </div>
+
+    <div class="sign-step-panel" data-sign-step="3">
+      <small>STEP 3 / 4</small>
+      <h3>รองหัวหน้าแผนกทวนสอบ</h3>
+      <p>ทวนสอบความครบถ้วนของรายงานก่อนส่งอนุมัติ</p>
+      <label>ชื่อ-นามสกุล</label>
+      <input type="text" id="signDeputy" placeholder="กรอกชื่อรองหัวหน้าแผนก">
+      <button type="button" class="step-next" data-next-step="4">ทวนสอบแล้ว · ส่งให้หัวหน้าแผนก</button>
+    </div>
+
+    <div class="sign-step-panel" data-sign-step="4">
+      <small>STEP 4 / 4</small>
+      <h3>หัวหน้าแผนกอนุมัติ</h3>
+      <p>ขั้นตอนสุดท้ายก่อนเอกสารถูกบันทึกเป็น “อนุมัติแล้ว”</p>
+      <label>ชื่อ-นามสกุล</label>
+      <input type="text" id="signHead" placeholder="กรอกชื่อหัวหน้าแผนก">
+      <button type="button" class="step-next approve-final" data-next-step="done">อนุมัติเอกสาร</button>
+    </div>
+
+    <div class="sign-step-panel sign-complete" data-sign-step="done">
+      <div class="approved-seal">✓</div>
+      <h3>เอกสารอนุมัติแล้ว</h3>
+      <p>การลงชื่อรับรองครบทุกขั้นตอน</p>
+      <button type="button" class="modal-close-final" data-close="signatureFlowModal">ปิดหน้าต่าง</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const openModal = id => {
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.add('show');
+    el.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  };
+  const closeModal = id => {
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('show');
+    el.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  };
+
+  document.getElementById('previewDailyForm')?.addEventListener('click',()=>openModal('dailyPreviewModal'));
+  document.getElementById('openSignFlow')?.addEventListener('click',()=>openModal('signatureFlowModal'));
+
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click',()=>closeModal(btn.dataset.close));
+  });
+
+  document.querySelectorAll('.eform-modal').forEach(modal=>{
+    modal.addEventListener('click',e=>{
+      if(e.target===modal) closeModal(modal.id);
+    });
+  });
+
+  const panels=[...document.querySelectorAll('[data-sign-step]')];
+  const dots=[...document.querySelectorAll('[data-step-dot]')];
+
+  function showStep(step){
+    panels.forEach(p=>p.classList.toggle('active',p.dataset.signStep===String(step)));
+    dots.forEach(d=>{
+      const n=Number(d.dataset.stepDot);
+      d.classList.toggle('active',String(n)===String(step));
+      d.classList.toggle('done',typeof step==='number' && n<step || step==='done');
+    });
+  }
+
+  document.querySelectorAll('[data-next-step]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const current=btn.closest('[data-sign-step]');
+      const input=current?.querySelector('input');
+      if(input && !input.value.trim()){
+        input.focus();
+        input.style.borderColor='#c94b43';
+        setTimeout(()=>input.style.borderColor='',900);
+        return;
+      }
+
+      const next=btn.dataset.nextStep;
+      if(next==='done'){
+        showStep('done');
+        const summary=document.querySelector('.approval-summary strong');
+        if(summary){
+          summary.textContent='อนุมัติแล้ว';
+          summary.style.background='#dcecdf';
+          summary.style.color='#245f39';
+        }
+      }else{
+        showStep(Number(next));
+      }
+    });
+  });
+
+  // ensure preview button doesn't just scroll
+  const oldPreview=document.getElementById('previewDailyForm');
+  if(oldPreview) oldPreview.onclick=null;
 });
 </script>
 
