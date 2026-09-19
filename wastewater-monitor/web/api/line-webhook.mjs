@@ -161,23 +161,23 @@ export async function POST(request) {
     const sourceType =
       event?.source?.type;
 
-    const userId =
-      event?.source?.userId;
-
     const groupId =
       event?.source?.groupId;
 
-    const roomId =
-      event?.source?.roomId;
+    const userId =
+      event?.source?.userId;
 
     const replyToken =
       event?.replyToken;
 
 
-    console.log(
-      "SOURCE TYPE:",
-      sourceType
-    );
+    // บันทึก ID ลง Log เท่านั้น
+    if (groupId) {
+      console.log(
+        "LINE_GROUP_ID:",
+        groupId
+      );
+    }
 
     if (userId) {
       console.log(
@@ -186,30 +186,32 @@ export async function POST(request) {
       );
     }
 
-    if (groupId) {
-      console.log(
-        "LINE_GROUP_ID:",
-        groupId
-      );
-    }
 
-    if (roomId) {
-      console.log(
-        "LINE_ROOM_ID:",
-        roomId
-      );
-    }
+    /*
+      สำคัญ:
+      บอทจะไม่ตอบข้อความทั่วไปอีกแล้ว
 
+      จะตอบเฉพาะคำสั่ง:
+      !groupid
+    */
 
-    // มีคนส่งข้อความในกลุ่ม
     if (
       event.type === "message" &&
       event.message?.type === "text" &&
       replyToken
     ) {
 
-      // ถ้ามาจาก GROUP
+      const message =
+        String(
+          event.message.text || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+      // ตอบเฉพาะ !groupid
       if (
+        message === "!groupid" &&
         sourceType === "group" &&
         groupId
       ) {
@@ -219,63 +221,16 @@ export async function POST(request) {
 
           `✅ Wastewater Monitor
 
-เชื่อมต่อกลุ่มสำเร็จ
+LINE GROUP ID:
 
-LINE GROUP ID คือ:
-
-${groupId}
-
-ให้นำรหัสนี้ไปใส่ใน Vercel
-
-Environment Variable:
-LINE_GROUP_ID`,
+${groupId}`,
 
           accessToken
         );
-
-        continue;
       }
 
 
-      // ถ้ามาจากแชตส่วนตัว
-      if (
-        sourceType === "user" &&
-        userId
-      ) {
-
-        await replyLine(
-          replyToken,
-
-          `✅ Wastewater Monitor
-
-นี่คือแชตส่วนตัว
-
-LINE USER ID:
-
-${userId}
-
-ถ้าต้องการ Group ID
-ให้พิมพ์ test ในกลุ่ม LINE`,
-
-          accessToken
-        );
-
-        continue;
-      }
-    }
-
-
-    // ตอน Bot ถูกเพิ่มเข้ากลุ่ม
-    if (
-      event.type === "join" &&
-      sourceType === "group" &&
-      groupId
-    ) {
-
-      console.log(
-        "BOT JOINED GROUP:",
-        groupId
-      );
+      // ข้อความอื่นทั้งหมด = ไม่ตอบ
     }
   }
 
@@ -294,7 +249,10 @@ export function GET() {
     service:
       "Wastewater Monitor LINE Webhook",
 
-    message:
-      "Webhook endpoint is online"
+    mode:
+      "silent",
+
+    command:
+      "!groupid"
   });
 }
