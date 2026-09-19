@@ -3491,6 +3491,75 @@ html{scroll-behavior:smooth}
 @media(max-width:700px){.flow-test-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style>
+/* V15.63: LINE alert control visible directly in FLOW MONITORING */
+.line-flow-send{
+  margin-top:12px;
+  padding:14px;
+  border:1px solid rgba(6,199,85,.22);
+  border-radius:16px;
+  background:linear-gradient(145deg,#f4fbf6,#e8f5eb);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.75);
+}
+.line-flow-send-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:11px;
+}
+.line-badge{
+  display:grid;
+  place-items:center;
+  min-width:42px;
+  height:30px;
+  border-radius:9px;
+  background:#06c755;
+  color:#fff;
+  font:900 9px "Outfit",sans-serif;
+  letter-spacing:.06em;
+}
+.line-flow-send-head b{
+  display:block;
+  color:#173b26;
+  font:800 11px "Noto Sans Thai",sans-serif;
+}
+.line-flow-send-head small{
+  display:block;
+  margin-top:2px;
+  color:#64776a;
+  font:600 8.5px "Noto Sans Thai",sans-serif;
+}
+.line-send-primary{
+  width:100%;
+  min-height:44px;
+  border:0;
+  border-radius:12px;
+  cursor:pointer;
+  background:#06c755;
+  color:#fff;
+  box-shadow:0 8px 18px rgba(6,199,85,.18);
+  font:900 10px "Noto Sans Thai",sans-serif;
+}
+.line-send-primary:hover{filter:brightness(.97);transform:translateY(-1px)}
+.line-send-primary:disabled{opacity:.65;cursor:wait;transform:none}
+.line-send-primary span{
+  display:inline-block;
+  margin-right:7px;
+  padding:3px 6px;
+  border-radius:5px;
+  background:#fff;
+  color:#06a948;
+  font:900 7px "Outfit",sans-serif;
+}
+.line-selected-alert{
+  margin-top:8px;
+  color:#4e6757;
+  text-align:center;
+  font:700 8.5px "Noto Sans Thai",sans-serif;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -3549,6 +3618,21 @@ html{scroll-behavior:smooth}
               <button type="button" class="flow-alert-test" data-flow-alert="flow_rapid"><b>RAPID CHANGE</b><span>ค่าเปลี่ยนเร็วผิดปกติ</span></button>
             </div>
           </div>
+
+          <div class="line-flow-send">
+            <div class="line-flow-send-head">
+              <span class="line-badge">LINE</span>
+              <div>
+                <b>แจ้งเตือนผ่าน LINE</b>
+                <small>ส่งเหตุการณ์ Flow ที่เลือกไปยังมือถือจริง</small>
+              </div>
+            </div>
+            <button type="button" class="line-send-primary" id="testLineAlert">
+              <span>LINE</span> ทดสอบส่งแจ้งเตือน
+            </button>
+            <div class="line-selected-alert" id="lineSelectedAlert">เหตุการณ์ที่เลือก: LOW FLOW</div>
+            <div class="line-test-result" id="lineTestResult"></div>
+          </div>
         </div>
 
         <div class="alert-detail-group water-quality-mini">
@@ -3564,19 +3648,6 @@ html{scroll-behavior:smooth}
               <button type="button" class="alert-test critical-test" data-alert="critical">วิกฤต</button>
             </div>
           </div>
-        </div>
-
-        <div class="line-alert-test-box">
-          <div class="line-alert-head">
-            <div><small>LINE ALERT</small><b>ทดสอบส่งแจ้งเตือนไป LINE</b></div>
-            <span class="line-ready" id="lineConnectionState">พร้อมตั้งค่า</span>
-          </div>
-          <p>ปุ่มนี้จะใช้ข้อความ Flow ผิดปกติล่าสุดที่เลือกส่งไปยังระบบ LINE เดิมของคุณ</p>
-          <button type="button" class="line-test-btn" id="testLineAlert">
-            <span class="line-icon">LINE</span>
-            ทดสอบส่ง LINE
-          </button>
-          <div class="line-test-result" id="lineTestResult"></div>
         </div>
       </div>
     </div>
@@ -4677,7 +4748,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    To send to your real existing LINE system, set:
    window.LINE_ALERT_ENDPOINT = "https://your-existing-webhook-url";
 */
-window.LINE_ALERT_ENDPOINT = window.LINE_ALERT_ENDPOINT || "";
+window.LINE_ALERT_ENDPOINT = "/api/line-alert";
 
 document.addEventListener('DOMContentLoaded',()=>{
   const flowToggle=document.getElementById('toggleFlowAlertDemo');
@@ -4701,6 +4772,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     btn.addEventListener('click',(e)=>{
       e.stopPropagation();
       lastFlowAlert=btn.dataset.flowAlert;
+      const selectedLabel=document.getElementById('lineSelectedAlert');
+      const labels={
+        flow_low:'LOW FLOW',
+        flow_high:'HIGH FLOW',
+        flow_nosignal:'NO FLOW / NO SIGNAL',
+        flow_rapid:'RAPID CHANGE'
+      };
+      if(selectedLabel) selectedLabel.textContent='เหตุการณ์ที่เลือก: '+(labels[lastFlowAlert]||lastFlowAlert);
       flowPopup?.classList.remove('show');
       if(typeof showDemoAlert==='function') showDemoAlert(lastFlowAlert);
     });
@@ -4743,13 +4822,13 @@ document.addEventListener('DOMContentLoaded',()=>{
       const res=await fetch(window.LINE_ALERT_ENDPOINT,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
+        body:JSON.stringify({type:lastFlowAlert})
       });
 
       if(!res.ok) throw new Error('HTTP '+res.status);
 
       lineResult.className='line-test-result show ok';
-      lineResult.innerHTML='<b>ส่งทดสอบแล้ว ✓</b><br>'+payload.title+' · '+payload.value+' '+payload.unit;
+      lineResult.innerHTML='<b>ส่งเข้า LINE แล้ว ✓</b><br>'+payload.title+' · '+payload.value+' '+payload.unit;
     }catch(err){
       lineResult.className='line-test-result show error';
       lineResult.innerHTML='<b>ส่ง LINE ไม่สำเร็จ</b><br>'+String(err.message||err);
