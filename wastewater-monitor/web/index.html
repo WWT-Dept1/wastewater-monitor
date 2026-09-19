@@ -3399,6 +3399,98 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.62 — Flow abnormality monitoring + LINE test */
+.alert-detail-panel.open{
+  max-height:900px!important;
+  overflow:visible!important;
+}
+.alert-detail-group{
+  position:relative;
+  padding:14px;
+  margin-top:10px;
+  border:1px solid rgba(76,112,89,.13);
+  border-radius:16px;
+  background:linear-gradient(145deg,#f8fbf9,#edf3ef);
+}
+.alert-detail-group:first-child{margin-top:0}
+.alert-detail-group-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:9px;margin-bottom:4px;border-bottom:1px solid rgba(70,105,83,.12);
+}
+.alert-detail-group-head span{
+  font:900 8px "Outfit",sans-serif;letter-spacing:.13em;color:#648071;
+}
+.alert-detail-group-head b{
+  font:800 9px "Outfit","Noto Sans Thai",sans-serif;color:#294c37;
+}
+.flow-current b{font-size:13px!important}
+.flow-rule-note{
+  margin:8px 0 11px;
+  font:600 9px/1.55 "Noto Sans Thai",sans-serif;color:#6b7e71;
+}
+.flow-rule-note b{color:#334f3d}
+.flow-test-open{width:100%!important;margin:0!important}
+
+.flow-test-popup{
+  display:none;
+  margin-top:10px;padding:12px;border:1px solid rgba(75,111,88,.12);
+  border-radius:14px;background:#f8fbf9;
+}
+.flow-test-popup.show{display:block;animation:flowPop .16s ease}
+.flow-test-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.flow-alert-test{
+  min-height:58px;padding:9px 10px;border:1px solid #c4d1c7;border-radius:12px;
+  background:#fff;text-align:left;cursor:pointer;transition:.16s ease;
+}
+.flow-alert-test:hover{transform:translateY(-1px);border-color:#8eaa95}
+.flow-alert-test b{
+  display:block;font:900 9px "Outfit",sans-serif;letter-spacing:.06em;color:#294d37
+}
+.flow-alert-test span{
+  display:block;margin-top:3px;font:600 8px "Noto Sans Thai",sans-serif;color:#748278
+}
+
+.line-alert-test-box{
+  margin-top:10px;padding:14px;border:1px solid rgba(40,143,73,.18);border-radius:16px;
+  background:linear-gradient(145deg,#f3fbf5,#e7f3ea);
+}
+.line-alert-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.line-alert-head small{
+  display:block;font:900 8px "Outfit",sans-serif;letter-spacing:.13em;color:#2b7a44
+}
+.line-alert-head b{
+  display:block;margin-top:3px;font:800 11px "Noto Sans Thai",sans-serif;color:#1d442b
+}
+.line-ready{
+  padding:5px 8px;border-radius:999px;border:1px solid #b6d5be;background:#fff;
+  font:800 8px "Noto Sans Thai",sans-serif;color:#3b714b;white-space:nowrap
+}
+.line-alert-test-box p{
+  margin:9px 0 10px;font:600 8.5px/1.5 "Noto Sans Thai",sans-serif;color:#607567
+}
+.line-test-btn{
+  width:100%;min-height:42px;border:0;border-radius:12px;background:#06c755;color:#fff;
+  font:900 10px "Noto Sans Thai",sans-serif;cursor:pointer;
+  box-shadow:0 7px 15px rgba(6,199,85,.16)
+}
+.line-icon{
+  display:inline-grid;place-items:center;margin-right:7px;padding:3px 5px;border-radius:5px;
+  background:#fff;color:#06a948;font:900 7px "Outfit",sans-serif
+}
+.line-test-result{
+  display:none;margin-top:8px;padding:8px 10px;border-radius:10px;
+  font:700 8.5px/1.5 "Noto Sans Thai",sans-serif
+}
+.line-test-result.show{display:block}
+.line-test-result.ok{background:#e2f4e7;color:#24623b}
+.line-test-result.info{background:#fff4d9;color:#705500}
+.line-test-result.error{background:#f9e7e5;color:#8a3d36}
+@keyframes flowPop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.flow-test-grid{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -3439,16 +3531,52 @@ html{scroll-behavior:smooth}
         <span>ดูสถานะคุณภาพน้ำ</span><b>COD · ZINC</b><i>›</i>
       </button>
       <div class="alert-detail-panel" id="alertDetailPanel">
-        <div class="alert-detail-row"><span>COD ตอนนี้</span><b>11,800 mg/L</b><em class="ok">ปกติ</em></div>
-        <div class="alert-detail-row"><span>Zinc ตอนนี้</span><b>354 mg/L</b><em class="ok">ปกติ</em></div>
-        <button type="button" class="test-alert compact-toggle inner-test" id="toggleAlertDemo"><i>!</i> ทดสอบแจ้งเตือน</button>
-        <div class="alert-test-popup" id="alertTestPopup">
-          <div class="alert-test-popup-head">เลือกระดับที่ต้องการทดสอบ</div>
-          <div class="alert-test-popup-buttons">
-            <button type="button" class="alert-test warning-test" data-alert="warning">ระวัง</button>
-            <button type="button" class="alert-test high-test" data-alert="high">สูง</button>
-            <button type="button" class="alert-test critical-test" data-alert="critical">วิกฤต</button>
+        <div class="alert-detail-group">
+          <div class="alert-detail-group-head"><span>FLOW MONITORING</span><b>FM-01</b></div>
+          <div class="alert-detail-row flow-current"><span>Flow ตอนนี้</span><b>12.5 m³/h</b><em class="ok">ปกติ</em></div>
+          <div class="flow-rule-note">
+            ระบบเฝ้าระวัง <b>Flow ต่ำ / Flow สูง / ไม่มีการไหล / ค่าเปลี่ยนเร็ว / ข้อมูลขาดหาย</b>
           </div>
+          <button type="button" class="test-alert compact-toggle inner-test flow-test-open" id="toggleFlowAlertDemo">
+            <i>!</i> ทดสอบ Flow ผิดปกติ
+          </button>
+          <div class="flow-test-popup" id="flowAlertTestPopup">
+            <div class="alert-test-popup-head">เลือกเหตุการณ์ Flow ที่ต้องการจำลอง</div>
+            <div class="flow-test-grid">
+              <button type="button" class="flow-alert-test" data-flow-alert="flow_low"><b>LOW FLOW</b><span>ต่ำกว่าค่าที่กำหนด</span></button>
+              <button type="button" class="flow-alert-test" data-flow-alert="flow_high"><b>HIGH FLOW</b><span>สูงกว่าค่าที่กำหนด</span></button>
+              <button type="button" class="flow-alert-test" data-flow-alert="flow_nosignal"><b>NO FLOW / SIGNAL</b><span>ไม่มีการไหลหรือสัญญาณขาด</span></button>
+              <button type="button" class="flow-alert-test" data-flow-alert="flow_rapid"><b>RAPID CHANGE</b><span>ค่าเปลี่ยนเร็วผิดปกติ</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert-detail-group water-quality-mini">
+          <div class="alert-detail-group-head"><span>WATER QUALITY</span><b>COD · ZINC</b></div>
+          <div class="alert-detail-row"><span>COD ตอนนี้</span><b>11,800 mg/L</b><em class="ok">ปกติ</em></div>
+          <div class="alert-detail-row"><span>Zinc ตอนนี้</span><b>354 mg/L</b><em class="ok">ปกติ</em></div>
+          <button type="button" class="test-alert compact-toggle inner-test" id="toggleAlertDemo"><i>!</i> ทดสอบ COD</button>
+          <div class="alert-test-popup" id="alertTestPopup">
+            <div class="alert-test-popup-head">เลือกระดับ COD ที่ต้องการทดสอบ</div>
+            <div class="alert-test-popup-buttons">
+              <button type="button" class="alert-test warning-test" data-alert="warning">ระวัง</button>
+              <button type="button" class="alert-test high-test" data-alert="high">สูง</button>
+              <button type="button" class="alert-test critical-test" data-alert="critical">วิกฤต</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="line-alert-test-box">
+          <div class="line-alert-head">
+            <div><small>LINE ALERT</small><b>ทดสอบส่งแจ้งเตือนไป LINE</b></div>
+            <span class="line-ready" id="lineConnectionState">พร้อมตั้งค่า</span>
+          </div>
+          <p>ปุ่มนี้จะใช้ข้อความ Flow ผิดปกติล่าสุดที่เลือกส่งไปยังระบบ LINE เดิมของคุณ</p>
+          <button type="button" class="line-test-btn" id="testLineAlert">
+            <span class="line-icon">LINE</span>
+            ทดสอบส่ง LINE
+          </button>
+          <div class="line-test-result" id="lineTestResult"></div>
         </div>
       </div>
     </div>
@@ -3861,7 +3989,7 @@ html{scroll-behavior:smooth}
         <h2 id="alertTitle">ค่า COD สูงเกิน<br>เกณฑ์วิกฤต</h2>
         <p id="alertDesc">ตรวจพบค่า COD สูงเกินเกณฑ์วิกฤตที่กำหนด ระบบกำลังเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ</p>
       </div>
-      <div class="critical-value"><span id="alertValue">20,480</span><small>mg/L</small><div class="limit" id="alertLimit">เกณฑ์แจ้งเตือนวิกฤต · COD &gt; 20,000 mg/L</div><div class="critical-auto-action" id="alertAction">ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ</div></div>
+      <div class="critical-value"><span id="alertValue">20,480</span><small id="alertUnit">mg/L</small><div class="limit" id="alertLimit">เกณฑ์แจ้งเตือนวิกฤต · COD &gt; 20,000 mg/L</div><div class="critical-auto-action" id="alertAction">ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ</div></div>
     </div>
     <button class="ack" id="ackCritical"><span>รับทราบและปิดเสียงเตือน</span><b>ACKNOWLEDGE</b></button>
   </div>
@@ -3903,9 +4031,13 @@ document.getElementById("viewDayBtn")?.addEventListener("click",function(){
 });
 </script><script>
 const ALERT_DEMOS={
-  warning:{level:'warning',levelText:'คำเตือนระดับระวัง',headline:'ตรวจพบค่า COD เริ่มสูงกว่าช่วงปกติ',code:'ระวัง · COD > 13,000 mg/L',title:'ค่า COD เข้าสู่ระดับระวัง',desc:'ระบบตรวจพบค่า COD สูงกว่าช่วงปกติ และเพิ่มความถี่ในการติดตามค่า',value:'14,200',limit:'เกณฑ์ระดับระวัง · COD > 13,000 mg/L',action:'ระบบจะเฝ้าติดตาม COD ถี่ขึ้น และแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะน้ำเสีย'},
-  high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Inlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
-  critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'}
+  warning:{level:'warning',levelText:'คำเตือนระดับระวัง',headline:'ตรวจพบค่า COD เริ่มสูงกว่าช่วงปกติ',code:'ระวัง · COD > 13,000 mg/L',title:'ค่า COD เข้าสู่ระดับระวัง',desc:'ระบบตรวจพบค่า COD สูงกว่าช่วงปกติ และเพิ่มความถี่ในการติดตามค่า',value:'14,200',unit:'mg/L',limit:'เกณฑ์ระดับระวัง · COD > 13,000 mg/L',action:'ระบบจะเฝ้าติดตาม COD ถี่ขึ้น และแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะน้ำเสีย'},
+  high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Inlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
+  critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'},
+  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำผิดปกติ',code:'LOW FLOW · FM-01',title:'Flow ต่ำกว่าช่วงเฝ้าระวัง',desc:'Flow ลดลงต่อเนื่อง อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนผู้ปฏิบัติงาน ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
+  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงผิดปกติ',code:'HIGH FLOW · FM-01',title:'Flow สูงกว่าช่วงเฝ้าระวัง',desc:'Flow เพิ่มสูงกว่าปกติ อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนและแนะนำให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
+  flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก FM-01',code:'NO FLOW / DATA STALE · FM-01',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
+  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'Flow เปลี่ยนแปลงรวดเร็วผิดปกติ',code:'RAPID CHANGE · FM-01',title:'Flow เปลี่ยนเร็วกว่าปกติ',desc:'พบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · ค่าเปลี่ยนเร็วผิดปกติ',action:'ระบบจะแจ้งเตือนและให้ผู้ปฏิบัติงานตรวจสอบสภาวะหน้างานทันที'}
 };
 function showDemoAlert(type){
   const d=ALERT_DEMOS[type]||ALERT_DEMOS.critical;
@@ -3918,6 +4050,7 @@ function showDemoAlert(type){
   document.getElementById('alertTitle').textContent=d.title;
   document.getElementById('alertDesc').textContent=d.desc;
   document.getElementById('alertValue').textContent=d.value;
+  const unitEl=document.getElementById('alertUnit'); if(unitEl) unitEl.textContent=d.unit||'mg/L';
   document.getElementById('alertLimit').textContent=d.limit;
   document.getElementById('alertAction').textContent=d.action;
   startCriticalWarning();
@@ -4535,6 +4668,96 @@ document.addEventListener('DOMContentLoaded',()=>{
   // ensure preview button doesn't just scroll
   const oldPreview=document.getElementById('previewDailyForm');
   if(oldPreview) oldPreview.onclick=null;
+});
+</script>
+
+
+<script>
+/* Flow alert + LINE test hook.
+   To send to your real existing LINE system, set:
+   window.LINE_ALERT_ENDPOINT = "https://your-existing-webhook-url";
+*/
+window.LINE_ALERT_ENDPOINT = window.LINE_ALERT_ENDPOINT || "";
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const flowToggle=document.getElementById('toggleFlowAlertDemo');
+  const flowPopup=document.getElementById('flowAlertTestPopup');
+  const lineBtn=document.getElementById('testLineAlert');
+  const lineResult=document.getElementById('lineTestResult');
+  const lineState=document.getElementById('lineConnectionState');
+
+  let lastFlowAlert='flow_low';
+
+  if(lineState){
+    lineState.textContent=window.LINE_ALERT_ENDPOINT ? 'เชื่อมต่อแล้ว' : 'รอ URL ระบบ LINE';
+  }
+
+  flowToggle?.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    flowPopup?.classList.toggle('show');
+  });
+
+  document.querySelectorAll('[data-flow-alert]').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      lastFlowAlert=btn.dataset.flowAlert;
+      flowPopup?.classList.remove('show');
+      if(typeof showDemoAlert==='function') showDemoAlert(lastFlowAlert);
+    });
+  });
+
+  document.addEventListener('click',(e)=>{
+    if(flowPopup && flowToggle && !flowPopup.contains(e.target) && !flowToggle.contains(e.target)){
+      flowPopup.classList.remove('show');
+    }
+  });
+
+  function buildLineMessage(type){
+    const d=ALERT_DEMOS[type]||ALERT_DEMOS.flow_low;
+    return {
+      source:'Wastewater Live Control',
+      device_id:'WWTP-FLOW-01',
+      alert_type:type,
+      title:d.title,
+      value:d.value,
+      unit:d.unit||'m³/h',
+      description:d.desc,
+      action:d.action,
+      timestamp:new Date().toISOString()
+    };
+  }
+
+  lineBtn?.addEventListener('click', async ()=>{
+    const payload=buildLineMessage(lastFlowAlert);
+    lineBtn.disabled=true;
+    lineBtn.textContent='กำลังทดสอบส่ง LINE...';
+
+    try{
+      if(!window.LINE_ALERT_ENDPOINT){
+        lineResult.className='line-test-result show info';
+        lineResult.innerHTML=
+          '<b>ปุ่มทำงานแล้ว</b><br>ตอนนี้เป็นโหมดทดสอบหน้าเว็บ ยังไม่ได้ใส่ URL ของระบบ LINE เดิม จึงยังไม่ส่งออกไปจริง';
+        return;
+      }
+
+      const res=await fetch(window.LINE_ALERT_ENDPOINT,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok) throw new Error('HTTP '+res.status);
+
+      lineResult.className='line-test-result show ok';
+      lineResult.innerHTML='<b>ส่งทดสอบแล้ว ✓</b><br>'+payload.title+' · '+payload.value+' '+payload.unit;
+    }catch(err){
+      lineResult.className='line-test-result show error';
+      lineResult.innerHTML='<b>ส่ง LINE ไม่สำเร็จ</b><br>'+String(err.message||err);
+    }finally{
+      lineBtn.disabled=false;
+      lineBtn.innerHTML='<span class="line-icon">LINE</span> ทดสอบส่ง LINE';
+    }
+  });
 });
 </script>
 
