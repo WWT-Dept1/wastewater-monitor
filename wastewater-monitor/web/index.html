@@ -3141,6 +3141,56 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+<style>
+/* V15.58 — formal header + live signatures in preview */
+.formal-preview-shell .preview-scroll-area{background:#e4ebe6}
+.formal-document{background:#fff!important;border:1px solid #9ca8a0;box-shadow:0 18px 50px rgba(31,55,40,.08)}
+.form-header-table{display:grid;grid-template-columns:240px 1fr 220px;border:1.6px solid #363636}
+.form-header-table>div{min-height:88px}
+.fh-logo,.fh-title,.fh-meta{border-right:1.6px solid #363636}
+.fh-meta{border-right:0}
+.fh-logo{padding:10px 14px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.nrt-mark{font:900 42px/1 "Arial Black",sans-serif;letter-spacing:-.06em;color:#111;position:relative}
+.nrt-mark::after{content:"";display:block;height:4px;background:repeating-linear-gradient(90deg,#111 0 22px,transparent 22px 28px);margin-top:3px;width:100%}
+.nrt-sub{font:700 8px "Noto Sans Thai",sans-serif;letter-spacing:.04em;color:#333;margin-top:2px}
+.fh-title{display:grid;grid-template-rows:28px 1fr}
+.fh-form{display:grid;place-items:center;border-bottom:1.6px solid #363636;font:800 14px "Times New Roman",serif;letter-spacing:.04em}
+.fh-name{display:grid;place-items:center;padding:8px 12px;font:800 22px "Noto Serif Thai",serif;color:#111}
+.fh-meta{display:grid;grid-template-columns:1fr 76px;grid-template-rows:1fr 1fr}
+.fh-meta>div{padding:5px 8px;border-bottom:1.6px solid #363636;border-right:1.6px solid #363636;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fh-meta>div:nth-child(2){border-right:0}
+.fh-meta .full-row{grid-column:1/-1;border-bottom:0;border-right:0}
+.fh-meta span{font:700 9px "Noto Sans Thai",sans-serif;color:#333}.fh-meta b{font:800 10px "Noto Sans Thai",sans-serif;color:#111}
+.preview-doc-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.preview-doc-strip>div,.structured-info>div{padding:10px 12px;border:1px solid #c5ccc7;background:#fbfcfb}
+.preview-doc-strip small,.structured-info small{display:block;font:700 8px "Noto Sans Thai",sans-serif;color:#6b7971}
+.preview-doc-strip b,.structured-info b{display:block;margin-top:5px;font:800 11px "Noto Sans Thai",sans-serif;color:#14271a}
+.compact-title{padding:16px 0 10px!important}.compact-title h2{font-size:28px!important;margin:0 0 2px!important}
+.compact-title p{font-size:10px!important}
+.structured-info{margin-bottom:4px}
+.signature-board{border:1px solid #313131;padding:14px 14px 16px;background:#fff}
+.signature-group-title{font:800 11px "Noto Sans Thai",sans-serif;text-align:center;margin-bottom:10px;color:#111}
+.three-shift-signature-grid,.manager-signature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.manager-signature-grid{margin-top:14px}
+.sig-card{border:1px solid #9fa9a3;padding:10px 8px 8px;background:#fff}
+.sig-card.wide{min-height:140px}
+.sig-head{text-align:center;font:800 10px "Noto Sans Thai",sans-serif;color:#111;margin-bottom:8px}
+.sig-box{min-height:94px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;padding:6px 6px 0;border:1px dashed #c7ceca;background:#fcfcfc}
+.sig-box.signed{background:linear-gradient(180deg,#fff,#f8fbf9)}
+.sig-mark{min-height:42px;display:flex;align-items:flex-end;justify-content:center;font:700 9px "Noto Sans Thai",sans-serif;color:#98a29d}
+.signed-script{font:italic 700 24px/1 "Brush Script MT","Segoe Script",cursive!important;color:#173d28!important;letter-spacing:.01em}
+.sig-line{border-bottom:1.4px dotted #4b4b4b;margin-top:5px}
+.sig-caption{text-align:center;font:700 8px "Noto Sans Thai",sans-serif;color:#222;padding-top:4px}
+.sig-meta{text-align:center;font:700 7px "Noto Sans Thai",sans-serif;color:#5b6d63;padding-top:3px}
+.formal-footer b{padding:7px 12px;border:1px solid #ccb879;background:#fff8dd;color:#755400;border-radius:999px}
+.formal-footer b.progress{background:#eef7ff;border-color:#92b1d4;color:#184c7e}
+.formal-footer b.approved{background:#e8f6eb;border-color:#96c1a1;color:#1f673a}
+@media(max-width:860px){
+  .form-header-table{grid-template-columns:1fr}
+  .fh-logo,.fh-title{border-right:0;border-bottom:1.6px solid #363636}
+  .preview-doc-strip,.structured-info,.three-shift-signature-grid,.manager-signature-grid{grid-template-columns:1fr}
+}
+</style>
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -3743,42 +3793,138 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  const rows=[...document.querySelectorAll('.paper-sign.approval-row')];
-  const overall=document.getElementById('approvalOverall');
+  const openModal = id => {
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.add('show');
+    el.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  };
+  const closeModal = id => {
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('show');
+    el.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  };
 
-  function unlock(index){
-    const row=rows[index];
-    if(!row) return;
-    row.classList.remove('locked');
-    const input=row.querySelector('.sign-name');
-    const btn=row.querySelector('.sign-btn');
-    if(input) input.disabled=false;
-    if(btn) btn.disabled=false;
+  document.getElementById('previewDailyForm')?.addEventListener('click',()=>openModal('dailyPreviewModal'));
+  document.getElementById('openSignFlow')?.addEventListener('click',()=>openModal('signatureFlowModal'));
+
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click',()=>closeModal(btn.dataset.close));
+  });
+
+  document.querySelectorAll('.eform-modal').forEach(modal=>{
+    modal.addEventListener('click',e=>{
+      if(e.target===modal) closeModal(modal.id);
+    });
+  });
+
+  const panels=[...document.querySelectorAll('[data-sign-step]')];
+  const dots=[...document.querySelectorAll('[data-step-dot]')];
+  const signState={ employee:'', shift:'A / A+', assistant:'', deputy:'', head:'' };
+
+  function showStep(step){
+    panels.forEach(p=>p.classList.toggle('active',p.dataset.signStep===String(step)));
+    dots.forEach(d=>{
+      const n=Number(d.dataset.stepDot);
+      d.classList.toggle('active',String(n)===String(step));
+      d.classList.toggle('done',typeof step==='number' && n<step || step==='done');
+    });
   }
 
-  rows.forEach((row,index)=>{
-    const btn=row.querySelector('.sign-btn');
-    btn?.addEventListener('click',()=>{
-      const input=row.querySelector('.sign-name');
-      const name=input?.value.trim();
-      if(!name){ input?.focus(); return; }
+  function markSignature(boxId,nameId,name,caption){
+    const box=document.getElementById(boxId);
+    const nameEl=document.getElementById(nameId);
+    if(!box || !nameEl) return;
+    box.classList.add('signed');
+    nameEl.textContent=name;
+    nameEl.classList.add('signed-script');
+    if(caption){
+      const cap=box.querySelector('.sig-caption');
+      if(cap) cap.textContent=caption;
+    }
+    if(!box.querySelector('.sig-meta')){
+      const meta=document.createElement('div');
+      meta.className='sig-meta';
+      meta.textContent='ลงชื่ออิเล็กทรอนิกส์แล้ว';
+      box.appendChild(meta);
+    }
+  }
 
-      row.classList.add('signed');
-      row.classList.remove('locked');
-      if(input) input.disabled=true;
-      if(btn){ btn.disabled=true; btn.textContent='✓ ลงชื่อแล้ว'; }
-      const state=row.querySelector('.sign-state');
-      if(state) state.textContent='ลงชื่อรับรองแล้ว';
+  function updateDocumentStatus(){
+    const doneCount=[signState.employee,signState.assistant,signState.deputy,signState.head].filter(Boolean).length;
+    const statusText=document.getElementById('docStatusText');
+    const badge=document.getElementById('docApproveBadge');
+    let text='รอการลงชื่อรับรอง';
+    if(doneCount===4) text='อนุมัติแล้ว';
+    else if(doneCount>0) text='อยู่ระหว่างการรับรอง';
+    if(statusText) statusText.textContent=text;
+    if(badge){
+      badge.textContent=text;
+      badge.classList.toggle('approved', doneCount===4);
+      badge.classList.toggle('progress', doneCount>0 && doneCount<4);
+    }
+  }
 
-      unlock(index+1);
+  function applyEmployeeSignature(){
+    const shift=signState.shift;
+    const captionMap={
+      'A / A+':'ผู้บันทึกกะ A / A+',
+      'B':'ผู้บันทึกกะ B',
+      'C / C+':'ผู้บันทึกกะ C / C+'
+    };
+    const targetMap={
+      'A / A+':['sigShiftABox','sigShiftAName'],
+      'B':['sigShiftBBox','sigShiftBName'],
+      'C / C+':['sigShiftCBox','sigShiftCName']
+    };
+    const ids=targetMap[shift];
+    if(ids) markSignature(ids[0], ids[1], signState.employee, captionMap[shift]);
+  }
 
-      const allSigned=rows.every(r=>r.classList.contains('signed'));
-      if(allSigned && overall){
-        overall.classList.add('approved');
-        overall.innerHTML='<span>✓</span><b>เอกสารอนุมัติแล้ว</b>';
+  document.querySelectorAll('[data-next-step]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const current=btn.closest('[data-sign-step]');
+      const input=current?.querySelector('input');
+      if(input && !input.value.trim()){
+        input.focus();
+        input.style.borderColor='#c94b43';
+        setTimeout(()=>input.style.borderColor='',900);
+        return;
+      }
+
+      const step=current?.dataset.signStep;
+      if(step==='1'){
+        signState.employee=document.getElementById('signEmployee')?.value.trim()||'';
+        signState.shift=document.getElementById('signShift')?.value||'A / A+';
+        applyEmployeeSignature();
+      }
+      if(step==='2'){
+        signState.assistant=document.getElementById('signAssistant')?.value.trim()||'';
+        markSignature('sigAssistantBox','sigAssistantName',signState.assistant,'ผู้ช่วยหัวหน้าแผนก');
+      }
+      if(step==='3'){
+        signState.deputy=document.getElementById('signDeputy')?.value.trim()||'';
+        markSignature('sigDeputyBox','sigDeputyName',signState.deputy,'รองหัวหน้าแผนก');
+      }
+      if(step==='4'){
+        signState.head=document.getElementById('signHead')?.value.trim()||'';
+        markSignature('sigHeadBox','sigHeadName',signState.head,'หัวหน้าแผนก');
+      }
+
+      updateDocumentStatus();
+      const next=btn.dataset.nextStep;
+      if(next==='done'){
+        showStep('done');
+      }else{
+        showStep(Number(next));
       }
     });
   });
+
+  updateDocumentStatus();
 });
 </script>
 
@@ -3862,7 +4008,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <div class="eform-modal" id="dailyPreviewModal" aria-hidden="true">
-  <div class="eform-modal-card preview-card full-preview-card">
+  <div class="eform-modal-card preview-card full-preview-card formal-preview-shell">
     <div class="modal-head">
       <div>
         <small>DOCUMENT PREVIEW</small>
@@ -3872,30 +4018,40 @@ document.addEventListener('DOMContentLoaded',()=>{
     </div>
 
     <div class="preview-scroll-area">
-      <div class="preview-paper full-document">
-        <div class="preview-doc-top">
-          <div>
-            <strong>Wastewater Live Control System</strong>
-            <span>แผนกบ่อบำบัดน้ำเสีย · NRT 1</span>
+      <div class="preview-paper full-document formal-document">
+        <div class="form-header-table">
+          <div class="fh-logo">
+            <div class="nrt-mark">NRT</div>
+            <div class="nrt-sub">NATURAL RUBBER THREAD CO., LTD</div>
           </div>
-          <div class="preview-doc-no">
-            <small>เลขที่เอกสาร</small>
-            <b>F-WWT-FLOW-2026-000019</b>
-            <span>วันที่จัดทำ 13/09/2569</span>
+          <div class="fh-title">
+            <div class="fh-form">FORM</div>
+            <div class="fh-name">ใบบันทึกน้ำเข้าระบบ</div>
+          </div>
+          <div class="fh-meta">
+            <div><span>รหัส</span><b>F-WWT-003</b></div>
+            <div><span>REV.</span><b>05</b></div>
+            <div class="full-row"><span>วันที่</span><b>13/09/2569</b></div>
           </div>
         </div>
 
-        <div class="preview-title-block">
-          <small>DAILY OPERATIONS REPORT</small>
+        <div class="preview-doc-strip">
+          <div><small>เลขที่เอกสาร</small><b>F-WWT-FLOW-2026-000019</b></div>
+          <div><small>โรงงาน</small><b>NRT 1</b></div>
+          <div><small>แผนก</small><b>บ่อบำบัดน้ำเสีย</b></div>
+          <div><small>สถานะเอกสาร</small><b id="docStatusText">รอการลงชื่อรับรอง</b></div>
+        </div>
+
+        <div class="preview-title-block compact-title">
           <h2>แบบฟอร์มสรุป Flow ประจำวัน</h2>
           <p>ประจำวันที่ 13/09/2569 · รอบรายงาน 05:00 วันที่ 13/09/2569 ถึง 05:00 วันที่ 14/09/2569</p>
         </div>
 
-        <div class="preview-info-grid">
-          <div><small>โรงงาน</small><b>NRT 1</b></div>
-          <div><small>แผนก/ฝ่าย</small><b>บ่อบำบัดน้ำเสีย</b></div>
+        <div class="preview-info-grid structured-info">
           <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
           <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
+          <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
+          <div><small>สถานะระบบ</small><b>ปกติ</b></div>
         </div>
 
         <div class="preview-section-title">
@@ -3916,30 +4072,30 @@ document.addEventListener('DOMContentLoaded',()=>{
             </thead>
             <tbody>
               <tr><td>13/09/2569</td><td>05:00</td><td>12.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>06:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>07:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>08:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>09:00</td><td>12.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>10:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>11:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>12:00</td><td>12.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>13:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>14:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>15:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>16:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>17:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>18:00</td><td>13.0 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>19:00</td><td>13.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>20:00</td><td>13.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>21:00</td><td>15.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>22:00</td><td>13.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>13/09/2569</td><td>23:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>00:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>01:00</td><td>11.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>02:00</td><td>10.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>03:00</td><td>11.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>04:00</td><td>11.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
-<tr><td>14/09/2569</td><td>05:00</td><td>12.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>06:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>07:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>08:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>09:00</td><td>12.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>10:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>11:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>12:00</td><td>12.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>13:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>14:00</td><td>12.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>15:00</td><td>12.6 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>16:00</td><td>12.4 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>17:00</td><td>12.7 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>18:00</td><td>13.0 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>19:00</td><td>13.3 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>20:00</td><td>13.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>21:00</td><td>15.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>22:00</td><td>13.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>13/09/2569</td><td>23:00</td><td>13.1 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>00:00</td><td>12.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>01:00</td><td>11.9 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>02:00</td><td>10.5 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>03:00</td><td>11.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>04:00</td><td>11.8 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
+              <tr><td>14/09/2569</td><td>05:00</td><td>12.2 m³/h</td><td>13.0 m³/h</td><td><span class="pv-ok">ปกติ</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -3950,37 +4106,79 @@ document.addEventListener('DOMContentLoaded',()=>{
         </div>
 
         <div class="preview-summary-row full-summary">
-          <div><small>ปริมาณน้ำรวม</small><b>301.0</b><span>m³/day</span></div>
           <div><small>Flow เฉลี่ย</small><b>12.6</b><span>m³/h</span></div>
           <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
           <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
           <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
           <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
+          <div><small>ผลประเมิน</small><b>ผ่านเกณฑ์</b><span>ระบบทำงานปกติ</span></div>
         </div>
 
         <div class="preview-section-title">
-          <b>Section 3 · หมายเหตุ</b>
-        </div>
-        <div class="preview-note-box">
-          ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 และไม่พบเหตุการณ์ผิดปกติในข้อมูลตัวอย่าง
+          <b>Section 3 · ส่วนลงชื่อรับรอง</b>
+          <span>เมื่อลงชื่อแล้วจะแสดงลายเซ็นในเอกสารทันที</span>
         </div>
 
-        <div class="preview-section-title">
-          <b>Section 4 · ลำดับการรับรองเอกสาร</b>
-        </div>
-        <div class="preview-approval-chain">
-          <div><span>1</span><b>พนักงาน</b><small>รอลงชื่อ</small></div>
-          <i>→</i>
-          <div><span>2</span><b>ผู้ช่วยหัวหน้าแผนก</b><small>รอตรวจสอบ</small></div>
-          <i>→</i>
-          <div><span>3</span><b>รองหัวหน้าแผนก</b><small>รอทวนสอบ</small></div>
-          <i>→</i>
-          <div><span>4</span><b>หัวหน้าแผนก</b><small>รออนุมัติ</small></div>
+        <div class="signature-board">
+          <div class="signature-group-title">พนักงานกะการทำงาน</div>
+          <div class="three-shift-signature-grid">
+            <div class="sig-card">
+              <div class="sig-head">กะ A / A+</div>
+              <div class="sig-box" id="sigShiftABox">
+                <div class="sig-mark" id="sigShiftAName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">ผู้บันทึกกะ A / A+</div>
+              </div>
+            </div>
+            <div class="sig-card">
+              <div class="sig-head">กะ B</div>
+              <div class="sig-box" id="sigShiftBBox">
+                <div class="sig-mark" id="sigShiftBName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">ผู้บันทึกกะ B</div>
+              </div>
+            </div>
+            <div class="sig-card">
+              <div class="sig-head">กะ C / C+</div>
+              <div class="sig-box" id="sigShiftCBox">
+                <div class="sig-mark" id="sigShiftCName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">ผู้บันทึกกะ C / C+</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="manager-signature-grid">
+            <div class="sig-card wide">
+              <div class="sig-head">ผู้ตรวจสอบ</div>
+              <div class="sig-box" id="sigAssistantBox">
+                <div class="sig-mark" id="sigAssistantName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">ผู้ช่วยหัวหน้าแผนก</div>
+              </div>
+            </div>
+            <div class="sig-card wide">
+              <div class="sig-head">ผู้ทวนสอบ</div>
+              <div class="sig-box" id="sigDeputyBox">
+                <div class="sig-mark" id="sigDeputyName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">รองหัวหน้าแผนก</div>
+              </div>
+            </div>
+            <div class="sig-card wide">
+              <div class="sig-head">ผู้อนุมัติ</div>
+              <div class="sig-box" id="sigHeadBox">
+                <div class="sig-mark" id="sigHeadName">รอการลงชื่อ</div>
+                <div class="sig-line"></div>
+                <div class="sig-caption">หัวหน้าแผนก</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="preview-document-footer">
+        <div class="preview-document-footer formal-footer">
           <span>สถานะเอกสาร</span>
-          <b>รอการลงชื่อรับรอง</b>
+          <b id="docApproveBadge">รอการลงชื่อรับรอง</b>
         </div>
       </div>
     </div>
@@ -4010,7 +4208,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     <div class="sign-step-panel active" data-sign-step="1">
       <small>STEP 1 / 4</small>
       <h3>พนักงานลงชื่อ</h3>
-      <p>ผู้รับผิดชอบประจำกะลงชื่อรับรองข้อมูลก่อนส่งตรวจสอบ</p>
+      <p>เลือกกะการทำงานและลงชื่อรับรองข้อมูล เพื่อให้ลายเซ็นไปแสดงในเอกสารทันที</p>
       <label>ชื่อ-นามสกุล</label>
       <input type="text" id="signEmployee" placeholder="กรอกชื่อพนักงาน">
       <label>กะการทำงาน</label>
