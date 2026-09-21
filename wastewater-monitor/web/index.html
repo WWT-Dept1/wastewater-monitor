@@ -86,7 +86,7 @@ body{margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden}header{hei
 .flowdial{
  position:absolute;width:210px;height:210px;right:54px;top:102px;border-radius:50%;
  z-index:2;
- background:conic-gradient(from 220deg,#315C39 0 47%,rgba(210,221,218,.5) 47% 78%,transparent 78%);
+ background:conic-gradient(from 220deg,#315C39 0 96%,rgba(210,221,218,.5) 96% 100%);
  -webkit-mask:radial-gradient(circle,transparent 0 68%,#000 69%);
  mask:radial-gradient(circle,transparent 0 68%,#000 69%);
  filter:drop-shadow(5px 7px 7px rgba(117,139,135,.20)) drop-shadow(-4px -4px 6px rgba(255,255,255,.8));
@@ -6609,6 +6609,29 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.89 — use the dial for Flow vs Flow Setting, not range load */
+.flowdial-center{
+  line-height:1.2!important;
+}
+.flowdial-center>div{
+  font-size:7px!important;
+  letter-spacing:.06em!important;
+}
+.flowdial-center b{
+  font-size:20px!important;
+  margin-top:4px!important;
+}
+.flowdial-center span{
+  display:block;
+  margin-top:4px;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:0;
+  color:#7a8a81;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -6631,7 +6654,7 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 </div>
-<div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
+<div class="flowdial"></div><div class="flowdial-center"><div>เทียบค่า SETTING<b>96%</b><span>12.5 / 13.0</span></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
 
@@ -7259,8 +7282,8 @@ html{scroll-behavior:smooth}
   <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
   <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
   <div><small>Flow Setting</small><b>13.0</b><span>m³/h</span></div>
-  <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
-  <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
+  <div><small>ข้อมูลที่ได้รับ</small><b>25 / 25</b><span>รายการครบตามรอบ</span></div>
+  <div><small>ข้อมูลขาดหาย</small><b>0</b><span>รายการ</span></div>
   <div><small>Alerts</small><b>0</b><span>เหตุการณ์</span></div>
 </div>
 <div class="form-remark">
@@ -7728,8 +7751,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       'Flow เฉลี่ย: 12.6 m³/h',
       'Flow ต่ำสุด: 10.5 m³/h',
       'Flow สูงสุด: 15.1 m³/h',
-      'COD ล่าสุด: 11,800 mg/L · ปกติ',
-      'Zinc ล่าสุด: 354 mg/L · ปกติ'
+      'ข้อมูลที่ได้รับ: 25 / 25 รายการ',
+      'ข้อมูลขาดหาย: 0 รายการ'
     ].join('\n');
 
     try{
@@ -7851,8 +7874,8 @@ document.addEventListener('DOMContentLoaded',()=>{
           <div><small>Flow เฉลี่ย</small><b>12.6</b><span>m³/h</span></div>
           <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
           <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
-          <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
-          <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
+          <div><small>ข้อมูลที่ได้รับ</small><b>25 / 25</b><span>รายการครบตามรอบ</span></div>
+          <div><small>ข้อมูลขาดหาย</small><b>0</b><span>รายการ</span></div>
           <div><small>ผลประเมิน</small><b>ผ่านเกณฑ์</b><span>ระบบทำงานปกติ</span></div>
         </div>
 
@@ -8756,9 +8779,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       [r.avg.toFixed(1),'m³/h'],
       [r.min.toFixed(1),'m³/h'],
       [r.max.toFixed(1),'m³/h'],
-      ['11,800','mg/L · ปกติ'],
-      ['354','mg/L · ปกติ'],
-      ['ผ่านเกณฑ์','ระบบทำงานปกติ']
+      ['25 / 25','รายการครบตามรอบ'],
+      ['0','รายการ'],
+      ['ผ่านเกณฑ์','ข้อมูลครบและระบบทำงานปกติ']
     ];
     summary.forEach((box,i)=>{
       const b=box.querySelector('b');
@@ -8940,7 +8963,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       ['รอบรายงาน',`05:00 ${th(r.id)} ถึง 05:00 ${th(nextISO(r.id))}`],['โรงงาน','NRT 1'],
       ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · FM-01'],['Flow Setting',r.setting],
       [],['ปริมาณน้ำรวม',r.volume,'m³/day'],['Flow เฉลี่ย',r.avg,'m³/h'],['Flow ต่ำสุด',r.min,'m³/h'],['Flow สูงสุด',r.max,'m³/h'],
-      ['COD ล่าสุด',11800,'mg/L'],['Zinc ล่าสุด',354,'mg/L']
+      ['ข้อมูลที่ได้รับ','25 / 25','รายการ'],['ข้อมูลขาดหาย',0,'รายการ']
     ];
     const ws1=XLSX.utils.aoa_to_sheet(summary);ws1['!cols']=[{wch:28},{wch:34},{wch:14}];XLSX.utils.book_append_sheet(wb,ws1,'สรุปรายวัน');
     const hourly=[['วันที่','เวลา','Flow Rate (m³/h)','Flow Setting (m³/h)','สถานะ'],...rows.map(x=>[x.date,x.time,x.flow,x.setting,x.status])];
