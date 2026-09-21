@@ -6043,6 +6043,523 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.83 — fix only the excessive blank area beside Flow Log */
+.lower{
+  align-items:stretch!important;
+}
+
+/* The second-row System Health card now fills the same row height as Flow Log,
+   so there is no large unused green area below it. */
+#systemHealthSection.system-health-card{
+  align-self:stretch!important;
+  height:auto!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+}
+
+#systemHealthSection .health-path{
+  flex:1 1 auto!important;
+  display:grid!important;
+  align-content:space-between!important;
+}
+
+#systemHealthSection .health-footer{
+  margin-top:14px!important;
+}
+
+/* Keep the upper row compact; only the Flow Log/System Health row stretches. */
+#flowTrendSection,
+#alertCenterSection{
+  align-self:start!important;
+}
+
+@media(max-width:850px){
+  .lower{
+    align-items:start!important;
+  }
+  #systemHealthSection.system-health-card{
+    align-self:start!important;
+    width:100%!important;
+  }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+/* V15.84 — Daily Summary toolbar + history + exports */
+.refined-report-toolbar{
+  margin-top:18px!important;padding:10px 12px!important;min-height:56px!important;
+  gap:12px!important;border-radius:16px 16px 0 0!important;
+}
+.refined-tabs{gap:6px!important;flex-wrap:nowrap!important}
+.refined-tabs .eform-tab{
+  min-height:38px!important;padding:0 16px!important;border-radius:11px!important;
+  white-space:nowrap!important;transition:.18s ease!important;
+}
+.refined-tabs .eform-tab:hover{background:#eef4ef!important;color:#2b583b!important}
+.refined-tabs .eform-tab.active{
+  background:linear-gradient(180deg,#edf4ff,#e1ebf8)!important;color:#284e79!important;
+  box-shadow:inset 0 0 0 1px rgba(57,91,132,.10)!important;
+}
+.refined-actions{gap:7px!important;flex-wrap:nowrap!important}
+.refined-actions button{
+  min-width:88px!important;min-height:38px!important;padding:0 14px!important;
+  border-radius:11px!important;white-space:nowrap!important;font-size:8.5px!important;
+}
+.refined-actions .primary-export{
+  background:linear-gradient(145deg,#356447,#285238)!important;
+  border-color:#315f43!important;color:#fff!important;
+  box-shadow:0 7px 16px rgba(48,92,63,.15)!important;
+}
+
+.daily-history-panel{
+  padding:18px;border-left:1px solid #c1cec3;border-right:1px solid #c1cec3;
+  background:linear-gradient(180deg,#f7faf8,#eef4ef);
+}
+.daily-history-panel[hidden]{display:none!important}
+.history-panel-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  padding-bottom:15px;border-bottom:1px solid #d5dfd7;
+}
+.history-panel-head small{display:block;font:800 7px "Outfit",sans-serif;letter-spacing:.13em;color:#74847a}
+.history-panel-head h3{margin:4px 0 0;font:800 17px "Noto Sans Thai",sans-serif;color:#1c3526}
+.history-panel-head p{margin:4px 0 0;font:600 8px "Noto Sans Thai",sans-serif;color:#75867b}
+.history-filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.history-search-box{position:relative;width:235px}
+.history-search-box span{
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  color:#6f8275;font-size:13px;pointer-events:none
+}
+.history-search-box input,.history-filters input[type="date"]{
+  height:38px;box-sizing:border-box;border:1px solid #c8d5ca;border-radius:10px;
+  background:#fff;outline:none;color:#2f4938;font:700 8px "Noto Sans Thai",sans-serif;
+}
+.history-search-box input{width:100%;padding:0 11px 0 31px}
+.history-filters input[type="date"]{padding:0 10px}
+#clearHistoryFilter{
+  height:38px;padding:0 11px;border:1px solid #ccd7ce;border-radius:10px;
+  background:#f4f7f5;color:#627469;cursor:pointer;font:800 7.5px "Noto Sans Thai",sans-serif;
+}
+.history-month-label{display:flex;align-items:center;justify-content:space-between;margin:15px 2px 9px}
+.history-month-label span{font:800 9px "Noto Sans Thai",sans-serif;color:#405a49}
+.history-month-label b{font:700 7px "Noto Sans Thai",sans-serif;color:#7a8980}
+.history-report-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.history-report-card{
+  display:flex;align-items:center;gap:12px;min-height:94px;padding:12px;
+  border:1px solid #d2ddd4;border-radius:14px;background:linear-gradient(180deg,#fff,#f8fbf9);
+  cursor:pointer;transition:.18s ease;
+}
+.history-report-card:hover{transform:translateY(-1px);border-color:#9fbca6;box-shadow:0 9px 20px rgba(66,91,73,.08)}
+.history-report-card.selected{border-color:#6f9a7b;box-shadow:0 0 0 3px rgba(83,133,98,.07)}
+.history-date-tile{
+  width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;align-content:center;
+  border-radius:12px;background:#eaf2ec;color:#315a40
+}
+.history-date-tile b{font:900 23px "Outfit",sans-serif;line-height:1}
+.history-date-tile span{margin-top:4px;font:800 7px "Noto Sans Thai",sans-serif}
+.history-report-copy{min-width:0;flex:1}
+.history-report-copy small{display:block;font:700 6.5px "Noto Sans Thai",sans-serif;color:#819087}
+.history-report-copy b{display:block;margin-top:3px;font:800 10px "Noto Sans Thai",sans-serif;color:#243d2d}
+.history-report-copy span{display:block;margin-top:3px;font:600 7px "Noto Sans Thai",sans-serif;color:#708178}
+.history-report-copy em{
+  display:inline-block;margin-top:6px;padding:4px 7px;border-radius:999px;
+  background:#e4f1e7;color:#2d6741;font:700 6.5px "Noto Sans Thai",sans-serif;font-style:normal
+}
+.history-card-actions{display:flex;flex-direction:column;gap:5px}
+.history-card-actions button{
+  min-width:62px;min-height:28px;padding:0 8px;border:1px solid #c2d1c5;
+  border-radius:8px;background:#fff;color:#31533c;cursor:pointer;font:800 6.5px "Noto Sans Thai",sans-serif
+}
+.history-card-actions .history-open{background:#315f43;border-color:#315f43;color:#fff}
+.history-empty{
+  grid-column:1/-1;padding:28px;text-align:center;border:1px dashed #cbd7ce;border-radius:14px;
+  color:#7a8980;background:#f8fbf9;font:700 8px "Noto Sans Thai",sans-serif
+}
+.export-busy{
+  position:fixed;inset:0;z-index:99999;display:grid;place-items:center;
+  background:rgba(28,43,33,.28);backdrop-filter:blur(5px)
+}
+.export-busy-card{
+  min-width:260px;padding:18px 20px;border-radius:16px;background:#fff;
+  box-shadow:0 18px 55px rgba(27,44,32,.20);text-align:center
+}
+.export-busy-card b{display:block;font:800 11px "Noto Sans Thai",sans-serif;color:#253d2e}
+.export-busy-card span{display:block;margin-top:5px;font:600 8px "Noto Sans Thai",sans-serif;color:#76857c}
+
+@media(max-width:820px){
+  .refined-report-toolbar{align-items:stretch!important;flex-direction:column!important}
+  .refined-actions{width:100%}.refined-actions button{flex:1!important}
+  .history-panel-head{align-items:stretch;flex-direction:column}
+  .history-report-list{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .history-search-box{width:100%}
+  .refined-tabs .eform-tab{flex:1}
+}
+</style>
+
+
+<style>
+/* V15.85 — แก้เฉพาะ Flow Trend */
+.premium-trend-card{
+  padding:24px!important;
+  border:1px solid #d0dbd2!important;
+  border-radius:28px!important;
+  background:
+    radial-gradient(circle at 92% 0%,rgba(97,145,111,.06),transparent 29%),
+    linear-gradient(145deg,#f7faf8,#edf3ef)!important;
+  box-shadow:
+    12px 12px 30px rgba(80,102,87,.09),
+    -10px -10px 26px rgba(255,255,255,.82)!important;
+  overflow:hidden!important;
+}
+.premium-trend-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:18px;
+}
+.premium-trend-header small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.15em;
+  color:#6e8878;
+}
+.premium-trend-header h2{
+  margin:5px 0 0;
+  font:800 24px "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:-.035em;
+  color:#193426;
+}
+.premium-trend-header p{
+  margin:5px 0 0;
+  font:600 8px "Noto Sans Thai",sans-serif;
+  color:#78897f;
+}
+.premium-trend-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+}
+.premium-period{
+  padding:6px 9px;
+  border:1px solid #d7e0d9;
+  border-radius:999px;
+  background:rgba(255,255,255,.48);
+  color:#6d8074;
+  font:700 7px "Outfit","Noto Sans Thai",sans-serif;
+}
+.premium-nav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.premium-nav b{
+  margin-right:3px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#e6eee8;
+  color:#496754;
+  font:800 7px "Noto Sans Thai",sans-serif;
+}
+.premium-nav button{
+  width:32px;
+  height:32px;
+  border:1px solid #c9d5cc;
+  border-radius:10px;
+  background:linear-gradient(145deg,#fbfdfb,#e8eeea);
+  color:#315840;
+  cursor:pointer;
+  font:800 19px/1 "Outfit",sans-serif;
+  box-shadow:3px 3px 8px rgba(105,123,111,.09),-2px -2px 7px rgba(255,255,255,.75);
+}
+.premium-nav button:hover{
+  background:#315f43;
+  border-color:#315f43;
+  color:#fff;
+}
+
+.premium-chart-shell{
+  position:relative;
+  padding:14px 0 0;
+  border:1px solid #d6e0d8;
+  border-radius:20px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.45),rgba(238,244,239,.64));
+  box-shadow:inset 3px 3px 10px rgba(91,111,97,.05);
+  overflow:hidden;
+}
+.premium-chart-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 17px 8px;
+}
+.premium-chart-topline span{
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.13em;
+  color:#71887a;
+}
+.premium-chart-topline b{
+  font:800 7px "Outfit",sans-serif;
+  color:#829188;
+}
+
+.premium-scroll-area{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:0 0 5px;
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  scrollbar-color:#819d8b #dce6df;
+  cursor:grab;
+}
+.premium-scroll-area:active{cursor:grabbing}
+.premium-scroll-area::-webkit-scrollbar{height:8px}
+.premium-scroll-area::-webkit-scrollbar-track{
+  background:#dce6df;
+  border-radius:999px;
+}
+.premium-scroll-area::-webkit-scrollbar-thumb{
+  background:linear-gradient(90deg,#8eaa98,#6e8f7a);
+  border:2px solid #dce6df;
+  border-radius:999px;
+}
+.premium-trend-canvas{
+  width:1960px;
+  min-width:1960px;
+}
+.premium-trend-canvas svg{
+  display:block;
+  width:1960px;
+  height:285px;
+}
+.premium-grid-h{
+  stroke:#cbd7cf;
+  stroke-width:1;
+  stroke-dasharray:4 7;
+}
+.premium-grid-v{
+  stroke:#dfe6e1;
+  stroke-width:1;
+}
+.premium-y-label{
+  fill:#839188;
+  font:700 8px "Outfit",sans-serif;
+}
+.premium-x-label{
+  fill:#647b6c;
+  font:800 9px "Outfit",sans-serif;
+}
+.premium-flow-area{
+  fill:url(#premiumFlowArea);
+}
+.premium-flow-line{
+  fill:none;
+  stroke:#376b4a;
+  stroke-width:3.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+.premium-hour-point circle{
+  fill:#f8fbf9;
+  stroke:#376b4a;
+  stroke-width:2.4;
+  vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 2px 3px rgba(42,82,56,.08));
+}
+.premium-hour-point text{
+  fill:#2f5e40!important;
+  font:900 9px "Outfit",sans-serif;
+}
+.premium-scroll-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:7px 12px 10px;
+  color:#7a8980;
+  font:700 7px "Noto Sans Thai",sans-serif;
+}
+.premium-scroll-note span{
+  color:#4f725d;
+  font:800 10px "Outfit",sans-serif;
+}
+
+.premium-trend-footer{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.premium-trend-footer>div{
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-rows:auto auto;
+  column-gap:6px;
+  padding:10px 12px;
+  border:1px solid #d5dfd7;
+  border-radius:13px;
+  background:rgba(255,255,255,.38);
+}
+.premium-trend-footer small{
+  grid-column:1/-1;
+  font:800 6.5px "Outfit",sans-serif;
+  letter-spacing:.08em;
+  color:#79887f;
+}
+.premium-trend-footer b{
+  margin-top:3px;
+  font:900 12px "Outfit",sans-serif;
+  color:#233f2e;
+}
+.premium-trend-footer span{
+  align-self:end;
+  margin-bottom:1px;
+  font:700 6.5px "Outfit",sans-serif;
+  color:#839188;
+}
+
+@media(max-width:720px){
+  .premium-trend-header{
+    flex-direction:column;
+  }
+  .premium-trend-actions{
+    align-items:flex-start;
+  }
+  .premium-trend-footer{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+</style>
+
+
+<style>
+/* V15.86 — จัด Flow Setting ให้อยู่ข้างค่า Flow และเอา stat cards ออก */
+.live-display-clean{
+  width:74%!important;
+  padding:18px 20px!important;
+}
+.live-value-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.flow-setting-inline{
+  min-width:180px;
+  max-width:210px;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(49,92,57,.10);
+  background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(236,243,238,.95));
+  box-shadow:
+    6px 6px 14px rgba(170,184,175,.18),
+    -5px -5px 12px rgba(255,255,255,.85);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+}
+.fsi-label{
+  font:800 8px "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#6f8577;
+  margin-bottom:6px;
+}
+.fsi-value{
+  font:900 24px/1 "Outfit","Noto Sans Thai",sans-serif;
+  color:#1f3a2a;
+  letter-spacing:-.03em;
+}
+.fsi-value small{
+  font:800 11px "Outfit",sans-serif;
+  color:#6c8174;
+}
+.fsi-note{
+  margin-top:6px;
+  font:700 8px "Noto Sans Thai",sans-serif;
+  color:#809086;
+}
+@media (max-width: 980px){
+  .live-display-clean{width:86%!important}
+  .live-value-row{flex-direction:column;align-items:flex-start}
+  .flow-setting-inline{width:100%;max-width:none}
+}
+</style>
+
+
+<style>
+/* V15.87 — compact Flow Setting beside live Flow value */
+.live-display-clean{
+  width:68%!important;
+  padding:16px 18px!important;
+}
+.live-value-row{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:20px!important;
+}
+.compact-fsi{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  padding:0 0 4px 18px!important;
+  border:0!important;
+  border-left:1px solid rgba(55,94,68,.18)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.compact-fsi .fsi-label{
+  display:block!important;
+  margin:0 0 5px!important;
+  font:800 7px "Outfit","Noto Sans Thai",sans-serif!important;
+  letter-spacing:.12em!important;
+  color:#73877a!important;
+}
+.compact-fsi .fsi-value{
+  font:900 25px/1 "Outfit","Noto Sans Thai",sans-serif!important;
+  color:#1f3a2a!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+}
+.compact-fsi .fsi-value small{
+  font:800 9px "Outfit",sans-serif!important;
+  color:#718579!important;
+}
+@media(max-width:980px){
+  .live-display-clean{width:78%!important}
+  .live-value-row{
+    flex-direction:row!important;
+    align-items:flex-end!important;
+  }
+  .compact-fsi{
+    width:auto!important;
+    padding-left:14px!important;
+  }
+}
+@media(max-width:620px){
+  .live-display-clean{width:88%!important}
+  .live-value-row{gap:12px!important}
+  .compact-fsi .fsi-value{font-size:21px!important}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -6055,54 +6572,76 @@ html{scroll-behavior:smooth}
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
-<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
-<div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
+<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
+<div class="display live-display-clean">
+  <div class="live-value-row">
+    <div class="value">12.5<small>m³/h LIVE VALUE</small></div>
+    <div class="flow-setting-inline compact-fsi" aria-label="Flow Setting">
+      <span class="fsi-label">FLOW SETTING</span>
+      <div class="fsi-value">13.0 <small>m³/h</small></div>
+    </div>
+  </div>
+</div>
+<div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
 
-<section class="neo-trend detailed-hourly-trend" id="flowTrendSection">
-  <div class="neo-trend-head detailed-trend-head">
+
+<section class="neo-trend detailed-hourly-trend premium-trend-card" id="flowTrendSection">
+  <div class="premium-trend-header">
     <div>
       <small>FLOW ANALYTICS</small>
       <h2>24-Hour Flow Trend</h2>
-      <p>แสดงค่า Flow รายชั่วโมงครบทั้งรอบ 05:00 → 05:00</p>
+      <p>Flow รายชั่วโมงครบทั้งรอบ 05:00 → 05:00</p>
     </div>
-    <div class="trend-head-right">
-      <span>13/09/2569 05:00 → 14/09/2569 05:00 · m³/h</span>
-      <div class="trend-scroll-tools">
-        <b>25 จุด · รายชั่วโมง</b>
-        <button type="button" id="trendScrollLeft" aria-label="เลื่อนกราฟไปทางซ้าย">‹</button>
-        <button type="button" id="trendScrollRight" aria-label="เลื่อนกราฟไปทางขวา">›</button>
+
+    <div class="premium-trend-actions">
+      <span class="premium-period">13/09/2569 05:00 → 14/09/2569 05:00</span>
+      <div class="premium-nav">
+        <b>25 จุด · ทุกชั่วโมง</b>
+        <button type="button" id="trendScrollLeft" aria-label="เลื่อนกราฟซ้าย">‹</button>
+        <button type="button" id="trendScrollRight" aria-label="เลื่อนกราฟขวา">›</button>
       </div>
     </div>
   </div>
 
-  <div class="trend-scroll-shell">
-    <div class="trend-scroll-hint">เลื่อนซ้าย–ขวาเพื่อดูครบทุกชั่วโมง</div>
-    <div class="trend-scroll-area" id="trendScrollArea">
-      <div class="trend-canvas">
-        <svg viewBox="0 0 1880 230" width="1880" height="230" aria-label="กราฟ Flow รายชั่วโมง">
+  <div class="premium-chart-shell">
+    <div class="premium-chart-topline">
+      <span>FLOW RATE</span>
+      <b>m³/h</b>
+    </div>
+
+    <div class="trend-scroll-area premium-scroll-area" id="trendScrollArea">
+      <div class="premium-trend-canvas">
+        <svg viewBox="0 0 1960 285" width="1960" height="285" aria-label="กราฟ Flow รายชั่วโมง">
           <defs>
-            <linearGradient id="hourlyTrendFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#315f43" stop-opacity=".20"/>
-              <stop offset="100%" stop-color="#315f43" stop-opacity=".015"/>
+            <linearGradient id="premiumFlowArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#376b4a" stop-opacity=".22"/>
+              <stop offset="72%" stop-color="#6e9a7c" stop-opacity=".08"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <line class="hourly-grid-line" x1="58" y1="184.0" x2="1856" y2="184.0"/><text class="hourly-y-label" x="46" y="187.0" text-anchor="end">10</text><line class="hourly-grid-line" x1="58" y1="158.0" x2="1856" y2="158.0"/><text class="hourly-y-label" x="46" y="161.0" text-anchor="end">11</text><line class="hourly-grid-line" x1="58" y1="132.0" x2="1856" y2="132.0"/><text class="hourly-y-label" x="46" y="135.0" text-anchor="end">12</text><line class="hourly-grid-line" x1="58" y1="106.0" x2="1856" y2="106.0"/><text class="hourly-y-label" x="46" y="109.0" text-anchor="end">13</text><line class="hourly-grid-line" x1="58" y1="80.0" x2="1856" y2="80.0"/><text class="hourly-y-label" x="46" y="83.0" text-anchor="end">14</text><line class="hourly-grid-line" x1="58" y1="54.0" x2="1856" y2="54.0"/><text class="hourly-y-label" x="46" y="57.0" text-anchor="end">15</text><line class="hourly-grid-line" x1="58" y1="28.0" x2="1856" y2="28.0"/><text class="hourly-y-label" x="46" y="31.0" text-anchor="end">16</text>
-          <line class="hourly-tick" x1="58.0" y1="28" x2="58.0" y2="184"/><text class="hourly-x-label" x="58.0" y="214" text-anchor="middle">05:00</text><line class="hourly-tick" x1="132.9" y1="28" x2="132.9" y2="184"/><text class="hourly-x-label" x="132.9" y="214" text-anchor="middle">06:00</text><line class="hourly-tick" x1="207.8" y1="28" x2="207.8" y2="184"/><text class="hourly-x-label" x="207.8" y="214" text-anchor="middle">07:00</text><line class="hourly-tick" x1="282.8" y1="28" x2="282.8" y2="184"/><text class="hourly-x-label" x="282.8" y="214" text-anchor="middle">08:00</text><line class="hourly-tick" x1="357.7" y1="28" x2="357.7" y2="184"/><text class="hourly-x-label" x="357.7" y="214" text-anchor="middle">09:00</text><line class="hourly-tick" x1="432.6" y1="28" x2="432.6" y2="184"/><text class="hourly-x-label" x="432.6" y="214" text-anchor="middle">10:00</text><line class="hourly-tick" x1="507.5" y1="28" x2="507.5" y2="184"/><text class="hourly-x-label" x="507.5" y="214" text-anchor="middle">11:00</text><line class="hourly-tick" x1="582.4" y1="28" x2="582.4" y2="184"/><text class="hourly-x-label" x="582.4" y="214" text-anchor="middle">12:00</text><line class="hourly-tick" x1="657.3" y1="28" x2="657.3" y2="184"/><text class="hourly-x-label" x="657.3" y="214" text-anchor="middle">13:00</text><line class="hourly-tick" x1="732.2" y1="28" x2="732.2" y2="184"/><text class="hourly-x-label" x="732.2" y="214" text-anchor="middle">14:00</text><line class="hourly-tick" x1="807.2" y1="28" x2="807.2" y2="184"/><text class="hourly-x-label" x="807.2" y="214" text-anchor="middle">15:00</text><line class="hourly-tick" x1="882.1" y1="28" x2="882.1" y2="184"/><text class="hourly-x-label" x="882.1" y="214" text-anchor="middle">16:00</text><line class="hourly-tick" x1="957.0" y1="28" x2="957.0" y2="184"/><text class="hourly-x-label" x="957.0" y="214" text-anchor="middle">17:00</text><line class="hourly-tick" x1="1031.9" y1="28" x2="1031.9" y2="184"/><text class="hourly-x-label" x="1031.9" y="214" text-anchor="middle">18:00</text><line class="hourly-tick" x1="1106.8" y1="28" x2="1106.8" y2="184"/><text class="hourly-x-label" x="1106.8" y="214" text-anchor="middle">19:00</text><line class="hourly-tick" x1="1181.8" y1="28" x2="1181.8" y2="184"/><text class="hourly-x-label" x="1181.8" y="214" text-anchor="middle">20:00</text><line class="hourly-tick" x1="1256.7" y1="28" x2="1256.7" y2="184"/><text class="hourly-x-label" x="1256.7" y="214" text-anchor="middle">21:00</text><line class="hourly-tick" x1="1331.6" y1="28" x2="1331.6" y2="184"/><text class="hourly-x-label" x="1331.6" y="214" text-anchor="middle">22:00</text><line class="hourly-tick" x1="1406.5" y1="28" x2="1406.5" y2="184"/><text class="hourly-x-label" x="1406.5" y="214" text-anchor="middle">23:00</text><line class="hourly-tick" x1="1481.4" y1="28" x2="1481.4" y2="184"/><text class="hourly-x-label" x="1481.4" y="214" text-anchor="middle">00:00</text><line class="hourly-tick" x1="1556.3" y1="28" x2="1556.3" y2="184"/><text class="hourly-x-label" x="1556.3" y="214" text-anchor="middle">01:00</text><line class="hourly-tick" x1="1631.2" y1="28" x2="1631.2" y2="184"/><text class="hourly-x-label" x="1631.2" y="214" text-anchor="middle">02:00</text><line class="hourly-tick" x1="1706.2" y1="28" x2="1706.2" y2="184"/><text class="hourly-x-label" x="1706.2" y="214" text-anchor="middle">03:00</text><line class="hourly-tick" x1="1781.1" y1="28" x2="1781.1" y2="184"/><text class="hourly-x-label" x="1781.1" y="214" text-anchor="middle">04:00</text><line class="hourly-tick" x1="1856.0" y1="28" x2="1856.0" y2="184"/><text class="hourly-x-label" x="1856.0" y="214" text-anchor="middle">05:00</text>
-          <path class="hourly-area" d="M 58.0 129.4 L 132.9 121.6 L 207.8 124.2 L 282.8 113.8 L 357.7 103.4 L 432.6 108.6 L 507.5 95.6 L 582.4 85.2 L 657.3 116.4 L 732.2 121.6 L 807.2 111.2 L 882.1 100.8 L 957.0 82.6 L 1031.9 69.6 L 1106.8 51.4 L 1181.8 72.2 L 1256.7 87.8 L 1331.6 103.4 L 1406.5 111.2 L 1481.4 121.6 L 1556.3 132.0 L 1631.2 139.8 L 1706.2 152.8 L 1781.1 163.2 L 1856.0 171.0 L 1856.0 184.0 L 58.0 184.0 Z"/>
-          <path class="hourly-line" d="M 58.0 129.4 L 132.9 121.6 L 207.8 124.2 L 282.8 113.8 L 357.7 103.4 L 432.6 108.6 L 507.5 95.6 L 582.4 85.2 L 657.3 116.4 L 732.2 121.6 L 807.2 111.2 L 882.1 100.8 L 957.0 82.6 L 1031.9 69.6 L 1106.8 51.4 L 1181.8 72.2 L 1256.7 87.8 L 1331.6 103.4 L 1406.5 111.2 L 1481.4 121.6 L 1556.3 132.0 L 1631.2 139.8 L 1706.2 152.8 L 1781.1 163.2 L 1856.0 171.0"/>
-          <g class="hourly-point"><circle cx="58.0" cy="129.4" r="4.4"/><text x="58.0" y="119.4" text-anchor="middle">12.1</text><title>05:00 · 12.1 m³/h</title></g><g class="hourly-point"><circle cx="132.9" cy="121.6" r="4.4"/><text x="132.9" y="111.6" text-anchor="middle">12.4</text><title>06:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="207.8" cy="124.2" r="4.4"/><text x="207.8" y="114.2" text-anchor="middle">12.3</text><title>07:00 · 12.3 m³/h</title></g><g class="hourly-point"><circle cx="282.8" cy="113.8" r="4.4"/><text x="282.8" y="103.8" text-anchor="middle">12.7</text><title>08:00 · 12.7 m³/h</title></g><g class="hourly-point"><circle cx="357.7" cy="103.4" r="4.4"/><text x="357.7" y="93.4" text-anchor="middle">13.1</text><title>09:00 · 13.1 m³/h</title></g><g class="hourly-point"><circle cx="432.6" cy="108.6" r="4.4"/><text x="432.6" y="98.6" text-anchor="middle">12.9</text><title>10:00 · 12.9 m³/h</title></g><g class="hourly-point"><circle cx="507.5" cy="95.6" r="4.4"/><text x="507.5" y="85.6" text-anchor="middle">13.4</text><title>11:00 · 13.4 m³/h</title></g><g class="hourly-point"><circle cx="582.4" cy="85.2" r="4.4"/><text x="582.4" y="75.2" text-anchor="middle">13.8</text><title>12:00 · 13.8 m³/h</title></g><g class="hourly-point"><circle cx="657.3" cy="116.4" r="4.4"/><text x="657.3" y="106.4" text-anchor="middle">12.6</text><title>13:00 · 12.6 m³/h</title></g><g class="hourly-point"><circle cx="732.2" cy="121.6" r="4.4"/><text x="732.2" y="111.6" text-anchor="middle">12.4</text><title>14:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="807.2" cy="111.2" r="4.4"/><text x="807.2" y="101.2" text-anchor="middle">12.8</text><title>15:00 · 12.8 m³/h</title></g><g class="hourly-point"><circle cx="882.1" cy="100.8" r="4.4"/><text x="882.1" y="90.8" text-anchor="middle">13.2</text><title>16:00 · 13.2 m³/h</title></g><g class="hourly-point"><circle cx="957.0" cy="82.6" r="4.4"/><text x="957.0" y="72.6" text-anchor="middle">13.9</text><title>17:00 · 13.9 m³/h</title></g><g class="hourly-point"><circle cx="1031.9" cy="69.6" r="4.4"/><text x="1031.9" y="59.6" text-anchor="middle">14.4</text><title>18:00 · 14.4 m³/h</title></g><g class="hourly-point"><circle cx="1106.8" cy="51.4" r="4.4"/><text x="1106.8" y="41.4" text-anchor="middle">15.1</text><title>19:00 · 15.1 m³/h</title></g><g class="hourly-point"><circle cx="1181.8" cy="72.2" r="4.4"/><text x="1181.8" y="62.2" text-anchor="middle">14.3</text><title>20:00 · 14.3 m³/h</title></g><g class="hourly-point"><circle cx="1256.7" cy="87.8" r="4.4"/><text x="1256.7" y="77.8" text-anchor="middle">13.7</text><title>21:00 · 13.7 m³/h</title></g><g class="hourly-point"><circle cx="1331.6" cy="103.4" r="4.4"/><text x="1331.6" y="93.4" text-anchor="middle">13.1</text><title>22:00 · 13.1 m³/h</title></g><g class="hourly-point"><circle cx="1406.5" cy="111.2" r="4.4"/><text x="1406.5" y="101.2" text-anchor="middle">12.8</text><title>23:00 · 12.8 m³/h</title></g><g class="hourly-point"><circle cx="1481.4" cy="121.6" r="4.4"/><text x="1481.4" y="111.6" text-anchor="middle">12.4</text><title>00:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="1556.3" cy="132.0" r="4.4"/><text x="1556.3" y="122.0" text-anchor="middle">12.0</text><title>01:00 · 12.0 m³/h</title></g><g class="hourly-point"><circle cx="1631.2" cy="139.8" r="4.4"/><text x="1631.2" y="129.8" text-anchor="middle">11.7</text><title>02:00 · 11.7 m³/h</title></g><g class="hourly-point"><circle cx="1706.2" cy="152.8" r="4.4"/><text x="1706.2" y="142.8" text-anchor="middle">11.2</text><title>03:00 · 11.2 m³/h</title></g><g class="hourly-point"><circle cx="1781.1" cy="163.2" r="4.4"/><text x="1781.1" y="153.2" text-anchor="middle">10.8</text><title>04:00 · 10.8 m³/h</title></g><g class="hourly-point"><circle cx="1856.0" cy="171.0" r="4.4"/><text x="1856.0" y="161.0" text-anchor="middle">10.5</text><title>05:00 · 10.5 m³/h</title></g>
+          <line class="premium-grid-h" x1="68" y1="215.8" x2="1926" y2="215.8"/><text class="premium-y-label" x="54" y="218.8" text-anchor="end">10</text><line class="premium-grid-h" x1="68" y1="185.5" x2="1926" y2="185.5"/><text class="premium-y-label" x="54" y="188.5" text-anchor="end">11</text><line class="premium-grid-h" x1="68" y1="155.2" x2="1926" y2="155.2"/><text class="premium-y-label" x="54" y="158.2" text-anchor="end">12</text><line class="premium-grid-h" x1="68" y1="124.9" x2="1926" y2="124.9"/><text class="premium-y-label" x="54" y="127.9" text-anchor="end">13</text><line class="premium-grid-h" x1="68" y1="94.6" x2="1926" y2="94.6"/><text class="premium-y-label" x="54" y="97.6" text-anchor="end">14</text><line class="premium-grid-h" x1="68" y1="64.3" x2="1926" y2="64.3"/><text class="premium-y-label" x="54" y="67.3" text-anchor="end">15</text>
+          <line class="premium-grid-v" x1="68.0" y1="40" x2="68.0" y2="231"/><text class="premium-x-label" x="68.0" y="266" text-anchor="middle">05:00</text><line class="premium-grid-v" x1="145.4" y1="40" x2="145.4" y2="231"/><text class="premium-x-label" x="145.4" y="266" text-anchor="middle">06:00</text><line class="premium-grid-v" x1="222.8" y1="40" x2="222.8" y2="231"/><text class="premium-x-label" x="222.8" y="266" text-anchor="middle">07:00</text><line class="premium-grid-v" x1="300.2" y1="40" x2="300.2" y2="231"/><text class="premium-x-label" x="300.2" y="266" text-anchor="middle">08:00</text><line class="premium-grid-v" x1="377.7" y1="40" x2="377.7" y2="231"/><text class="premium-x-label" x="377.7" y="266" text-anchor="middle">09:00</text><line class="premium-grid-v" x1="455.1" y1="40" x2="455.1" y2="231"/><text class="premium-x-label" x="455.1" y="266" text-anchor="middle">10:00</text><line class="premium-grid-v" x1="532.5" y1="40" x2="532.5" y2="231"/><text class="premium-x-label" x="532.5" y="266" text-anchor="middle">11:00</text><line class="premium-grid-v" x1="609.9" y1="40" x2="609.9" y2="231"/><text class="premium-x-label" x="609.9" y="266" text-anchor="middle">12:00</text><line class="premium-grid-v" x1="687.3" y1="40" x2="687.3" y2="231"/><text class="premium-x-label" x="687.3" y="266" text-anchor="middle">13:00</text><line class="premium-grid-v" x1="764.8" y1="40" x2="764.8" y2="231"/><text class="premium-x-label" x="764.8" y="266" text-anchor="middle">14:00</text><line class="premium-grid-v" x1="842.2" y1="40" x2="842.2" y2="231"/><text class="premium-x-label" x="842.2" y="266" text-anchor="middle">15:00</text><line class="premium-grid-v" x1="919.6" y1="40" x2="919.6" y2="231"/><text class="premium-x-label" x="919.6" y="266" text-anchor="middle">16:00</text><line class="premium-grid-v" x1="997.0" y1="40" x2="997.0" y2="231"/><text class="premium-x-label" x="997.0" y="266" text-anchor="middle">17:00</text><line class="premium-grid-v" x1="1074.4" y1="40" x2="1074.4" y2="231"/><text class="premium-x-label" x="1074.4" y="266" text-anchor="middle">18:00</text><line class="premium-grid-v" x1="1151.8" y1="40" x2="1151.8" y2="231"/><text class="premium-x-label" x="1151.8" y="266" text-anchor="middle">19:00</text><line class="premium-grid-v" x1="1229.2" y1="40" x2="1229.2" y2="231"/><text class="premium-x-label" x="1229.2" y="266" text-anchor="middle">20:00</text><line class="premium-grid-v" x1="1306.7" y1="40" x2="1306.7" y2="231"/><text class="premium-x-label" x="1306.7" y="266" text-anchor="middle">21:00</text><line class="premium-grid-v" x1="1384.1" y1="40" x2="1384.1" y2="231"/><text class="premium-x-label" x="1384.1" y="266" text-anchor="middle">22:00</text><line class="premium-grid-v" x1="1461.5" y1="40" x2="1461.5" y2="231"/><text class="premium-x-label" x="1461.5" y="266" text-anchor="middle">23:00</text><line class="premium-grid-v" x1="1538.9" y1="40" x2="1538.9" y2="231"/><text class="premium-x-label" x="1538.9" y="266" text-anchor="middle">00:00</text><line class="premium-grid-v" x1="1616.3" y1="40" x2="1616.3" y2="231"/><text class="premium-x-label" x="1616.3" y="266" text-anchor="middle">01:00</text><line class="premium-grid-v" x1="1693.8" y1="40" x2="1693.8" y2="231"/><text class="premium-x-label" x="1693.8" y="266" text-anchor="middle">02:00</text><line class="premium-grid-v" x1="1771.2" y1="40" x2="1771.2" y2="231"/><text class="premium-x-label" x="1771.2" y="266" text-anchor="middle">03:00</text><line class="premium-grid-v" x1="1848.6" y1="40" x2="1848.6" y2="231"/><text class="premium-x-label" x="1848.6" y="266" text-anchor="middle">04:00</text><line class="premium-grid-v" x1="1926.0" y1="40" x2="1926.0" y2="231"/><text class="premium-x-label" x="1926.0" y="266" text-anchor="middle">05:00</text>
+          <path class="premium-flow-area" d="M 68.0 152.2 L 145.4 143.1 L 222.8 146.1 L 300.2 134.0 L 377.7 121.9 L 455.1 127.9 L 532.5 112.8 L 609.9 100.6 L 687.3 137.0 L 764.8 143.1 L 842.2 131.0 L 919.6 118.8 L 997.0 97.6 L 1074.4 82.4 L 1151.8 61.2 L 1229.2 85.5 L 1306.7 103.7 L 1384.1 121.9 L 1461.5 131.0 L 1538.9 143.1 L 1616.3 155.2 L 1693.8 164.3 L 1771.2 179.5 L 1848.6 191.6 L 1926.0 200.7 L 1926.0 231.0 L 68.0 231.0 Z"/>
+          <path class="premium-flow-line" d="M 68.0 152.2 L 145.4 143.1 L 222.8 146.1 L 300.2 134.0 L 377.7 121.9 L 455.1 127.9 L 532.5 112.8 L 609.9 100.6 L 687.3 137.0 L 764.8 143.1 L 842.2 131.0 L 919.6 118.8 L 997.0 97.6 L 1074.4 82.4 L 1151.8 61.2 L 1229.2 85.5 L 1306.7 103.7 L 1384.1 121.9 L 1461.5 131.0 L 1538.9 143.1 L 1616.3 155.2 L 1693.8 164.3 L 1771.2 179.5 L 1848.6 191.6 L 1926.0 200.7"/>
+          <g class="premium-hour-point"><circle cx="68.0" cy="152.2" r="5"/><text x="68.0" y="139.2" text-anchor="middle">12.1</text><title>05:00 · 12.1 m³/h</title></g><g class="premium-hour-point"><circle cx="145.4" cy="143.1" r="5"/><text x="145.4" y="130.1" text-anchor="middle">12.4</text><title>06:00 · 12.4 m³/h</title></g><g class="premium-hour-point"><circle cx="222.8" cy="146.1" r="5"/><text x="222.8" y="133.1" text-anchor="middle">12.3</text><title>07:00 · 12.3 m³/h</title></g><g class="premium-hour-point"><circle cx="300.2" cy="134.0" r="5"/><text x="300.2" y="121.0" text-anchor="middle">12.7</text><title>08:00 · 12.7 m³/h</title></g><g class="premium-hour-point"><circle cx="377.7" cy="121.9" r="5"/><text x="377.7" y="108.9" text-anchor="middle">13.1</text><title>09:00 · 13.1 m³/h</title></g><g class="premium-hour-point"><circle cx="455.1" cy="127.9" r="5"/><text x="455.1" y="114.9" text-anchor="middle">12.9</text><title>10:00 · 12.9 m³/h</title></g><g class="premium-hour-point"><circle cx="532.5" cy="112.8" r="5"/><text x="532.5" y="99.8" text-anchor="middle">13.4</text><title>11:00 · 13.4 m³/h</title></g><g class="premium-hour-point"><circle cx="609.9" cy="100.6" r="5"/><text x="609.9" y="87.6" text-anchor="middle">13.8</text><title>12:00 · 13.8 m³/h</title></g><g class="premium-hour-point"><circle cx="687.3" cy="137.0" r="5"/><text x="687.3" y="124.0" text-anchor="middle">12.6</text><title>13:00 · 12.6 m³/h</title></g><g class="premium-hour-point"><circle cx="764.8" cy="143.1" r="5"/><text x="764.8" y="130.1" text-anchor="middle">12.4</text><title>14:00 · 12.4 m³/h</title></g><g class="premium-hour-point"><circle cx="842.2" cy="131.0" r="5"/><text x="842.2" y="118.0" text-anchor="middle">12.8</text><title>15:00 · 12.8 m³/h</title></g><g class="premium-hour-point"><circle cx="919.6" cy="118.8" r="5"/><text x="919.6" y="105.8" text-anchor="middle">13.2</text><title>16:00 · 13.2 m³/h</title></g><g class="premium-hour-point"><circle cx="997.0" cy="97.6" r="5"/><text x="997.0" y="84.6" text-anchor="middle">13.9</text><title>17:00 · 13.9 m³/h</title></g><g class="premium-hour-point"><circle cx="1074.4" cy="82.4" r="5"/><text x="1074.4" y="69.4" text-anchor="middle">14.4</text><title>18:00 · 14.4 m³/h</title></g><g class="premium-hour-point"><circle cx="1151.8" cy="61.2" r="5"/><text x="1151.8" y="48.2" text-anchor="middle">15.1</text><title>19:00 · 15.1 m³/h</title></g><g class="premium-hour-point"><circle cx="1229.2" cy="85.5" r="5"/><text x="1229.2" y="72.5" text-anchor="middle">14.3</text><title>20:00 · 14.3 m³/h</title></g><g class="premium-hour-point"><circle cx="1306.7" cy="103.7" r="5"/><text x="1306.7" y="90.7" text-anchor="middle">13.7</text><title>21:00 · 13.7 m³/h</title></g><g class="premium-hour-point"><circle cx="1384.1" cy="121.9" r="5"/><text x="1384.1" y="108.9" text-anchor="middle">13.1</text><title>22:00 · 13.1 m³/h</title></g><g class="premium-hour-point"><circle cx="1461.5" cy="131.0" r="5"/><text x="1461.5" y="118.0" text-anchor="middle">12.8</text><title>23:00 · 12.8 m³/h</title></g><g class="premium-hour-point"><circle cx="1538.9" cy="143.1" r="5"/><text x="1538.9" y="130.1" text-anchor="middle">12.4</text><title>00:00 · 12.4 m³/h</title></g><g class="premium-hour-point"><circle cx="1616.3" cy="155.2" r="5"/><text x="1616.3" y="142.2" text-anchor="middle">12.0</text><title>01:00 · 12.0 m³/h</title></g><g class="premium-hour-point"><circle cx="1693.8" cy="164.3" r="5"/><text x="1693.8" y="151.3" text-anchor="middle">11.7</text><title>02:00 · 11.7 m³/h</title></g><g class="premium-hour-point"><circle cx="1771.2" cy="179.5" r="5"/><text x="1771.2" y="166.5" text-anchor="middle">11.2</text><title>03:00 · 11.2 m³/h</title></g><g class="premium-hour-point"><circle cx="1848.6" cy="191.6" r="5"/><text x="1848.6" y="178.6" text-anchor="middle">10.8</text><title>04:00 · 10.8 m³/h</title></g><g class="premium-hour-point"><circle cx="1926.0" cy="200.7" r="5"/><text x="1926.0" y="187.7" text-anchor="middle">10.5</text><title>05:00 · 10.5 m³/h</title></g>
         </svg>
       </div>
     </div>
+
+    <div class="premium-scroll-note">
+      <span>←</span>
+      เลื่อนซ้าย–ขวาเพื่อดูข้อมูลครบทุกชั่วโมง
+      <span>→</span>
+    </div>
   </div>
 
-  <div class="trend-summary-strip">
-    <div><small>AVERAGE</small><b>12.8 m³/h</b></div>
-    <div><small>MIN</small><b>10.5 m³/h</b></div>
-    <div><small>PEAK</small><b>15.1 m³/h</b></div>
-    <div><small>INTERVAL</small><b>1 ชั่วโมง</b></div>
+  <div class="premium-trend-footer">
+    <div><small>AVERAGE</small><b>12.8</b><span>m³/h</span></div>
+    <div><small>MIN</small><b>10.5</b><span>m³/h</span></div>
+    <div><small>PEAK</small><b>15.1</b><span>m³/h</span></div>
+    <div><small>DATA POINTS</small><b>25</b><span>hourly</span></div>
   </div>
 </section>
 
@@ -6328,19 +6867,34 @@ html{scroll-behavior:smooth}
 <section class="daily-summary-sheet" id="dailySummarySection">
   <section class="original-form-page" id="dailySummaryCard">
     
-<div class="daily-eform-toolbar">
-  <div class="eform-tabs">
-    <button type="button" class="eform-tab active">รายละเอียด</button>
-    <button type="button" class="eform-tab">เอกสารแนบ (0)</button>
-    
-    <button type="button" class="eform-tab">ประวัติ</button>
+
+<div class="daily-eform-toolbar refined-report-toolbar">
+  <div class="eform-tabs refined-tabs">
+    <button type="button" class="eform-tab active" id="tabDailyDetail">รายละเอียด</button>
+    <button type="button" class="eform-tab" id="tabDailyHistory">ประวัติย้อนหลัง</button>
   </div>
-  <div class="eform-actions">
+  <div class="eform-actions refined-actions">
     <button type="button" id="previewDailyForm">ดูตัวอย่าง</button>
-    <button type="button" id="copyDailyForm">คัดลอกแบบฟอร์ม</button>
-    <button type="button" id="exportDailyCsv">ดาวน์โหลด CSV</button>
-    <button type="button" id="printDailySummary">PRINT / PDF</button>
+    <button type="button" id="exportDailyXlsx">XLSX</button>
+    <button type="button" id="exportDailyPdf" class="primary-export">PDF</button>
   </div>
+</div>
+
+<div class="daily-history-panel" id="dailyHistoryPanel" hidden>
+  <div class="history-panel-head">
+    <div>
+      <small>REPORT HISTORY</small>
+      <h3>ประวัติรายงานย้อนหลัง</h3>
+      <p>ค้นหา เปิดดู และส่งออกรายงานตามวันที่</p>
+    </div>
+    <div class="history-filters">
+      <div class="history-search-box"><span>⌕</span><input type="text" id="historySearchInput" placeholder="ค้นหาวันที่ เช่น 12/09/2569"></div>
+      <input type="date" id="historyDateInput">
+      <button type="button" id="clearHistoryFilter">ล้าง</button>
+    </div>
+  </div>
+  <div class="history-month-label"><span>กันยายน 2569</span><b id="historyCount">0 รายงาน</b></div>
+  <div class="history-report-list" id="historyReportList"></div>
 </div>
 
 <div class="daily-sheet-head eform-head">
@@ -7974,6 +8528,172 @@ document.addEventListener('DOMContentLoaded',()=>{
       area.scrollLeft+=e.deltaY;
     }
   },{passive:false});
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const card=document.getElementById('dailySummaryCard');
+  const historyPanel=document.getElementById('dailyHistoryPanel');
+  const detailTab=document.getElementById('tabDailyDetail');
+  const historyTab=document.getElementById('tabDailyHistory');
+  const list=document.getElementById('historyReportList');
+  const search=document.getElementById('historySearchInput');
+  const dateFilter=document.getElementById('historyDateInput');
+  const countEl=document.getElementById('historyCount');
+  const clearBtn=document.getElementById('clearHistoryFilter');
+  if(!card||!historyPanel||!detailTab||!historyTab||!list)return;
+
+  const base=[12.1,12.4,12.6,12.8,12.3,12.5,12.7,12.9,13.1,12.8,12.6,12.4,12.7,13.0,13.3,13.8,15.1,13.9,13.1,12.5,11.9,10.5,11.2,11.8,12.2];
+  const hours=Array.from({length:25},(_,i)=>String((5+i)%24).padStart(2,'0')+':00');
+  const REPORTS=[
+    {id:'2026-09-13',doc:'F-WWT-FLOW-2026-000019',setting:13.0,volume:301.0,avg:12.6,min:10.5,max:15.1,status:'พร้อมตรวจสอบ',offset:0},
+    {id:'2026-09-12',doc:'F-WWT-FLOW-2026-000018',setting:13.0,volume:308.0,avg:12.8,min:10.9,max:14.8,status:'ตรวจสอบแล้ว',offset:.2},
+    {id:'2026-09-11',doc:'F-WWT-FLOW-2026-000017',setting:12.5,volume:296.0,avg:12.3,min:10.4,max:14.5,status:'ตรวจสอบแล้ว',offset:-.25},
+    {id:'2026-09-10',doc:'F-WWT-FLOW-2026-000016',setting:13.0,volume:314.0,avg:13.1,min:11.1,max:15.0,status:'อนุมัติแล้ว',offset:.45},
+    {id:'2026-09-09',doc:'F-WWT-FLOW-2026-000015',setting:12.5,volume:302.0,avg:12.6,min:10.8,max:14.7,status:'อนุมัติแล้ว',offset:.05},
+    {id:'2026-09-08',doc:'F-WWT-FLOW-2026-000014',setting:12.0,volume:289.0,avg:12.0,min:10.2,max:14.2,status:'อนุมัติแล้ว',offset:-.55},
+    {id:'2026-09-07',doc:'F-WWT-FLOW-2026-000013',setting:12.0,volume:294.0,avg:12.2,min:10.3,max:14.4,status:'อนุมัติแล้ว',offset:-.35}
+  ];
+  let selectedId=REPORTS[0].id;
+
+  const parse=iso=>{const [y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d)};
+  const nextISO=iso=>{const d=parse(iso);d.setDate(d.getDate()+1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+  const th=iso=>{const d=parse(iso);return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()+543}`};
+  const en=iso=>parse(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const flowRows=r=>{
+    const start=th(r.id),next=th(nextISO(r.id));
+    return base.map((v,i)=>({date:i<19?start:next,time:hours[i],flow:+(v+r.offset+((i%5)-2)*.03).toFixed(1),setting:r.setting,status:'ปกติ'}));
+  };
+
+  const detailEls=()=>[
+    card.querySelector('.daily-sheet-head'),
+    card.querySelector('.daily-form-fields'),
+    card.querySelector('#flowSettingRecord'),
+    card.querySelector('.paper-sheet')
+  ].filter(Boolean);
+
+  function setTab(mode){
+    const h=mode==='history';
+    detailTab.classList.toggle('active',!h);
+    historyTab.classList.toggle('active',h);
+    historyPanel.hidden=!h;
+    detailEls().forEach(el=>el.hidden=h);
+  }
+  detailTab.onclick=()=>setTab('detail');
+  historyTab.onclick=()=>setTab('history');
+
+  function renderHistory(){
+    const q=(search.value||'').trim().toLowerCase();
+    const dt=(dateFilter.value||'').trim();
+    const data=REPORTS.filter(r=>{
+      const text=`${th(r.id)} ${r.doc} บ่อพักน้ำเสีย 2 fm-01 ${r.status}`.toLowerCase();
+      return (!q||text.includes(q))&&(!dt||r.id===dt);
+    });
+    countEl.textContent=`${data.length} รายงาน`;
+    list.innerHTML=data.length?data.map(r=>{
+      const d=parse(r.id);
+      return `<article class="history-report-card${r.id===selectedId?' selected':''}" data-id="${r.id}">
+        <div class="history-date-tile"><b>${String(d.getDate()).padStart(2,'0')}</b><span>ก.ย. ${String(d.getFullYear()+543).slice(-2)}</span></div>
+        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · บ่อพักน้ำเสีย 2 · FM-01</span><em>${r.status}</em></div>
+        <div class="history-card-actions">
+          <button class="history-open" data-open="${r.id}">เปิดรายงาน</button>
+          <button data-pdf="${r.id}">PDF</button>
+          <button data-xlsx="${r.id}">XLSX</button>
+        </div>
+      </article>`;
+    }).join(''):'<div class="history-empty">ไม่พบรายงานในวันที่หรือคำค้นหาที่เลือก</div>';
+  }
+  search.oninput=renderHistory;
+  dateFilter.oninput=renderHistory;
+  clearBtn.onclick=()=>{search.value='';dateFilter.value='';renderHistory()};
+
+  function applyReport(r){
+    selectedId=r.id;
+    const rows=flowRows(r);
+    const next=nextISO(r.id);
+    const subtitle=card.querySelector('.eform-head-main p');
+    if(subtitle)subtitle.textContent=`วันที่รายงาน ${th(r.id)} · รอบรายงาน 05:00 ของวันที่ ${th(r.id)} ถึง 05:00 ของวันที่ ${th(next)}`;
+    const f=[...card.querySelectorAll('.daily-form-fields .field-value')];
+    if(f[0])f[0].textContent=en(r.id);
+    if(f[5])f[5].textContent=`${r.setting.toFixed(1)} m³/h`;
+    const doc=card.querySelector('.eform-doc-chip b');if(doc)doc.textContent=r.doc;
+    const st=card.querySelector('.eform-status-chip');if(st)st.textContent=r.status;
+    const fv=document.getElementById('fsCurrentValue');if(fv)fv.textContent=r.setting.toFixed(1);
+    const dv=document.getElementById('dailyFlowSettingValue');if(dv)dv.textContent=`${r.setting.toFixed(1)} m³/h`;
+    const meta=document.getElementById('fsCurrentMeta');if(meta)meta.textContent=r.id===REPORTS[0].id?'ยังไม่มีการเปลี่ยนค่าในรอบรายงานนี้':`ค่าที่ใช้ในรายงานย้อนหลังวันที่ ${th(r.id)}`;
+    const fsb=document.getElementById('toggleFlowSettingForm');
+    if(fsb){const old=r.id!==REPORTS[0].id;fsb.disabled=old;fsb.textContent=old?'รายงานย้อนหลัง':'บันทึก Flow Setting';fsb.style.opacity=old?'.45':'';fsb.style.cursor=old?'not-allowed':'pointer'}
+    const tb=card.querySelector('.modern-hourly-table tbody');
+    if(tb)tb.innerHTML=rows.map(x=>`<tr><td>${x.date}</td><td>${x.time}</td><td><b>${x.flow.toFixed(1)}</b> m³/h</td><td>${x.setting.toFixed(1)} m³/h</td><td><span class="row-status">${x.status}</span></td></tr>`).join('');
+    const s=[...card.querySelectorAll('.daily-total-grid > div b')];
+    [r.volume,r.avg,r.min,r.max,r.setting].forEach((v,i)=>{if(s[i])s[i].textContent=Number(v).toFixed(1)});
+    const pv=document.getElementById('previewFlowSettingValue');if(pv)pv.textContent=`${r.setting.toFixed(1)} m³/h`;
+    renderHistory();
+    return rows;
+  }
+
+  list.onclick=async e=>{
+    const id=e.target.dataset.open||e.target.dataset.pdf||e.target.dataset.xlsx||e.target.closest('[data-id]')?.dataset.id;
+    if(!id)return;
+    const r=REPORTS.find(x=>x.id===id);if(!r)return;
+    if(e.target.dataset.pdf){e.stopPropagation();applyReport(r);setTab('detail');await exportPdf(r);return}
+    if(e.target.dataset.xlsx){e.stopPropagation();exportXlsx(r);return}
+    applyReport(r);setTab('detail');card.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+
+  function busy(title,sub){
+    let el=document.getElementById('reportExportBusy');
+    if(!el){el=document.createElement('div');el.id='reportExportBusy';el.className='export-busy';el.innerHTML='<div class="export-busy-card"><b></b><span></span></div>';document.body.appendChild(el)}
+    el.querySelector('b').textContent=title;el.querySelector('span').textContent=sub;el.hidden=false;
+    return()=>el.hidden=true;
+  }
+
+  async function exportPdf(r){
+    const done=busy('กำลังสร้าง PDF','จัดรูปแบบใบบันทึกและสรุปรายวัน');
+    try{
+      if(typeof html2canvas==='undefined'||!window.jspdf)throw new Error('PDF libs missing');
+      const toolbar=card.querySelector('.daily-eform-toolbar');
+      const oldToolbar=toolbar.style.display;
+      const oldHistory=historyPanel.hidden;
+      const hidden=detailEls().map(x=>x.hidden);
+      toolbar.style.display='none';historyPanel.hidden=true;detailEls().forEach(x=>x.hidden=false);
+      await new Promise(res=>setTimeout(res,80));
+      const canvas=await html2canvas(card,{scale:1.25,useCORS:true,backgroundColor:'#fff',logging:false});
+      toolbar.style.display=oldToolbar;historyPanel.hidden=oldHistory;detailEls().forEach((x,i)=>x.hidden=hidden[i]);
+      const {jsPDF}=window.jspdf,pdf=new jsPDF('p','mm','a4');
+      const pw=210,ph=297,m=8,iw=pw-2*m,ih=canvas.height*iw/canvas.width,data=canvas.toDataURL('image/jpeg',.9);
+      let offset=0,pageContent=ph-2*m;
+      while(offset<ih){
+        if(offset>0)pdf.addPage();
+        pdf.addImage(data,'JPEG',m,m-offset,iw,ih,'FAST');
+        offset+=pageContent;
+      }
+      pdf.save(`WWT-Daily-Flow-${r.id}.pdf`);
+    }catch(err){console.error(err);alert('สร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง')}
+    finally{done()}
+  }
+
+  function exportXlsx(r){
+    if(typeof XLSX==='undefined'){alert('ไม่สามารถโหลดระบบสร้าง XLSX ได้ กรุณาตรวจสอบอินเทอร์เน็ต');return}
+    const rows=flowRows(r),wb=XLSX.utils.book_new();
+    const summary=[
+      ['ใบบันทึกและสรุปการไหลน้ำเสียประจำวัน'],['เลขที่เอกสาร',r.doc],['วันที่รายงาน',th(r.id)],
+      ['รอบรายงาน',`05:00 ${th(r.id)} ถึง 05:00 ${th(nextISO(r.id))}`],['โรงงาน','NRT 1'],
+      ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · FM-01'],['Flow Setting',r.setting],
+      [],['ปริมาณน้ำรวม',r.volume,'m³/day'],['Flow เฉลี่ย',r.avg,'m³/h'],['Flow ต่ำสุด',r.min,'m³/h'],['Flow สูงสุด',r.max,'m³/h'],
+      ['COD ล่าสุด',11800,'mg/L'],['Zinc ล่าสุด',354,'mg/L']
+    ];
+    const ws1=XLSX.utils.aoa_to_sheet(summary);ws1['!cols']=[{wch:28},{wch:34},{wch:14}];XLSX.utils.book_append_sheet(wb,ws1,'สรุปรายวัน');
+    const hourly=[['วันที่','เวลา','Flow Rate (m³/h)','Flow Setting (m³/h)','สถานะ'],...rows.map(x=>[x.date,x.time,x.flow,x.setting,x.status])];
+    const ws2=XLSX.utils.aoa_to_sheet(hourly);ws2['!cols']=[{wch:16},{wch:10},{wch:18},{wch:20},{wch:12}];XLSX.utils.book_append_sheet(wb,ws2,'Flow รายชั่วโมง');
+    XLSX.writeFile(wb,`WWT-Daily-Flow-${r.id}.xlsx`);
+  }
+
+  document.getElementById('exportDailyPdf').onclick=async()=>exportPdf(REPORTS.find(x=>x.id===selectedId)||REPORTS[0]);
+  document.getElementById('exportDailyXlsx').onclick=()=>exportXlsx(REPORTS.find(x=>x.id===selectedId)||REPORTS[0]);
+  renderHistory();
 });
 </script>
 
