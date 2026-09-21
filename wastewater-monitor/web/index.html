@@ -5123,6 +5123,299 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.75 — compact review area before employee ID is entered */
+.inline-verify-shell{
+  align-items:start!important;
+}
+.inline-review-pane{
+  align-self:start!important;
+}
+.inline-review-empty{
+  min-height:72px!important;
+  padding:18px 12px!important;
+}
+.inline-review-empty::before{
+  content:"";
+  display:none!important;
+}
+</style>
+
+
+<style>
+/* V15.77 — premium verification design */
+.clean-inline-head{
+  margin-top:16px!important;
+  padding:14px 16px!important;
+  border:1px solid #d4dfd7!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#fbfcfb 0%,#f2f6f3 100%)!important;
+  box-shadow:0 8px 28px rgba(35,62,43,.05)!important;
+}
+.clean-inline-head>div{display:flex;flex-direction:column;gap:3px}
+.clean-inline-head small{
+  font:800 7px "Noto Sans Thai",sans-serif!important;
+  letter-spacing:.08em!important;
+  color:#819187!important;
+}
+.clean-inline-head b{
+  font:800 14px "Noto Sans Thai",sans-serif!important;
+  color:#20382a!important;
+}
+.clean-inline-head>span{
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  border:1px solid #ecd9a2!important;
+  background:linear-gradient(180deg,#fff7df,#fff0c9)!important;
+  color:#755913!important;
+  font:800 7px "Noto Sans Thai",sans-serif!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55)!important;
+}
+
+.clean-verify-shell{
+  display:grid!important;
+  grid-template-columns:minmax(320px,.76fr) minmax(0,1.24fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+  margin-top:12px!important;
+}
+.clean-sign-pane,
+.clean-review-pane{
+  border:1px solid #d5dfd7!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fafcfb 100%)!important;
+  box-shadow:0 10px 30px rgba(37,64,47,.05)!important;
+}
+.clean-sign-pane{padding:16px!important}
+.clean-review-pane{padding:16px!important;min-height:0!important}
+
+.clean-sign-pane-head,
+.clean-review-top{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding-bottom:12px!important;
+  margin-bottom:12px!important;
+  border-bottom:1px solid #e0e8e2!important;
+}
+.clean-sign-pane-head small,
+.clean-review-top small{
+  display:block!important;
+  font:700 7px "Noto Sans Thai",sans-serif!important;
+  color:#839186!important;
+}
+.clean-sign-pane-head b,
+.clean-review-top b{
+  display:block!important;
+  margin-top:4px!important;
+  font:800 12px "Noto Sans Thai",sans-serif!important;
+  color:#223b2b!important;
+}
+.clean-shift-meta{
+  min-width:74px;
+  padding:8px 10px;
+  border:1px solid #dce6de;
+  border-radius:14px;
+  background:#f4f8f5;
+  text-align:right;
+}
+.clean-shift-meta span{
+  display:block;
+  font:800 10px "Outfit",sans-serif;
+  color:#2f5640;
+}
+.clean-shift-meta strong{
+  display:block;
+  margin-top:3px;
+  font:700 7px "Noto Sans Thai",sans-serif;
+  color:#6b7d72;
+}
+.clean-code-label,
+.clean-field-label{
+  display:block!important;
+  margin:10px 0 6px!important;
+  font:800 7.5px "Noto Sans Thai",sans-serif!important;
+  color:#465c4f!important;
+}
+.clean-code-wrap{position:relative!important}
+.clean-code-wrap input{
+  min-height:48px!important;
+  padding:0 78px 0 14px!important;
+  border:1px solid #c7d5ca!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  font:800 13px "Outfit","Noto Sans Thai",sans-serif!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7)!important;
+}
+.clean-code-wrap input::placeholder{color:#9aaaa0!important;font-weight:700!important;letter-spacing:0!important}
+.clean-code-wrap input:focus{
+  border-color:#6c9778!important;
+  box-shadow:0 0 0 4px rgba(92,140,106,.10)!important;
+}
+.clean-code-wrap span{
+  right:10px!important;
+  padding:6px 9px!important;
+  border-radius:999px!important;
+  border:1px solid #e1e8e2!important;
+  background:#f3f6f4!important;
+  color:#78877f!important;
+  font:800 6.6px "Noto Sans Thai",sans-serif!important;
+}
+
+.clean-person-card{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-top:10px!important;
+  padding:11px!important;
+  border:1px solid #d5e0d7!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,#f6faf7,#eef5f0)!important;
+}
+.clean-person-card .inline-person-initial{
+  width:40px!important;height:40px!important;flex:0 0 40px!important;
+  background:linear-gradient(145deg,#3d704f,#2a563a)!important;
+  box-shadow:0 8px 18px rgba(45,95,63,.18)!important;
+  font:800 12px "Noto Sans Thai",sans-serif!important;
+}
+.clean-person-card small{font-size:6.6px!important;color:#809085!important}
+.clean-person-card b{font-size:9px!important;color:#233c2c!important}
+.clean-person-card span{font-size:7px!important;color:#66786d!important}
+
+.clean-route{
+  margin-top:10px!important;
+  padding:11px 12px!important;
+  border:1px solid #d9e5db!important;
+  border-left:4px solid #5f9070!important;
+  border-radius:15px!important;
+  background:#f8fbf9!important;
+}
+.clean-route small{font-size:6.8px!important;color:#7e8f84!important}
+.clean-route b{font-size:8.8px!important;color:#285039!important}
+.clean-route span{font-size:7px!important;color:#62756a!important}
+
+.clean-confirm{
+  margin-top:10px!important;
+  padding:10px 11px!important;
+  border:1px solid #d7e1d8!important;
+  border-radius:12px!important;
+  background:#f5f8f6!important;
+}
+.clean-confirm span{font-size:7px!important;color:#38513f!important}
+.clean-sign-form .inline-name{
+  min-height:42px!important;
+  border-radius:12px!important;
+  background:#f2f6f3!important;
+  font-size:8.4px!important;
+}
+.clean-signature-wrap{
+  padding:8px 8px 34px!important;
+  border:1px solid #c8d6cb!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#ffffff,#fbfdfb)!important;
+}
+.clean-signature-wrap canvas{
+  height:104px!important;
+  border-radius:10px!important;
+  background:
+    linear-gradient(to bottom,transparent calc(100% - 24px),#dbe4de calc(100% - 23px),transparent calc(100% - 22px)),
+    linear-gradient(180deg,#fcfffd 0%,#f6faf7 100%)!important;
+}
+.clean-signature-wrap>small{font-size:6px!important;color:#93a198!important}
+.clean-signature-wrap>button{
+  min-height:24px!important;
+  padding:0 9px!important;
+  border-radius:8px!important;
+  background:#f1f5f2!important;
+  color:#607167!important;
+  font-size:6.3px!important;
+}
+.clean-submit{
+  min-height:42px!important;
+  margin-top:10px!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,#355f46,#284d36)!important;
+  box-shadow:0 12px 24px rgba(45,88,61,.18)!important;
+  font:800 8px "Noto Sans Thai",sans-serif!important;
+}
+
+.clean-review-top{margin-bottom:0!important}
+.clean-period-pill{
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  border:1px solid #dfe8e1!important;
+  background:#f4f7f5!important;
+  color:#64766b!important;
+  white-space:nowrap!important;
+  font:800 6.8px "Noto Sans Thai",sans-serif!important;
+}
+.clean-review-empty{
+  min-height:108px!important;
+  margin-top:12px!important;
+  padding:18px 14px!important;
+  border:1px dashed #cdd8cf!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#fcfdfc,#f6faf7)!important;
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+  color:#7d8d83!important;
+  font:700 8px "Noto Sans Thai",sans-serif!important;
+}
+.clean-review-empty span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.clean-review-empty span::before{
+  content:"⌕";
+  width:28px;height:28px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#ecf3ee;
+  color:#4b6d57;
+  font:800 12px "Outfit",sans-serif;
+}
+.clean-review-stats{margin:12px 0 10px!important;gap:8px!important}
+.clean-review-stats>div{
+  padding:9px 10px!important;
+  border:1px solid #d8e1da!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#fafcfb,#f2f6f3)!important;
+}
+.clean-review-table{
+  max-height:295px!important;
+  border:1px solid #d5dfd7!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+.clean-review-table th{
+  background:#eef4ef!important;
+  color:#53675b!important;
+  font-weight:800!important;
+}
+.clean-review-table td{color:#304538!important}
+.clean-review-table tbody tr:nth-child(even) td{background:#fbfdfb!important}
+.clean-review-table tbody tr:hover td{background:#f3f8f4!important}
+
+.clean-verify-shell:not(.has-person){
+  grid-template-columns:minmax(320px,450px) 1fr!important;
+}
+.clean-verify-shell:not(.has-person) .clean-review-pane{
+  padding-bottom:12px!important;
+}
+.clean-verify-shell:not(.has-person) .clean-review-empty{
+  min-height:96px!important;
+}
+
+@media(max-width:860px){
+  .clean-verify-shell,
+  .clean-verify-shell:not(.has-person){grid-template-columns:1fr!important}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -5650,35 +5943,90 @@ html{scroll-behavior:smooth}
         <textarea id="dailyNote">ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 ไม่พบเหตุการณ์ผิดปกติในตัวอย่างข้อมูลจำลอง</textarea>
       </div>
 
-<div class="sheet-section-head inline-verify-head">
+
+<div class="sheet-section-head inline-verify-head clean-inline-head">
   <div>
-    <small>SECTION 4 · VERIFICATION & SIGNATURE</small>
-    <b>ตรวจสอบและลงชื่อรับรอง</b>
+    <small>ตรวจสอบข้อมูลประจำกะ</small>
+    <b>ยืนยันผู้ตรวจสอบและลงชื่อ</b>
   </div>
   <span id="inlineDocState">รอตรวจสอบ</span>
 </div>
 
-<div class="inline-verify-shell">
-  <div class="inline-review-pane">
-    <div class="inline-review-top">
+<div class="inline-verify-shell clean-verify-shell" id="inlineVerifyShell">
+
+  <div class="inline-sign-pane clean-sign-pane">
+    <div class="clean-sign-pane-head">
       <div>
-        <small>ช่วงข้อมูลที่ตรวจสอบ</small>
-        <b id="inlineReviewTitle">กรอกรหัสพนักงาน</b>
+        <small>ผู้มีสิทธิ์ลงชื่อ</small>
+        <b>กรอกรหัสพนักงาน</b>
       </div>
-      <div class="inline-shift-chip">
-        <small id="inlineClock">--:--</small>
-        <b id="inlineShift">--</b>
+      <div class="clean-shift-meta">
+        <span id="inlineClock">--:--</span>
+        <strong id="inlineShift">--</strong>
       </div>
     </div>
 
-    <div class="inline-review-empty" id="inlineReviewEmpty">
-      กรอกรหัสพนักงานเพื่อแสดงข้อมูลที่ต้องตรวจสอบ
+    <label class="clean-code-label">รหัสพนักงาน</label>
+    <div class="inline-code-wrap clean-code-wrap">
+      <input type="text" id="inlineEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน">
+      <span id="inlineLookupState">8–9 หลัก</span>
+    </div>
+
+    <div class="inline-person-card clean-person-card" id="inlinePersonCard" hidden>
+      <div class="inline-person-initial" id="inlinePersonInitial">—</div>
+      <div>
+        <small>ผู้ตรวจสอบ</small>
+        <b id="inlinePersonName">—</b>
+        <span id="inlinePersonPosition">—</span>
+      </div>
+    </div>
+
+    <div class="inline-route clean-route" id="inlineRoute" hidden>
+      <small>สิทธิ์การลงชื่อ</small>
+      <b id="inlineRouteTitle">—</b>
+      <span id="inlineRouteText">—</span>
+    </div>
+
+    <div class="inline-sign-form clean-sign-form" id="inlineSignForm" hidden>
+      <label class="inline-confirm clean-confirm">
+        <input type="checkbox" id="inlineConfirm">
+        <span id="inlineConfirmText">ตรวจสอบข้อมูลครบถ้วนแล้ว</span>
+      </label>
+
+      <label class="clean-field-label">ชื่อ-นามสกุล</label>
+      <input class="inline-name" id="inlineEmployeeName" type="text" readonly>
+
+      <label class="clean-field-label">ลายเซ็น</label>
+      <div class="inline-signature-wrap clean-signature-wrap">
+        <canvas id="inlineSignatureCanvas"></canvas>
+        <small>ลงลายเซ็นในกรอบ</small>
+        <button type="button" id="inlineClearSignature">ล้าง</button>
+      </div>
+
+      <div class="inline-sign-error" id="inlineSignError"></div>
+      <button type="button" class="inline-submit clean-submit" id="inlineSignSubmit">ลงชื่อรับรอง</button>
+    </div>
+
+    <div class="inline-access-msg" id="inlineAccessMsg" hidden></div>
+  </div>
+
+  <div class="inline-review-pane clean-review-pane">
+    <div class="inline-review-top clean-review-top">
+      <div>
+        <small>ข้อมูลประจำกะ</small>
+        <b id="inlineReviewTitle">รอระบุรหัสพนักงาน</b>
+      </div>
+      <div class="clean-period-pill" id="cleanPeriodPill">รอรหัสพนักงาน</div>
+    </div>
+
+    <div class="inline-review-empty clean-review-empty" id="inlineReviewEmpty">
+      <span>กรอกรหัสพนักงานเพื่อแสดงข้อมูลที่ต้องตรวจสอบ</span>
     </div>
 
     <div id="inlineReviewContent" hidden>
-      <div class="inline-review-stats" id="inlineReviewStats"></div>
+      <div class="inline-review-stats clean-review-stats" id="inlineReviewStats"></div>
 
-      <div class="inline-review-table">
+      <div class="inline-review-table clean-review-table">
         <table>
           <thead>
             <tr>
@@ -5697,52 +6045,8 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 
-  <div class="inline-sign-pane">
-    <label>รหัสพนักงาน</label>
-    <div class="inline-code-wrap">
-      <input type="text" id="inlineEmployeeCode" inputmode="numeric" maxlength="8" placeholder="กรอกรหัส 8 หลัก">
-      <span id="inlineLookupState">8 หลัก</span>
-    </div>
-
-    <div class="inline-person-card" id="inlinePersonCard" hidden>
-      <div class="inline-person-initial" id="inlinePersonInitial">—</div>
-      <div>
-        <small>ผู้ตรวจสอบ</small>
-        <b id="inlinePersonName">—</b>
-        <span id="inlinePersonPosition">—</span>
-      </div>
-    </div>
-
-    <div class="inline-route" id="inlineRoute" hidden>
-      <small>ตำแหน่งลงชื่อ</small>
-      <b id="inlineRouteTitle">—</b>
-      <span id="inlineRouteText">—</span>
-    </div>
-
-    <div class="inline-sign-form" id="inlineSignForm" hidden>
-      <label class="inline-confirm">
-        <input type="checkbox" id="inlineConfirm">
-        <span id="inlineConfirmText">ตรวจสอบข้อมูลครบถ้วนแล้ว</span>
-      </label>
-
-      <label>ชื่อ-นามสกุล</label>
-      <input class="inline-name" id="inlineEmployeeName" type="text" readonly>
-
-      <label>ลายเซ็น</label>
-      <div class="inline-signature-wrap">
-        <canvas id="inlineSignatureCanvas"></canvas>
-        <small>เซ็นในกรอบนี้</small>
-        <button type="button" id="inlineClearSignature">ล้างลายเซ็น</button>
-      </div>
-
-      <div class="inline-sign-error" id="inlineSignError"></div>
-      <button type="button" class="inline-submit" id="inlineSignSubmit">ลงชื่อรับรอง</button>
-    </div>
-
-    <div class="inline-access-msg" id="inlineAccessMsg" hidden></div>
-  </div>
 </div>
-</div>
+
   </section>
 </section>
 
@@ -6484,27 +6788,27 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const EMPLOYEES={
     "15600533":{name:"นายธวัชชัย แซ่ด่าน",position:"หัวหน้าแผนก",role:"head"},
-    "16100241":{name:"นางสาวณัฐจิตา วัลลา",position:"รองหัวหน้าแผนก",role:"deputy"},
+    "16100241":{name:"นางสาวณัฏฐณิชา วัลลา",position:"รองหัวหน้าแผนก",role:"deputy"},
     "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
-    "16000223":{name:"นายเก่ง อามอน",position:"พนักงาน",role:"employee"},
+    "16000223":{name:"นายเก่ง จางทอน",position:"พนักงาน",role:"employee"},
     "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
-    "16100240":{name:"นายศรัณย์ภัทร ยะกาศผล",position:"พนักงาน",role:"employee"},
-    "16100266":{name:"นางสาวเปมิกา สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
+    "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน",role:"employee"},
+    "16100266":{name:"นางสาวนปภัส สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
     "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก",role:"reviewer"},
-    "16200289":{name:"นายมรงค์ชัย เผือกทุ่งผล",position:"พนักงาน",role:"employee"},
-    "16200301":{name:"นายพิเชษฐ์ สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
-    "16300359":{name:"นางสาวบุษรา อินทัพไทย",position:"เจ้าหน้าที่เอกสาร",role:"document"},
-    "16400970":{name:"นายบูรพงษ์ บุญมา",position:"พนักงาน",role:"employee"},
-    "165015053":{name:"นายมที ยมยุล",position:"พนักงาน",role:"employee"},
-    "16601248":{name:"นายกันศิริรัช หลีนส",position:"พนักงาน",role:"employee"},
-    "16601414":{name:"นางสาวมัณฑิรา ไกรศรี",position:"พนักงาน",role:"employee"},
-    "16701568":{name:"นายสุรสิทธิ์ อินทะวงษ์",position:"พนักงาน",role:"employee"},
-    "16701575":{name:"นายทีปกร เต้าเงิน",position:"พนักงาน",role:"employee"},
+    "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน",role:"employee"},
+    "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16300359":{name:"นางสาวบุษรา ถิ่นทัพไทย",position:"เจ้าหน้าที่เอกสาร",role:"document"},
+    "16400970":{name:"นายณัฐพงษ์ บุญทา",position:"พนักงาน",role:"employee"},
+    "165015053":{name:"นายนที ยมมูล",position:"พนักงาน",role:"employee"},
+    "16601248":{name:"นายกันติธัช หมื่นสี",position:"พนักงาน",role:"employee"},
+    "16601414":{name:"นางสาวนัสทริกา ไกรศรี",position:"พนักงาน",role:"employee"},
+    "16701568":{name:"นายสุรสิทธิ์ จันทะวงษ์",position:"พนักงาน",role:"employee"},
+    "16701575":{name:"นายทีปกร เภ่าโง่น",position:"พนักงาน",role:"employee"},
     "16701586":{name:"นายอนุวัฒน์ อมรเอกอิทธิ",position:"พนักงาน",role:"employee"},
     "16701609":{name:"นายพรชัย ปิ่นแก้ว",position:"พนักงาน",role:"employee"},
-    "16801741":{name:"นายอนุวิชัย พุกน้อย",position:"พนักงาน",role:"employee"},
-    "16901902":{name:"นายภาคภูมิ มะระเมน",position:"พนักงาน",role:"employee"}
+    "16801741":{name:"นายชนัฏชัย พุกห้อย",position:"พนักงาน",role:"employee"},
+    "16901902":{name:"นายดาวุฒิ มะระเฮน",position:"พนักงาน",role:"employee"}
   };
 
   const SHIFTS={
@@ -6540,19 +6844,57 @@ document.addEventListener('DOMContentLoaded',()=>{
       return {date:td[0].textContent.trim(),time,hour,flow,setting:td[3].textContent.trim(),status:td[4].textContent.trim()};
     }).filter(Boolean);
   }
-  function rowsShift(k){
+  function rowsShiftToCurrentHour(k){
+    const rows=rowsAll();
     const c=SHIFTS[k];
-    return rowsAll().filter(r=>c.start<c.end?(r.hour>=c.start&&r.hour<c.end):(r.hour>=c.start||r.hour<c.end));
+    const p=nowTH();
+    const currentHour=Number(p.hour);
+
+    // Find the first row belonging to the start of this shift.
+    const startIndex=rows.findIndex(r=>r.hour===c.start);
+    if(startIndex<0) return [];
+
+    // Find the current hourly row AFTER the shift start.
+    // This avoids picking the next-day 05:00 row in the 05:00→05:00 cycle.
+    let endIndex=-1;
+    for(let i=startIndex;i<rows.length;i++){
+      if(rows[i].hour===currentHour){
+        endIndex=i;
+        break;
+      }
+    }
+
+    // If the exact current-hour row is not present yet, show all
+    // available rows in this shift up to the latest completed record.
+    if(endIndex<0){
+      endIndex=startIndex;
+      for(let i=startIndex;i<rows.length;i++){
+        const h=rows[i].hour;
+        const inShift = c.start<c.end
+          ? (h>=c.start && h<c.end)
+          : (h>=c.start || h<c.end);
+        if(!inShift) break;
+        endIndex=i;
+      }
+    }
+
+    return rows.slice(startIndex,endIndex+1);
+  }
+
+  function reviewPeriodToCurrentHour(k){
+    const c=SHIFTS[k];
+    const p=nowTH();
+    return `${String(c.start).padStart(2,'0')}:00–${p.hour}:00`;
   }
   function employeesComplete(){return ['A','B','C'].every(k=>signed[k])}
 
   function route(emp){
     const c=SHIFTS[currentShift];
     if(emp.role==='employee'){
-      return {title:c.slot,text:`${c.label} · ${c.period}`,rows:rowsShift(currentShift),can:!signed[currentShift],key:currentShift};
+      return {title:c.slot,text:`${c.label} · ${reviewPeriodToCurrentHour(currentShift)}`,rows:rowsShiftToCurrentHour(currentShift),can:!signed[currentShift],key:currentShift};
     }
     if(emp.role==='shift_reviewer'){
-      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:c.period,rows:rowsShift(currentShift),can:!signed[currentShift],key:currentShift};
+      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:reviewPeriodToCurrentHour(currentShift),rows:rowsShiftToCurrentHour(currentShift),can:!signed[currentShift],key:currentShift};
     }
     if(emp.role==='reviewer'){
       return {title:'ผู้ตรวจสอบเอกสารประจำวัน',text:'รอบ 05:00–05:00',rows:rowsAll(),can:employeesComplete()&&!signed.reviewer,key:'reviewer',
@@ -6575,8 +6917,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     `).join('');
     const vals=rows.map(r=>r.flow).filter(Number.isFinite);
     const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+    const routeNow=currentEmployee ? route(currentEmployee) : null;
     document.getElementById('inlineReviewStats').innerHTML=`
-      <div><small>จำนวนข้อมูล</small><b>${rows.length} รายการ</b></div>
+      <div><small>ช่วงที่ตรวจสอบ</small><b>${routeNow ? routeNow.text.replace(/^.*?·\s*/,'') : '—'}</b></div>
       <div><small>Average</small><b>${vals.length?avg.toFixed(2)+' m³/h':'—'}</b></div>
       <div><small>Min</small><b>${vals.length?Math.min(...vals).toFixed(1)+' m³/h':'—'}</b></div>
       <div><small>Max</small><b>${vals.length?Math.max(...vals).toFixed(1)+' m³/h':'—'}</b></div>`;
@@ -6616,6 +6959,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function resetUI(){
     currentEmployee=null;
+    document.getElementById('inlineVerifyShell')?.classList.remove('has-person');
+    const pp=document.getElementById('cleanPeriodPill'); if(pp) pp.textContent='รอรหัสพนักงาน';
     document.getElementById('inlinePersonCard').hidden=true;
     document.getElementById('inlineRoute').hidden=true;
     document.getElementById('inlineSignForm').hidden=true;
@@ -6626,13 +6971,37 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   codeInput.addEventListener('input',()=>{
-    const code=codeInput.value.replace(/\D/g,'').slice(0,8);codeInput.value=code;
+    const code=codeInput.value.replace(/\D/g,'').slice(0,9);codeInput.value=code;
     const state=document.getElementById('inlineLookupState');
     document.getElementById('inlineSignError').classList.remove('show');
-    if(code.length<8){state.textContent=`${code.length}/8`;state.className='';resetUI();return}
+
     const emp=EMPLOYEES[code];
-    if(!emp){state.textContent='ไม่พบ';state.className='bad';resetUI();document.getElementById('inlineAccessMsg').hidden=false;document.getElementById('inlineAccessMsg').textContent='ไม่พบรหัสพนักงาน';return}
+    const hasPossibleLongerCode=Object.keys(EMPLOYEES).some(k=>k.startsWith(code));
+
+    if(!emp && code.length<8){
+      state.textContent=`${code.length}/8–9`;
+      state.className='';
+      resetUI();
+      return;
+    }
+
+    if(!emp && hasPossibleLongerCode && code.length<9){
+      state.textContent='กรอกต่อ';
+      state.className='';
+      resetUI();
+      return;
+    }
+
+    if(!emp){
+      state.textContent='ไม่พบ';
+      state.className='bad';
+      resetUI();
+      document.getElementById('inlineAccessMsg').hidden=false;
+      document.getElementById('inlineAccessMsg').textContent='ไม่พบรหัสพนักงานในรายชื่อแผนก';
+      return;
+    }
     currentEmployee={...emp,code};state.textContent='พบ';state.className='ok';
+    document.getElementById('inlineVerifyShell')?.classList.add('has-person');
 
     document.getElementById('inlinePersonCard').hidden=false;
     document.getElementById('inlinePersonInitial').textContent=emp.name.replace(/^(นาย|นางสาว|นาง)/,'').trim().charAt(0)||'—';
@@ -6647,6 +7016,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('inlineReviewEmpty').hidden=true;
     document.getElementById('inlineReviewContent').hidden=false;
     document.getElementById('inlineReviewTitle').textContent=r.title;
+    const pp=document.getElementById('cleanPeriodPill'); if(pp) pp.textContent=r.text.replace(/^.*?·\s*/,'');
     renderRows(r.rows);renderSigned();
 
     if(r.can){
