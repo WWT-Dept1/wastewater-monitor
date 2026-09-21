@@ -5627,6 +5627,422 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.81 — Flow Setting recorder */
+.flow-setting-record{
+  margin:14px 0 18px;
+  border:1px solid #cbd8ce;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fbfdfb 0%,#f2f7f3 100%);
+  box-shadow:0 9px 26px rgba(39,67,48,.05);
+  overflow:hidden;
+}
+.fs-current{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+}
+.fs-mark{
+  width:38px;height:38px;flex:0 0 38px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  background:linear-gradient(145deg,#3f7251,#2d5a3e);
+  color:#fff;
+  font:900 13px "Outfit",sans-serif;
+  box-shadow:0 7px 16px rgba(45,91,61,.16);
+}
+.fs-current-copy{min-width:0;flex:1}
+.fs-current-copy>small{
+  display:block;
+  font:800 7px "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:.10em;
+  color:#728279;
+}
+.fs-value-line{
+  display:flex;align-items:baseline;gap:6px;
+  margin-top:3px;
+}
+.fs-value-line b{
+  font:900 21px "Outfit",sans-serif;
+  color:#183222;
+}
+.fs-value-line span{
+  font:700 9px "Outfit",sans-serif;
+  color:#65786c;
+}
+.fs-value-line em{
+  align-self:center;
+  margin-left:5px;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#dff0e3;
+  color:#28613b;
+  font:800 7px "Noto Sans Thai",sans-serif;
+  font-style:normal;
+}
+.fs-current-copy p{
+  margin:3px 0 0;
+  font:600 7.5px "Noto Sans Thai",sans-serif;
+  color:#78887e;
+}
+.fs-edit-btn{
+  flex:0 0 auto;
+  min-height:38px;
+  padding:0 14px;
+  border:1px solid #a9c0ae;
+  border-radius:11px;
+  background:#eef5f0;
+  color:#2b593c;
+  cursor:pointer;
+  font:800 8px "Noto Sans Thai",sans-serif;
+}
+.fs-edit-btn:hover{
+  background:#315f43;color:#fff;border-color:#315f43;
+}
+
+.fs-editor{
+  padding:14px 16px 15px;
+  border-top:1px solid #d8e2da;
+  background:#f8fbf9;
+}
+.fs-editor-grid{
+  display:grid;
+  grid-template-columns:1fr 1.1fr 1.25fr;
+  gap:10px;
+  align-items:end;
+}
+.fs-field label{
+  display:block;
+  margin-bottom:5px;
+  font:800 7.5px "Noto Sans Thai",sans-serif;
+  color:#435b4c;
+}
+.fs-number-wrap,.fs-code-wrap{position:relative}
+.fs-number-wrap input,.fs-code-wrap input{
+  width:100%;
+  min-height:42px;
+  box-sizing:border-box;
+  padding:0 62px 0 11px;
+  border:1px solid #c3d1c6;
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+  color:#203a2a;
+  font:800 11px "Outfit","Noto Sans Thai",sans-serif;
+}
+.fs-number-wrap input:focus,.fs-code-wrap input:focus{
+  border-color:#679174;
+  box-shadow:0 0 0 3px rgba(83,134,98,.08);
+}
+.fs-number-wrap span,.fs-code-wrap span{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  padding:4px 6px;border-radius:7px;
+  background:#eef3ef;color:#718178;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+}
+.fs-code-wrap span.ok{background:#dff0e3;color:#28613b}
+.fs-code-wrap span.bad{background:#f8e5e2;color:#9a4038}
+.fs-employee{
+  min-height:42px;
+  padding:8px 10px;
+  box-sizing:border-box;
+  border:1px solid #d3ddd5;
+  border-radius:10px;
+  background:#f2f6f3;
+}
+.fs-employee small{
+  display:block;font:700 6.5px "Noto Sans Thai",sans-serif;color:#7a8980;
+}
+.fs-employee b{
+  display:block;margin-top:2px;font:800 8.5px "Noto Sans Thai",sans-serif;color:#243d2e;
+}
+.fs-employee span{
+  display:block;margin-top:1px;font:600 6.5px "Noto Sans Thai",sans-serif;color:#6c7d72;
+}
+.fs-editor-actions{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:11px;
+}
+.fs-hint{
+  max-width:560px;
+  font:600 7px/1.45 "Noto Sans Thai",sans-serif;
+  color:#708178;
+}
+.fs-editor-actions>div:last-child{display:flex;gap:7px}
+.fs-cancel,.fs-save{
+  min-height:34px;padding:0 12px;border-radius:9px;cursor:pointer;
+  font:800 7.5px "Noto Sans Thai",sans-serif;
+}
+.fs-cancel{
+  border:1px solid #c7d3ca;background:#f3f6f4;color:#607267;
+}
+.fs-save{
+  border:0;background:#315f43;color:#fff;
+}
+.fs-save:disabled{opacity:.38;cursor:not-allowed}
+.fs-error{
+  display:none;
+  margin-top:8px;padding:7px 9px;border-radius:8px;
+  background:#fae7e5;color:#943f38;
+  font:700 7px "Noto Sans Thai",sans-serif;
+}
+.fs-error.show{display:block}
+.fs-history-wrap{
+  padding:0 16px 14px;
+}
+.fs-history-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0 7px;border-top:1px solid #dbe4dd;
+}
+.fs-history-head b{
+  font:800 8px "Noto Sans Thai",sans-serif;color:#314d3a;
+}
+.fs-history-head span{
+  font:600 6.5px "Noto Sans Thai",sans-serif;color:#7b8980;
+}
+.fs-history-list{display:grid;gap:6px}
+.fs-history-row{
+  display:grid;
+  grid-template-columns:92px 90px 1fr auto;
+  gap:8px;align-items:center;
+  padding:8px 9px;
+  border:1px solid #d7e0d9;
+  border-radius:9px;
+  background:#fbfdfb;
+}
+.fs-history-row span{
+  font:700 7px "Noto Sans Thai",sans-serif;color:#6b7d72;
+}
+.fs-history-row b{
+  font:800 8.5px "Outfit","Noto Sans Thai",sans-serif;color:#233c2c;
+}
+.fs-history-row strong{
+  font:700 7px "Noto Sans Thai",sans-serif;color:#2c4a36;
+}
+.fs-history-row em{
+  padding:3px 6px;border-radius:999px;
+  background:#e4efe6;color:#2d6340;
+  font:700 6.5px "Noto Sans Thai",sans-serif;font-style:normal;
+}
+@media(max-width:820px){
+  .fs-editor-grid{grid-template-columns:1fr 1fr}
+  .fs-employee{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .fs-current{align-items:flex-start;flex-wrap:wrap}
+  .fs-edit-btn{width:100%}
+  .fs-editor-grid{grid-template-columns:1fr}
+  .fs-employee{grid-column:auto}
+  .fs-editor-actions{align-items:stretch;flex-direction:column}
+  .fs-editor-actions>div:last-child{display:grid;grid-template-columns:1fr 1fr}
+  .fs-history-row{grid-template-columns:1fr 1fr}
+}
+</style>
+
+
+<style>
+/* V15.82 — detailed hourly trend + reliable Flow Setting button */
+.detailed-hourly-trend{
+  overflow:hidden!important;
+}
+.detailed-trend-head{
+  align-items:flex-start!important;
+  gap:18px!important;
+}
+.detailed-trend-head p{
+  margin:5px 0 0;
+  font:600 8px "Noto Sans Thai",sans-serif;
+  color:#718078;
+}
+.trend-head-right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:7px;
+}
+.trend-scroll-tools{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.trend-scroll-tools>b{
+  margin-right:3px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#e6eee8;
+  color:#496754;
+  font:800 7px "Noto Sans Thai",sans-serif;
+}
+.trend-scroll-tools button{
+  width:30px;
+  height:30px;
+  border:1px solid #c9d5cc;
+  border-radius:9px;
+  background:linear-gradient(145deg,#f8faf8,#e9efeb);
+  color:#315840;
+  cursor:pointer;
+  font:800 18px/1 "Outfit",sans-serif;
+  box-shadow:3px 3px 8px rgba(105,123,111,.10),-2px -2px 7px rgba(255,255,255,.75);
+}
+.trend-scroll-tools button:hover{
+  background:#315f43;
+  color:#fff;
+  border-color:#315f43;
+}
+.trend-scroll-shell{
+  position:relative;
+  border:1px solid rgba(75,104,84,.10);
+  border-radius:18px;
+  background:linear-gradient(145deg,#eef2ed,#e4eae5);
+  overflow:hidden;
+}
+.trend-scroll-hint{
+  position:absolute;
+  z-index:3;
+  right:12px;
+  top:9px;
+  padding:4px 7px;
+  border-radius:999px;
+  background:rgba(247,250,248,.92);
+  border:1px solid rgba(95,124,103,.12);
+  color:#718178;
+  pointer-events:none;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+}
+.trend-scroll-area{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:5px 0 4px;
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  scrollbar-color:#8da497 #dce5df;
+  cursor:grab;
+}
+.trend-scroll-area:active{cursor:grabbing}
+.trend-scroll-area::-webkit-scrollbar{height:9px}
+.trend-scroll-area::-webkit-scrollbar-track{
+  background:#dce5df;
+  border-radius:999px;
+}
+.trend-scroll-area::-webkit-scrollbar-thumb{
+  background:#8da497;
+  border:2px solid #dce5df;
+  border-radius:999px;
+}
+.trend-canvas{
+  width:1880px;
+  min-width:1880px;
+}
+.trend-canvas svg{
+  display:block;
+  width:1880px;
+  height:230px;
+  overflow:visible;
+}
+.hourly-grid-line{
+  stroke:#c7d3cb;
+  stroke-width:1;
+  stroke-dasharray:3 6;
+}
+.hourly-tick{
+  stroke:#d8e1db;
+  stroke-width:1;
+}
+.hourly-area{
+  fill:url(#hourlyTrendFill);
+}
+.hourly-line{
+  fill:none;
+  stroke:#315f43;
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+.hourly-point circle{
+  fill:#f7faf8;
+  stroke:#315f43;
+  stroke-width:2.2;
+  vector-effect:non-scaling-stroke;
+}
+.hourly-point text{
+  fill:#315840!important;
+  font:800 9px "Outfit",sans-serif;
+}
+.hourly-x-label{
+  fill:#6e7f74!important;
+  font:700 9px "Outfit",sans-serif;
+}
+.hourly-y-label{
+  fill:#829087!important;
+  font:700 8px "Outfit",sans-serif;
+}
+.trend-summary-strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:11px;
+}
+.trend-summary-strip>div{
+  padding:9px 10px;
+  border:1px solid #d4ddd6;
+  border-radius:11px;
+  background:linear-gradient(145deg,#f3f6f4,#e8eee9);
+}
+.trend-summary-strip small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.08em;
+  color:#78877e;
+}
+.trend-summary-strip b{
+  display:block;
+  margin-top:4px;
+  font:900 10px "Outfit","Noto Sans Thai",sans-serif;
+  color:#203a2a;
+}
+
+/* Prevent another layer from swallowing Flow Setting clicks. */
+.flow-setting-record{
+  position:relative!important;
+  z-index:2!important;
+}
+.fs-current{
+  position:relative!important;
+  z-index:3!important;
+}
+.fs-edit-btn{
+  position:relative!important;
+  z-index:10!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#flowSettingEditor{
+  position:relative!important;
+  z-index:2!important;
+}
+#flowSettingEditor[hidden]{
+  display:none!important;
+}
+
+@media(max-width:700px){
+  .detailed-trend-head{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .trend-head-right{
+    align-items:flex-start;
+  }
+  .trend-summary-strip{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -5643,17 +6059,53 @@ html{scroll-behavior:smooth}
 <div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
-<section class="neo-trend" id="flowTrendSection">
-<div class="neo-trend-head"><div><small>FLOW ANALYTICS</small><h2>24-Hour Flow Trend</h2></div><span>13/09/2569 05:00 → 14/09/2569 05:00 · m³/h</span></div>
-<div class="neo-chart">
-<svg viewBox="0 0 1000 160" preserveAspectRatio="none">
-<defs><linearGradient id="neoFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0E7A5F" stop-opacity=".20"/><stop offset="100%" stop-color="#0E7A5F" stop-opacity=".01"/></linearGradient></defs>
-<line class="neo-grid" x1="0" y1="40" x2="1000" y2="40"/><line class="neo-grid" x1="0" y1="80" x2="1000" y2="80"/><line class="neo-grid" x1="0" y1="120" x2="1000" y2="120"/>
-<path class="neo-area" d="M0 112 L80 108 L160 103 L240 109 L320 94 L400 98 L480 83 L560 90 L640 72 L720 91 L800 101 L880 105 L960 96 L1000 99 L1000 160 L0 160Z"/>
-<path class="neo-line" d="M0 112 L80 108 L160 103 L240 109 L320 94 L400 98 L480 83 L560 90 L640 72 L720 91 L800 101 L880 105 L960 96 L1000 99"/>
-<circle class="neo-dot" cx="1000" cy="99" r="4"/>
-</svg><div class="neo-axis"><span>05:00</span><span>09:00</span><span>13:00</span><span>17:00</span><span>21:00</span><span>01:00</span><span>05:00</span></div></div>
+
+<section class="neo-trend detailed-hourly-trend" id="flowTrendSection">
+  <div class="neo-trend-head detailed-trend-head">
+    <div>
+      <small>FLOW ANALYTICS</small>
+      <h2>24-Hour Flow Trend</h2>
+      <p>แสดงค่า Flow รายชั่วโมงครบทั้งรอบ 05:00 → 05:00</p>
+    </div>
+    <div class="trend-head-right">
+      <span>13/09/2569 05:00 → 14/09/2569 05:00 · m³/h</span>
+      <div class="trend-scroll-tools">
+        <b>25 จุด · รายชั่วโมง</b>
+        <button type="button" id="trendScrollLeft" aria-label="เลื่อนกราฟไปทางซ้าย">‹</button>
+        <button type="button" id="trendScrollRight" aria-label="เลื่อนกราฟไปทางขวา">›</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="trend-scroll-shell">
+    <div class="trend-scroll-hint">เลื่อนซ้าย–ขวาเพื่อดูครบทุกชั่วโมง</div>
+    <div class="trend-scroll-area" id="trendScrollArea">
+      <div class="trend-canvas">
+        <svg viewBox="0 0 1880 230" width="1880" height="230" aria-label="กราฟ Flow รายชั่วโมง">
+          <defs>
+            <linearGradient id="hourlyTrendFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#315f43" stop-opacity=".20"/>
+              <stop offset="100%" stop-color="#315f43" stop-opacity=".015"/>
+            </linearGradient>
+          </defs>
+          <line class="hourly-grid-line" x1="58" y1="184.0" x2="1856" y2="184.0"/><text class="hourly-y-label" x="46" y="187.0" text-anchor="end">10</text><line class="hourly-grid-line" x1="58" y1="158.0" x2="1856" y2="158.0"/><text class="hourly-y-label" x="46" y="161.0" text-anchor="end">11</text><line class="hourly-grid-line" x1="58" y1="132.0" x2="1856" y2="132.0"/><text class="hourly-y-label" x="46" y="135.0" text-anchor="end">12</text><line class="hourly-grid-line" x1="58" y1="106.0" x2="1856" y2="106.0"/><text class="hourly-y-label" x="46" y="109.0" text-anchor="end">13</text><line class="hourly-grid-line" x1="58" y1="80.0" x2="1856" y2="80.0"/><text class="hourly-y-label" x="46" y="83.0" text-anchor="end">14</text><line class="hourly-grid-line" x1="58" y1="54.0" x2="1856" y2="54.0"/><text class="hourly-y-label" x="46" y="57.0" text-anchor="end">15</text><line class="hourly-grid-line" x1="58" y1="28.0" x2="1856" y2="28.0"/><text class="hourly-y-label" x="46" y="31.0" text-anchor="end">16</text>
+          <line class="hourly-tick" x1="58.0" y1="28" x2="58.0" y2="184"/><text class="hourly-x-label" x="58.0" y="214" text-anchor="middle">05:00</text><line class="hourly-tick" x1="132.9" y1="28" x2="132.9" y2="184"/><text class="hourly-x-label" x="132.9" y="214" text-anchor="middle">06:00</text><line class="hourly-tick" x1="207.8" y1="28" x2="207.8" y2="184"/><text class="hourly-x-label" x="207.8" y="214" text-anchor="middle">07:00</text><line class="hourly-tick" x1="282.8" y1="28" x2="282.8" y2="184"/><text class="hourly-x-label" x="282.8" y="214" text-anchor="middle">08:00</text><line class="hourly-tick" x1="357.7" y1="28" x2="357.7" y2="184"/><text class="hourly-x-label" x="357.7" y="214" text-anchor="middle">09:00</text><line class="hourly-tick" x1="432.6" y1="28" x2="432.6" y2="184"/><text class="hourly-x-label" x="432.6" y="214" text-anchor="middle">10:00</text><line class="hourly-tick" x1="507.5" y1="28" x2="507.5" y2="184"/><text class="hourly-x-label" x="507.5" y="214" text-anchor="middle">11:00</text><line class="hourly-tick" x1="582.4" y1="28" x2="582.4" y2="184"/><text class="hourly-x-label" x="582.4" y="214" text-anchor="middle">12:00</text><line class="hourly-tick" x1="657.3" y1="28" x2="657.3" y2="184"/><text class="hourly-x-label" x="657.3" y="214" text-anchor="middle">13:00</text><line class="hourly-tick" x1="732.2" y1="28" x2="732.2" y2="184"/><text class="hourly-x-label" x="732.2" y="214" text-anchor="middle">14:00</text><line class="hourly-tick" x1="807.2" y1="28" x2="807.2" y2="184"/><text class="hourly-x-label" x="807.2" y="214" text-anchor="middle">15:00</text><line class="hourly-tick" x1="882.1" y1="28" x2="882.1" y2="184"/><text class="hourly-x-label" x="882.1" y="214" text-anchor="middle">16:00</text><line class="hourly-tick" x1="957.0" y1="28" x2="957.0" y2="184"/><text class="hourly-x-label" x="957.0" y="214" text-anchor="middle">17:00</text><line class="hourly-tick" x1="1031.9" y1="28" x2="1031.9" y2="184"/><text class="hourly-x-label" x="1031.9" y="214" text-anchor="middle">18:00</text><line class="hourly-tick" x1="1106.8" y1="28" x2="1106.8" y2="184"/><text class="hourly-x-label" x="1106.8" y="214" text-anchor="middle">19:00</text><line class="hourly-tick" x1="1181.8" y1="28" x2="1181.8" y2="184"/><text class="hourly-x-label" x="1181.8" y="214" text-anchor="middle">20:00</text><line class="hourly-tick" x1="1256.7" y1="28" x2="1256.7" y2="184"/><text class="hourly-x-label" x="1256.7" y="214" text-anchor="middle">21:00</text><line class="hourly-tick" x1="1331.6" y1="28" x2="1331.6" y2="184"/><text class="hourly-x-label" x="1331.6" y="214" text-anchor="middle">22:00</text><line class="hourly-tick" x1="1406.5" y1="28" x2="1406.5" y2="184"/><text class="hourly-x-label" x="1406.5" y="214" text-anchor="middle">23:00</text><line class="hourly-tick" x1="1481.4" y1="28" x2="1481.4" y2="184"/><text class="hourly-x-label" x="1481.4" y="214" text-anchor="middle">00:00</text><line class="hourly-tick" x1="1556.3" y1="28" x2="1556.3" y2="184"/><text class="hourly-x-label" x="1556.3" y="214" text-anchor="middle">01:00</text><line class="hourly-tick" x1="1631.2" y1="28" x2="1631.2" y2="184"/><text class="hourly-x-label" x="1631.2" y="214" text-anchor="middle">02:00</text><line class="hourly-tick" x1="1706.2" y1="28" x2="1706.2" y2="184"/><text class="hourly-x-label" x="1706.2" y="214" text-anchor="middle">03:00</text><line class="hourly-tick" x1="1781.1" y1="28" x2="1781.1" y2="184"/><text class="hourly-x-label" x="1781.1" y="214" text-anchor="middle">04:00</text><line class="hourly-tick" x1="1856.0" y1="28" x2="1856.0" y2="184"/><text class="hourly-x-label" x="1856.0" y="214" text-anchor="middle">05:00</text>
+          <path class="hourly-area" d="M 58.0 129.4 L 132.9 121.6 L 207.8 124.2 L 282.8 113.8 L 357.7 103.4 L 432.6 108.6 L 507.5 95.6 L 582.4 85.2 L 657.3 116.4 L 732.2 121.6 L 807.2 111.2 L 882.1 100.8 L 957.0 82.6 L 1031.9 69.6 L 1106.8 51.4 L 1181.8 72.2 L 1256.7 87.8 L 1331.6 103.4 L 1406.5 111.2 L 1481.4 121.6 L 1556.3 132.0 L 1631.2 139.8 L 1706.2 152.8 L 1781.1 163.2 L 1856.0 171.0 L 1856.0 184.0 L 58.0 184.0 Z"/>
+          <path class="hourly-line" d="M 58.0 129.4 L 132.9 121.6 L 207.8 124.2 L 282.8 113.8 L 357.7 103.4 L 432.6 108.6 L 507.5 95.6 L 582.4 85.2 L 657.3 116.4 L 732.2 121.6 L 807.2 111.2 L 882.1 100.8 L 957.0 82.6 L 1031.9 69.6 L 1106.8 51.4 L 1181.8 72.2 L 1256.7 87.8 L 1331.6 103.4 L 1406.5 111.2 L 1481.4 121.6 L 1556.3 132.0 L 1631.2 139.8 L 1706.2 152.8 L 1781.1 163.2 L 1856.0 171.0"/>
+          <g class="hourly-point"><circle cx="58.0" cy="129.4" r="4.4"/><text x="58.0" y="119.4" text-anchor="middle">12.1</text><title>05:00 · 12.1 m³/h</title></g><g class="hourly-point"><circle cx="132.9" cy="121.6" r="4.4"/><text x="132.9" y="111.6" text-anchor="middle">12.4</text><title>06:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="207.8" cy="124.2" r="4.4"/><text x="207.8" y="114.2" text-anchor="middle">12.3</text><title>07:00 · 12.3 m³/h</title></g><g class="hourly-point"><circle cx="282.8" cy="113.8" r="4.4"/><text x="282.8" y="103.8" text-anchor="middle">12.7</text><title>08:00 · 12.7 m³/h</title></g><g class="hourly-point"><circle cx="357.7" cy="103.4" r="4.4"/><text x="357.7" y="93.4" text-anchor="middle">13.1</text><title>09:00 · 13.1 m³/h</title></g><g class="hourly-point"><circle cx="432.6" cy="108.6" r="4.4"/><text x="432.6" y="98.6" text-anchor="middle">12.9</text><title>10:00 · 12.9 m³/h</title></g><g class="hourly-point"><circle cx="507.5" cy="95.6" r="4.4"/><text x="507.5" y="85.6" text-anchor="middle">13.4</text><title>11:00 · 13.4 m³/h</title></g><g class="hourly-point"><circle cx="582.4" cy="85.2" r="4.4"/><text x="582.4" y="75.2" text-anchor="middle">13.8</text><title>12:00 · 13.8 m³/h</title></g><g class="hourly-point"><circle cx="657.3" cy="116.4" r="4.4"/><text x="657.3" y="106.4" text-anchor="middle">12.6</text><title>13:00 · 12.6 m³/h</title></g><g class="hourly-point"><circle cx="732.2" cy="121.6" r="4.4"/><text x="732.2" y="111.6" text-anchor="middle">12.4</text><title>14:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="807.2" cy="111.2" r="4.4"/><text x="807.2" y="101.2" text-anchor="middle">12.8</text><title>15:00 · 12.8 m³/h</title></g><g class="hourly-point"><circle cx="882.1" cy="100.8" r="4.4"/><text x="882.1" y="90.8" text-anchor="middle">13.2</text><title>16:00 · 13.2 m³/h</title></g><g class="hourly-point"><circle cx="957.0" cy="82.6" r="4.4"/><text x="957.0" y="72.6" text-anchor="middle">13.9</text><title>17:00 · 13.9 m³/h</title></g><g class="hourly-point"><circle cx="1031.9" cy="69.6" r="4.4"/><text x="1031.9" y="59.6" text-anchor="middle">14.4</text><title>18:00 · 14.4 m³/h</title></g><g class="hourly-point"><circle cx="1106.8" cy="51.4" r="4.4"/><text x="1106.8" y="41.4" text-anchor="middle">15.1</text><title>19:00 · 15.1 m³/h</title></g><g class="hourly-point"><circle cx="1181.8" cy="72.2" r="4.4"/><text x="1181.8" y="62.2" text-anchor="middle">14.3</text><title>20:00 · 14.3 m³/h</title></g><g class="hourly-point"><circle cx="1256.7" cy="87.8" r="4.4"/><text x="1256.7" y="77.8" text-anchor="middle">13.7</text><title>21:00 · 13.7 m³/h</title></g><g class="hourly-point"><circle cx="1331.6" cy="103.4" r="4.4"/><text x="1331.6" y="93.4" text-anchor="middle">13.1</text><title>22:00 · 13.1 m³/h</title></g><g class="hourly-point"><circle cx="1406.5" cy="111.2" r="4.4"/><text x="1406.5" y="101.2" text-anchor="middle">12.8</text><title>23:00 · 12.8 m³/h</title></g><g class="hourly-point"><circle cx="1481.4" cy="121.6" r="4.4"/><text x="1481.4" y="111.6" text-anchor="middle">12.4</text><title>00:00 · 12.4 m³/h</title></g><g class="hourly-point"><circle cx="1556.3" cy="132.0" r="4.4"/><text x="1556.3" y="122.0" text-anchor="middle">12.0</text><title>01:00 · 12.0 m³/h</title></g><g class="hourly-point"><circle cx="1631.2" cy="139.8" r="4.4"/><text x="1631.2" y="129.8" text-anchor="middle">11.7</text><title>02:00 · 11.7 m³/h</title></g><g class="hourly-point"><circle cx="1706.2" cy="152.8" r="4.4"/><text x="1706.2" y="142.8" text-anchor="middle">11.2</text><title>03:00 · 11.2 m³/h</title></g><g class="hourly-point"><circle cx="1781.1" cy="163.2" r="4.4"/><text x="1781.1" y="153.2" text-anchor="middle">10.8</text><title>04:00 · 10.8 m³/h</title></g><g class="hourly-point"><circle cx="1856.0" cy="171.0" r="4.4"/><text x="1856.0" y="161.0" text-anchor="middle">10.5</text><title>05:00 · 10.5 m³/h</title></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="trend-summary-strip">
+    <div><small>AVERAGE</small><b>12.8 m³/h</b></div>
+    <div><small>MIN</small><b>10.5 m³/h</b></div>
+    <div><small>PEAK</small><b>15.1 m³/h</b></div>
+    <div><small>INTERVAL</small><b>1 ชั่วโมง</b></div>
+  </div>
 </section>
+
 <section class="alert-response-center alert-clean" id="alertCenterSection">
   <div class="arc-head clean-arc-head">
     <div>
@@ -5924,13 +6376,73 @@ html{scroll-behavior:smooth}
   </div>
   <div class="field-group">
     <label>จุดตรวจวัด</label>
-    <div class="field-value">FM-01 · น้ำเสียเข้าระบบบำบัด</div>
+    <div class="field-value">บ่อพักน้ำเสีย 2 · FM-01</div>
   </div>
   <div class="field-group">
     <label>Flow Setting</label>
-    <div class="field-value">13.0 m³/h</div>
+    <div class="field-value" id="dailyFlowSettingValue">13.0 m³/h</div>
   </div>
 </div>
+
+<section class="flow-setting-record" id="flowSettingRecord">
+  <div class="fs-current">
+    <div class="fs-mark">S</div>
+    <div class="fs-current-copy">
+      <small>FLOW SETTING · บ่อพักน้ำเสีย 2</small>
+      <div class="fs-value-line">
+        <b id="fsCurrentValue">13.0</b>
+        <span>m³/h</span>
+        <em>ใช้งานอยู่</em>
+      </div>
+      <p id="fsCurrentMeta">ยังไม่มีการเปลี่ยนค่าในรอบรายงานนี้</p>
+    </div>
+    <button type="button" class="fs-edit-btn" id="toggleFlowSettingForm" aria-controls="flowSettingEditor" aria-expanded="false">บันทึก Flow Setting</button>
+  </div>
+
+  <div class="fs-editor" id="flowSettingEditor" hidden>
+    <div class="fs-editor-grid">
+      <div class="fs-field">
+        <label>Flow Setting ใหม่</label>
+        <div class="fs-number-wrap">
+          <input type="number" id="fsNewValue" min="0" max="72" step="0.1" inputmode="decimal" placeholder="เช่น 13.0">
+          <span>m³/h</span>
+        </div>
+      </div>
+
+      <div class="fs-field">
+        <label>รหัสพนักงาน</label>
+        <div class="fs-code-wrap">
+          <input type="text" id="fsEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน">
+          <span id="fsLookupState">8–9 หลัก</span>
+        </div>
+      </div>
+
+      <div class="fs-employee" id="fsEmployeeCard">
+        <small>ผู้บันทึก</small>
+        <b id="fsEmployeeName">รอรหัสพนักงาน</b>
+        <span id="fsEmployeePosition">—</span>
+      </div>
+    </div>
+
+    <div class="fs-editor-actions">
+      <div class="fs-hint">ค่าที่บันทึกใหม่จะมีผลตั้งแต่เวลาที่บันทึก และเก็บประวัติไว้ ไม่เขียนทับรายการเดิม</div>
+      <div>
+        <button type="button" class="fs-cancel" id="cancelFlowSetting">ยกเลิก</button>
+        <button type="button" class="fs-save" id="saveFlowSetting" disabled>บันทึก Setting</button>
+      </div>
+    </div>
+
+    <div class="fs-error" id="fsError"></div>
+  </div>
+
+  <div class="fs-history-wrap" id="fsHistoryWrap" hidden>
+    <div class="fs-history-head">
+      <b>ประวัติการตั้งค่า</b>
+      <span>เก็บเวลาและผู้บันทึกทุกครั้ง</span>
+    </div>
+    <div class="fs-history-list" id="fsHistoryList"></div>
+  </div>
+</section>
 
 <div class="paper-sheet modern-sheet eform-sheet">
 
@@ -6602,7 +7114,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       'รอบการบันทึก: 05:00 → 05:00 ของวันถัดไป',
       'โรงงาน: NRT 1',
       'แผนก/ฝ่าย: บ่อบำบัดน้ำเสีย',
-      'จุดตรวจวัด: FM-01 · น้ำเสียเข้าระบบบำบัด',
+      'จุดตรวจวัด: บ่อพักน้ำเสีย 2 · FM-01',
       'Flow Setting: 13.0 m³/h',
       '',
       'รายละเอียด Flow รายชั่วโมง',
@@ -6675,8 +7187,8 @@ document.addEventListener('DOMContentLoaded',()=>{
         </div>
 
         <div class="preview-info-grid structured-info">
-          <div><small>จุดตรวจวัด</small><b>FM-01 · น้ำเสียเข้าระบบบำบัด</b></div>
-          <div><small>Flow Setting</small><b>13.0 m³/h</b></div>
+          <div><small>จุดตรวจวัด</small><b>บ่อพักน้ำเสีย 2 · FM-01</b></div>
+          <div><small>Flow Setting</small><b id="previewFlowSettingValue">13.0 m³/h</b></div>
           <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
           <div><small>สถานะระบบ</small><b>ปกติ</b></div>
         </div>
@@ -7260,6 +7772,208 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 
   updateState();
+});
+</script>
+
+
+<script>
+/* V15.81 — Flow Setting recording prototype */
+document.addEventListener('DOMContentLoaded',()=>{
+  const panel=document.getElementById('flowSettingEditor');
+  const toggle=document.getElementById('toggleFlowSettingForm');
+  const cancel=document.getElementById('cancelFlowSetting');
+  const save=document.getElementById('saveFlowSetting');
+  if(!panel||!toggle||!save) return;
+
+  const EMPLOYEES={
+    "15600533":{name:"นายธวัชชัย แซ่ด่าน",position:"หัวหน้าแผนก"},
+    "16100241":{name:"นางสาวณัฏฐณิชา วัลลา",position:"รองหัวหน้าแผนก"},
+    "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16000223":{name:"นายเก่ง จางทอน",position:"พนักงาน"},
+    "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน"},
+    "16100266":{name:"นางสาวนปภัส สนิทกุลเจริญ",position:"พนักงาน"},
+    "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน"},
+    "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16300359":{name:"นางสาวบุษรา ถิ่นทัพไทย",position:"เจ้าหน้าที่เอกสาร"},
+    "16400970":{name:"นายณัฐพงษ์ บุญทา",position:"พนักงาน"},
+    "165015053":{name:"นายนที ยมมูล",position:"พนักงาน"},
+    "16601248":{name:"นายกันติธัช หมื่นสี",position:"พนักงาน"},
+    "16601414":{name:"นางสาวนัสทริกา ไกรศรี",position:"พนักงาน"},
+    "16701568":{name:"นายสุรสิทธิ์ จันทะวงษ์",position:"พนักงาน"},
+    "16701575":{name:"นายทีปกร เภ่าโง่น",position:"พนักงาน"},
+    "16701586":{name:"นายอนุวัฒน์ อมรเอกอิทธิ",position:"พนักงาน"},
+    "16701609":{name:"นายพรชัย ปิ่นแก้ว",position:"พนักงาน"},
+    "16801741":{name:"นายชนัฏชัย พุกห้อย",position:"พนักงาน"},
+    "16901902":{name:"นายดาวุฒิ มะระเฮน",position:"พนักงาน"}
+  };
+
+  const valueInput=document.getElementById('fsNewValue');
+  const codeInput=document.getElementById('fsEmployeeCode');
+  const lookup=document.getElementById('fsLookupState');
+  const nameEl=document.getElementById('fsEmployeeName');
+  const posEl=document.getElementById('fsEmployeePosition');
+  const err=document.getElementById('fsError');
+  const historyWrap=document.getElementById('fsHistoryWrap');
+  const historyList=document.getElementById('fsHistoryList');
+
+  let currentSetting=13.0;
+  let currentEmployee=null;
+  const history=[];
+
+  function validate(){
+    const v=Number(valueInput.value);
+    const validValue=Number.isFinite(v)&&v>=0&&v<=72;
+    save.disabled=!(validValue&&currentEmployee);
+  }
+
+  function closeEditor(){
+    panel.hidden=true;
+    toggle.textContent='บันทึก Flow Setting';
+    toggle.setAttribute('aria-expanded','false');
+    err.classList.remove('show');
+  }
+
+  function toggleFlowSettingEditor(){
+    const willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    toggle.textContent = willOpen ? 'ปิด' : 'บันทึก Flow Setting';
+    toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+    if(willOpen){
+      valueInput.value=currentSetting.toFixed(1);
+      requestAnimationFrame(()=>{
+        panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+        valueInput.focus();
+      });
+      validate();
+    }
+  }
+
+  toggle.onclick = toggleFlowSettingEditor;
+  window.toggleFlowSettingEditor = toggleFlowSettingEditor;
+
+  cancel.addEventListener('click',closeEditor);
+  valueInput.addEventListener('input',validate);
+
+  codeInput.addEventListener('input',()=>{
+    const code=codeInput.value.replace(/\D/g,'').slice(0,9);
+    codeInput.value=code;
+    currentEmployee=EMPLOYEES[code]||null;
+
+    if(currentEmployee){
+      lookup.textContent='พบข้อมูล';
+      lookup.className='ok';
+      nameEl.textContent=currentEmployee.name;
+      posEl.textContent=`${currentEmployee.position} · ${code}`;
+    }else{
+      const possible=Object.keys(EMPLOYEES).some(k=>k.startsWith(code));
+      lookup.textContent=code.length<8||possible?'กรอกต่อ':'ไม่พบ';
+      lookup.className=code.length>=8&&!possible?'bad':'';
+      nameEl.textContent=code?'กำลังตรวจสอบรหัส':'รอรหัสพนักงาน';
+      posEl.textContent='—';
+    }
+    validate();
+  });
+
+  function timeTH(){
+    return new Intl.DateTimeFormat('th-TH',{
+      timeZone:'Asia/Bangkok',
+      day:'2-digit',month:'2-digit',year:'numeric',
+      hour:'2-digit',minute:'2-digit',
+      hourCycle:'h23'
+    }).format(new Date());
+  }
+
+  function renderHistory(){
+    historyWrap.hidden=history.length===0;
+    historyList.innerHTML=history.map((x,i)=>`
+      <div class="fs-history-row">
+        <span>${x.time}</span>
+        <b>${x.value.toFixed(1)} m³/h</b>
+        <strong>${x.employee}</strong>
+        <em>${i===0?'ใช้งานอยู่':'ประวัติ'}</em>
+      </div>
+    `).join('');
+  }
+
+  save.addEventListener('click',()=>{
+    const v=Number(valueInput.value);
+    if(!Number.isFinite(v)||v<0||v>72){
+      err.textContent='กรุณากรอก Flow Setting ระหว่าง 0–72 m³/h';
+      err.classList.add('show');
+      return;
+    }
+    if(!currentEmployee){
+      err.textContent='กรุณากรอกรหัสพนักงานที่ถูกต้อง';
+      err.classList.add('show');
+      return;
+    }
+
+    currentSetting=v;
+    const stamp=timeTH();
+    history.unshift({
+      time:stamp,
+      value:v,
+      employee:currentEmployee.name,
+      code:codeInput.value
+    });
+
+    document.getElementById('fsCurrentValue').textContent=v.toFixed(1);
+    document.getElementById('fsCurrentMeta').textContent=
+      `บันทึกล่าสุด ${stamp} · ${currentEmployee.name}`;
+    document.getElementById('dailyFlowSettingValue').textContent=v.toFixed(1)+' m³/h';
+    const pv=document.getElementById('previewFlowSettingValue');
+    if(pv) pv.textContent=v.toFixed(1)+' m³/h';
+
+    renderHistory();
+    err.classList.remove('show');
+    codeInput.value='';
+    currentEmployee=null;
+    lookup.textContent='8–9 หลัก';
+    lookup.className='';
+    nameEl.textContent='รอรหัสพนักงาน';
+    posEl.textContent='—';
+    closeEditor();
+  });
+});
+</script>
+
+
+<script>
+/* V15.82 — hourly trend horizontal navigation */
+document.addEventListener('DOMContentLoaded',()=>{
+  const area=document.getElementById('trendScrollArea');
+  const left=document.getElementById('trendScrollLeft');
+  const right=document.getElementById('trendScrollRight');
+  if(!area) return;
+
+  const step=420;
+  left?.addEventListener('click',()=>area.scrollBy({left:-step,behavior:'smooth'}));
+  right?.addEventListener('click',()=>area.scrollBy({left:step,behavior:'smooth'}));
+
+  let dragging=false,startX=0,startScroll=0;
+  area.addEventListener('pointerdown',e=>{
+    dragging=true;
+    startX=e.clientX;
+    startScroll=area.scrollLeft;
+    area.setPointerCapture?.(e.pointerId);
+  });
+  area.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    area.scrollLeft=startScroll-(e.clientX-startX);
+  });
+  area.addEventListener('pointerup',()=>dragging=false);
+  area.addEventListener('pointercancel',()=>dragging=false);
+
+  area.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){
+      e.preventDefault();
+      area.scrollLeft+=e.deltaY;
+    }
+  },{passive:false});
 });
 </script>
 
