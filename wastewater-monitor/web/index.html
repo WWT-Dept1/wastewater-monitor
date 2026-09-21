@@ -4736,14 +4736,7 @@ html{scroll-behavior:smooth}
 </style>
 
 
-<style>
-/* V15.71 — assistant heads review their own active shift;
-   Thapakorn remains the full-document reviewer */
-.signature-route-card.shift-reviewer-route{
-  border-color:#a8c7af;
-  background:#e6f1e8;
-}
-</style>
+
 
 
 <style>
@@ -4756,6 +4749,377 @@ html{scroll-behavior:smooth}
 }
 .doc-approval-note{
   margin-top:0!important;
+}
+</style>
+
+
+<style>
+/* V15.74 — verification is part of the Daily Summary form */
+.presentation-approval-summary,
+.doc-status-block,
+.doc-approval-note,
+.approval-flow,
+.approval-workflow,
+.workflow-strip,
+.approval-steps{
+  display:none!important;
+}
+
+.inline-verify-head{
+  margin-top:16px!important;
+}
+.inline-verify-head>span{
+  padding:5px 9px;
+  border-radius:999px;
+  background:#fff1cf;
+  color:#735713;
+  font:800 8px "Noto Sans Thai",sans-serif;
+}
+
+.inline-verify-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);
+  gap:12px;
+}
+.inline-review-pane,
+.inline-sign-pane{
+  border:1px solid #ccd7ce;
+  border-radius:14px;
+  background:#fbfdfb;
+}
+.inline-review-pane{padding:14px}
+.inline-sign-pane{padding:15px}
+
+.inline-review-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid #d6dfd8;
+}
+.inline-review-top small{
+  display:block;
+  font:700 7px "Noto Sans Thai",sans-serif;
+  color:#74847a;
+}
+.inline-review-top b{
+  display:block;
+  margin-top:3px;
+  font:800 12px "Noto Sans Thai",sans-serif;
+  color:#20382a;
+}
+.inline-shift-chip{
+  text-align:right;
+}
+.inline-shift-chip small{
+  font:800 8px "Outfit",sans-serif;
+  color:#557060;
+}
+.inline-shift-chip b{
+  font-size:9px;
+}
+
+.inline-review-empty{
+  min-height:170px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:#7a8980;
+  font:600 9px "Noto Sans Thai",sans-serif;
+}
+.inline-review-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin:10px 0;
+}
+.inline-review-stats>div{
+  padding:8px 9px;
+  border:1px solid #d5ddd7;
+  border-radius:9px;
+  background:#f3f6f4;
+}
+.inline-review-stats small{
+  display:block;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+  color:#77867d;
+}
+.inline-review-stats b{
+  display:block;
+  margin-top:3px;
+  font:800 8.5px "Noto Sans Thai",sans-serif;
+  color:#213a2a;
+}
+
+.inline-review-table{
+  max-height:250px;
+  overflow:auto;
+  border:1px solid #cbd6cd;
+  border-radius:10px;
+}
+.inline-review-table table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:8.5px;
+}
+.inline-review-table th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:7px;
+  background:#e8efe9;
+  color:#53675b;
+  text-align:left;
+  border-bottom:1px solid #cbd6cd;
+}
+.inline-review-table td{
+  padding:7px;
+  color:#304538;
+  border-bottom:1px solid #e2e7e3;
+}
+.inline-review-table tr:last-child td{border-bottom:0}
+
+.inline-signed-list{
+  display:grid;
+  gap:5px;
+  margin-top:9px;
+}
+.inline-signed-row{
+  display:grid;
+  grid-template-columns:105px 1fr auto;
+  gap:7px;
+  align-items:center;
+  padding:7px 8px;
+  border:1px solid #d3dcd5;
+  border-radius:8px;
+  background:#f5f8f6;
+}
+.inline-signed-row span{
+  font:700 7px "Noto Sans Thai",sans-serif;
+  color:#6c7d72;
+}
+.inline-signed-row b{
+  font:700 8px "Noto Sans Thai",sans-serif;
+  color:#28402f;
+}
+.inline-signed-row em{
+  padding:3px 6px;
+  border-radius:99px;
+  background:#dcecdf;
+  color:#28613b;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+  font-style:normal;
+}
+
+.inline-sign-pane>label{
+  display:block;
+  margin:9px 0 5px;
+  font:800 8px "Noto Sans Thai",sans-serif;
+  color:#405849;
+}
+.inline-code-wrap{
+  position:relative;
+}
+.inline-code-wrap input{
+  width:100%;
+  min-height:43px;
+  box-sizing:border-box;
+  padding:0 62px 0 11px;
+  border:1px solid #bdccc0;
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+  font:800 13px "Outfit",sans-serif;
+  letter-spacing:.05em;
+}
+.inline-code-wrap input:focus{
+  border-color:#648f70;
+  box-shadow:0 0 0 3px rgba(77,126,91,.07);
+}
+.inline-code-wrap span{
+  position:absolute;
+  right:7px;
+  top:50%;
+  transform:translateY(-50%);
+  padding:4px 6px;
+  border-radius:7px;
+  background:#edf2ee;
+  color:#79887f;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+}
+.inline-code-wrap span.ok{background:#ddf0e2;color:#28613b}
+.inline-code-wrap span.bad{background:#f8e5e2;color:#9a4038}
+
+.inline-person-card{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-top:9px;
+  padding:9px 10px;
+  border:1px solid #cbd7cd;
+  border-radius:10px;
+  background:#f4f7f5;
+}
+.inline-person-initial{
+  width:34px;height:34px;flex:0 0 34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#315f43;
+  color:#fff;
+  font:800 11px "Noto Sans Thai",sans-serif;
+}
+.inline-person-card small{
+  display:block;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+  color:#7a8980;
+}
+.inline-person-card b{
+  display:block;
+  margin-top:2px;
+  font:800 9px "Noto Sans Thai",sans-serif;
+  color:#223c2c;
+}
+.inline-person-card span{
+  display:block;
+  margin-top:2px;
+  font:600 7px "Noto Sans Thai",sans-serif;
+  color:#6c7d72;
+}
+
+.inline-route{
+  margin-top:8px;
+  padding:9px 10px;
+  border:1px solid #b8d0be;
+  border-radius:10px;
+  background:#e9f2eb;
+}
+.inline-route small{
+  display:block;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+  color:#698074;
+}
+.inline-route b{
+  display:block;
+  margin-top:3px;
+  font:800 9px "Noto Sans Thai",sans-serif;
+  color:#245137;
+}
+.inline-route span{
+  display:block;
+  margin-top:2px;
+  font:600 7px "Noto Sans Thai",sans-serif;
+  color:#607469;
+}
+
+.inline-confirm{
+  display:flex!important;
+  align-items:flex-start;
+  gap:7px;
+  margin:10px 0 0!important;
+  padding:8px 9px;
+  border:1px solid #cbd7cd;
+  border-radius:9px;
+  background:#f2f6f3;
+}
+.inline-confirm input{
+  width:15px!important;
+  min-height:15px!important;
+  margin:1px 0 0!important;
+}
+.inline-confirm span{
+  font:700 7.5px/1.4 "Noto Sans Thai",sans-serif;
+  color:#38513f;
+}
+.inline-name{
+  width:100%;
+  min-height:39px;
+  box-sizing:border-box;
+  padding:0 10px;
+  border:1px solid #c5d1c7;
+  border-radius:9px;
+  background:#eef3ef;
+  font:700 8.5px "Noto Sans Thai",sans-serif;
+  color:#37503f;
+}
+.inline-signature-wrap{
+  position:relative;
+  padding:6px 6px 32px;
+  border:1px solid #bdccc0;
+  border-radius:10px;
+  background:#fff;
+}
+.inline-signature-wrap canvas{
+  display:block;
+  width:100%;
+  height:95px;
+  border-radius:7px;
+  background:
+    linear-gradient(to bottom,transparent calc(100% - 24px),#dbe2dc calc(100% - 23px),transparent calc(100% - 22px)),
+    #fcfdfc;
+  cursor:crosshair;
+  touch-action:none;
+}
+.inline-signature-wrap>small{
+  position:absolute;
+  left:12px;
+  bottom:10px;
+  color:#9aa69e;
+  font:600 6.5px "Noto Sans Thai",sans-serif;
+}
+.inline-signature-wrap>button{
+  position:absolute;
+  right:6px;
+  bottom:5px;
+  min-height:22px;
+  padding:0 7px;
+  border:1px solid #ccd6ce;
+  border-radius:6px;
+  background:#eef3ef;
+  color:#5d7064;
+  cursor:pointer;
+  font:700 6.5px "Noto Sans Thai",sans-serif;
+}
+.inline-signature-wrap.has-ink{
+  border-color:#72a17e;
+  box-shadow:0 0 0 3px rgba(72,126,88,.06);
+}
+.inline-sign-error{
+  display:none;
+  margin-top:7px;
+  padding:7px 8px;
+  border-radius:7px;
+  background:#fae7e5;
+  color:#953e38;
+  font:700 7px "Noto Sans Thai",sans-serif;
+}
+.inline-sign-error.show{display:block}
+.inline-submit{
+  width:100%;
+  min-height:40px;
+  margin-top:9px;
+  border:0;
+  border-radius:10px;
+  background:linear-gradient(145deg,#315f43,#254d35);
+  color:#fff;
+  cursor:pointer;
+  font:800 8px "Noto Sans Thai",sans-serif;
+}
+.inline-access-msg{
+  margin-top:8px;
+  padding:9px;
+  border:1px solid #dbcfae;
+  border-radius:9px;
+  background:#fff6dc;
+  color:#735a1b;
+  font:700 7.5px/1.45 "Noto Sans Thai",sans-serif;
+}
+
+@media(max-width:850px){
+  .inline-verify-shell{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .inline-review-stats{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 
@@ -4774,22 +5138,6 @@ html{scroll-behavior:smooth}
 
 <section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
 <div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
-<div class="approval-summary presentation-approval-summary">
-  <div class="doc-status-block">
-    <small>DOCUMENT STATUS</small>
-    <strong id="docApproveBadge">รอตรวจสอบ</strong>
-    <span>เอกสารจะเข้าสู่ขั้นตอนอนุมัติหลังจากพนักงานครบทุกกะและผู้ตรวจสอบลงชื่อครบถ้วน</span>
-  </div>
-<div class="doc-approval-note">
-    <div>
-      <small>FINAL APPROVAL</small>
-      <b>การอนุมัติเอกสารเป็นขั้นตอนแยกต่างหาก</b>
-      <span>รองหัวหน้าแผนกและหัวหน้าแผนกจะลงนามหลังเอกสารผ่านการตรวจสอบครบถ้วนแล้ว</span>
-    </div>
-    <button type="button" class="approval-entry-btn" id="openSignFlow">ตรวจสอบและลงชื่อ</button>
-  </div>
-</div>
-
 </section>
 <section class="lower">
 <section class="neo-trend" id="flowTrendSection">
@@ -5029,7 +5377,7 @@ html{scroll-behavior:smooth}
   <div class="eform-tabs">
     <button type="button" class="eform-tab active">รายละเอียด</button>
     <button type="button" class="eform-tab">เอกสารแนบ (0)</button>
-    <button type="button" class="eform-tab">ลำดับอนุมัติ</button>
+    
     <button type="button" class="eform-tab">ประวัติ</button>
   </div>
   <div class="eform-actions">
@@ -5302,25 +5650,99 @@ html{scroll-behavior:smooth}
         <textarea id="dailyNote">ระบบบันทึกข้อมูลอัตโนมัติครบตามรอบ 05:00–05:00 ไม่พบเหตุการณ์ผิดปกติในตัวอย่างข้อมูลจำลอง</textarea>
       </div>
 
-      
-
-<div class="approval-summary compact-approval">
+<div class="sheet-section-head inline-verify-head">
   <div>
-    <small>APPROVAL WORKFLOW</small>
-    <b>ลำดับการลงชื่อรับรอง</b>
+    <small>SECTION 4 · VERIFICATION & SIGNATURE</small>
+    <b>ตรวจสอบและลงชื่อรับรอง</b>
   </div>
-  <div class="approval-flow-mini">
-    <span class="flow-step current">1 พนักงาน</span><i>→</i>
-    <span>2 ผู้ช่วยหัวหน้าแผนก</span><i>→</i>
-    <span>3 รองหัวหน้าแผนก</span><i>→</i>
-    <span>4 หัวหน้าแผนก</span>
-  </div>
-  <button type="button" class="open-sign-flow" id="openSignFlow">เริ่มลงชื่อ</button>
+  <span id="inlineDocState">รอตรวจสอบ</span>
 </div>
 
-
-
+<div class="inline-verify-shell">
+  <div class="inline-review-pane">
+    <div class="inline-review-top">
+      <div>
+        <small>ช่วงข้อมูลที่ตรวจสอบ</small>
+        <b id="inlineReviewTitle">กรอกรหัสพนักงาน</b>
+      </div>
+      <div class="inline-shift-chip">
+        <small id="inlineClock">--:--</small>
+        <b id="inlineShift">--</b>
+      </div>
     </div>
+
+    <div class="inline-review-empty" id="inlineReviewEmpty">
+      กรอกรหัสพนักงานเพื่อแสดงข้อมูลที่ต้องตรวจสอบ
+    </div>
+
+    <div id="inlineReviewContent" hidden>
+      <div class="inline-review-stats" id="inlineReviewStats"></div>
+
+      <div class="inline-review-table">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>เวลา</th>
+              <th>Flow Rate</th>
+              <th>Flow Setting</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="inlineReviewRows"></tbody>
+        </table>
+      </div>
+
+      <div class="inline-signed-list" id="inlineSignedList"></div>
+    </div>
+  </div>
+
+  <div class="inline-sign-pane">
+    <label>รหัสพนักงาน</label>
+    <div class="inline-code-wrap">
+      <input type="text" id="inlineEmployeeCode" inputmode="numeric" maxlength="8" placeholder="กรอกรหัส 8 หลัก">
+      <span id="inlineLookupState">8 หลัก</span>
+    </div>
+
+    <div class="inline-person-card" id="inlinePersonCard" hidden>
+      <div class="inline-person-initial" id="inlinePersonInitial">—</div>
+      <div>
+        <small>ผู้ตรวจสอบ</small>
+        <b id="inlinePersonName">—</b>
+        <span id="inlinePersonPosition">—</span>
+      </div>
+    </div>
+
+    <div class="inline-route" id="inlineRoute" hidden>
+      <small>ตำแหน่งลงชื่อ</small>
+      <b id="inlineRouteTitle">—</b>
+      <span id="inlineRouteText">—</span>
+    </div>
+
+    <div class="inline-sign-form" id="inlineSignForm" hidden>
+      <label class="inline-confirm">
+        <input type="checkbox" id="inlineConfirm">
+        <span id="inlineConfirmText">ตรวจสอบข้อมูลครบถ้วนแล้ว</span>
+      </label>
+
+      <label>ชื่อ-นามสกุล</label>
+      <input class="inline-name" id="inlineEmployeeName" type="text" readonly>
+
+      <label>ลายเซ็น</label>
+      <div class="inline-signature-wrap">
+        <canvas id="inlineSignatureCanvas"></canvas>
+        <small>เซ็นในกรอบนี้</small>
+        <button type="button" id="inlineClearSignature">ล้างลายเซ็น</button>
+      </div>
+
+      <div class="inline-sign-error" id="inlineSignError"></div>
+      <button type="button" class="inline-submit" id="inlineSignSubmit">ลงชื่อรับรอง</button>
+    </div>
+
+    <div class="inline-access-msg" id="inlineAccessMsg" hidden></div>
+  </div>
+</div>
+</div>
   </section>
 </section>
 
@@ -5500,7 +5922,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   document.getElementById('previewDailyForm')?.addEventListener('click',()=>openModal('dailyPreviewModal'));
-  document.getElementById('openSignFlow')?.addEventListener('click',()=>openModal('signatureFlowModal'));
+  
 
   document.querySelectorAll('[data-close]').forEach(btn=>{
     btn.addEventListener('click',()=>closeModal(btn.dataset.close));
@@ -5875,139 +6297,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     </div>
   </div>
 </div>
-
-
-
-<div class="eform-modal" id="signatureFlowModal" aria-hidden="true">
-  <div class="eform-modal-card auto-sign-card">
-    <div class="modal-head auto-sign-head">
-      <div>
-        <small>DOCUMENT VERIFICATION & SIGNATURE</small>
-        <b>ตรวจสอบข้อมูลและลงชื่อรับรอง</b>
-      </div>
-      <button type="button" class="modal-close" data-close="signatureFlowModal">×</button>
-    </div>
-
-    <div class="auto-sign-topbar">
-      <div class="auto-time-card">
-        <small>เวลาระบบ</small>
-        <b id="autoCurrentTime">--:--</b>
-        <span id="autoCurrentDate">--</span>
-      </div>
-      <div class="auto-shift-card">
-        <small>กะที่ระบบตรวจพบ</small>
-        <b id="autoDetectedShift">--</b>
-        <span id="autoDetectedPeriod">--</span>
-      </div>
-      <div class="auto-doc-card">
-        <small>สถานะเอกสาร</small>
-        <b id="autoDocStatus">รอตรวจสอบ</b>
-        <span>ระบบจะเลือกตำแหน่งลงชื่อให้อัตโนมัติ</span>
-      </div>
-    </div>
-
-    <div class="auto-sign-layout">
-      <section class="auto-review-pane">
-        <div class="auto-pane-head">
-          <div>
-            <small>FORM REVIEW</small>
-            <h3 id="autoReviewTitle">กรอกรหัสพนักงานเพื่อเริ่มตรวจสอบ</h3>
-          </div>
-          <span class="auto-review-badge" id="autoReviewBadge">WAITING</span>
-        </div>
-
-        <div class="auto-review-empty" id="autoReviewEmpty">
-          <div class="auto-empty-icon">⌕</div>
-          <b>ระบบจะเลือกข้อมูลให้ตามผู้ตรวจสอบ</b>
-          <span>
-            หากเป็นพนักงาน ระบบจะแสดงเฉพาะข้อมูลในช่วงกะปัจจุบัน<br>
-            หากเป็นผู้ตรวจสอบหรือผู้อนุมัติ ระบบจะแสดงข้อมูลทั้งเอกสารตามสิทธิ์
-          </span>
-        </div>
-
-        <div class="auto-review-content" id="autoReviewContent" hidden>
-          <div class="auto-review-summary" id="autoReviewSummary"></div>
-
-          <div class="auto-review-table-shell" id="autoReviewTableShell">
-            <table>
-              <thead>
-                <tr>
-                  <th>วันที่</th>
-                  <th>เวลา</th>
-                  <th>Flow Rate</th>
-                  <th>Flow Setting</th>
-                  <th>สถานะ</th>
-                </tr>
-              </thead>
-              <tbody id="autoReviewRows"></tbody>
-            </table>
-          </div>
-
-          <div class="auto-sign-history" id="autoSignHistory"></div>
-
-          <div class="auto-review-note" id="autoReviewNote"></div>
-        </div>
-      </section>
-
-      <aside class="auto-identity-pane">
-        <div class="identity-title">
-          <small>EMPLOYEE IDENTIFICATION</small>
-          <h3>ยืนยันตัวผู้ตรวจสอบ</h3>
-          <p>กรอกรหัสพนักงาน ระบบจะค้นหาชื่อ ตำแหน่ง และจุดลงชื่อให้อัตโนมัติ</p>
-        </div>
-
-        <label class="auto-label">รหัสพนักงาน</label>
-        <div class="employee-code-wrap">
-          <input type="text" id="autoEmployeeCode" inputmode="numeric" maxlength="8"
-                 placeholder="เช่น 16701575" autocomplete="off">
-          <span id="employeeLookupState">8 หลัก</span>
-        </div>
-
-        <div class="employee-found-card" id="employeeFoundCard" hidden>
-          <div class="employee-avatar" id="employeeInitial">—</div>
-          <div>
-            <small>ข้อมูลพนักงาน</small>
-            <b id="employeeFoundName">—</b>
-            <span id="employeeFoundPosition">—</span>
-          </div>
-        </div>
-
-        <div class="signature-route-card" id="signatureRouteCard" hidden>
-          <small>SIGNATURE POSITION</small>
-          <b id="signatureRouteTitle">—</b>
-          <span id="signatureRouteText">—</span>
-        </div>
-
-        <div class="auto-sign-form" id="autoSignForm" hidden>
-          <label class="auto-confirm">
-            <input type="checkbox" id="autoReviewConfirm">
-            <span id="autoConfirmText">ฉันได้ตรวจสอบข้อมูลครบถ้วนแล้ว</span>
-          </label>
-
-          <label class="auto-label">ชื่อ-นามสกุล</label>
-          <input class="auto-name-locked" type="text" id="autoEmployeeName" readonly>
-
-          <label class="auto-label">ลงลายเซ็น</label>
-          <div class="auto-signature-wrap">
-            <canvas id="autoSignatureCanvas"></canvas>
-            <span>เซ็นด้วยเมาส์หรือนิ้วในกรอบนี้</span>
-            <button type="button" id="autoClearSignature">ล้างลายเซ็น</button>
-          </div>
-
-          <div class="auto-sign-error" id="autoSignError"></div>
-
-          <button type="button" class="auto-sign-submit" id="autoSignSubmit">
-            ตรวจสอบแล้ว · ลงชื่อรับรอง
-          </button>
-        </div>
-
-        <div class="auto-access-message" id="autoAccessMessage" hidden></div>
-      </aside>
-    </div>
-  </div>
-</div>
-
-
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   const openModal = id => {
@@ -6026,7 +6315,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   document.getElementById('previewDailyForm')?.addEventListener('click',()=>openModal('dailyPreviewModal'));
-  document.getElementById('openSignFlow')?.addEventListener('click',()=>openModal('signatureFlowModal'));
+  
 
   document.querySelectorAll('[data-close]').forEach(btn=>{
     btn.addEventListener('click',()=>closeModal(btn.dataset.close));
@@ -6184,415 +6473,213 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 
-<script>
-/* V15.70 — automatic shift detection and employee-code signature routing */
-document.addEventListener('DOMContentLoaded',()=>{
-  const modal=document.getElementById('signatureFlowModal');
-  if(!modal) return;
 
-  const EMPLOYEES = {
-    "15600533": {name:"นายธวัชชัย แซ่ด่าน", position:"หัวหน้าแผนก", role:"head"},
-    "16100241": {name:"นางสาวณัฐจิตา วัลลา", position:"รองหัวหน้าแผนก", role:"deputy"},
-    "14600082": {name:"นายนิคม สถิตย์เกิด", position:"ผู้ช่วยหัวหน้าแผนก", role:"shift_reviewer"},
-    "16000223": {name:"นายเก่ง อามอน", position:"พนักงาน", role:"employee"},
-    "16100229": {name:"นายณรินทร์ ทาเอื้อ", position:"ผู้ช่วยหัวหน้าแผนก", role:"shift_reviewer"},
-    "16100239": {name:"นายกิตติศักดิ์ อังสุรินทร์", position:"ผู้ช่วยหัวหน้าแผนก", role:"shift_reviewer"},
-    "16100240": {name:"นายศรัณย์ภัทร ยะกาศผล", position:"พนักงาน", role:"employee"},
-    "16100266": {name:"นางสาวเปมิกา สนิทกุลเจริญ", position:"พนักงาน", role:"employee"},
-    "16200287": {name:"นายฐาปกรณ์ พุ่มไชยะ", position:"ผู้ช่วยหัวหน้าแผนก", role:"reviewer"},
-    "16200289": {name:"นายมรงค์ชัย เผือกทุ่งผล", position:"พนักงาน", role:"employee"},
-    "16200301": {name:"นายพิเชษฐ์ สุวรรณวิจิตร", position:"ผู้ช่วยหัวหน้าแผนก", role:"shift_reviewer"},
-    "16300359": {name:"นางสาวบุษรา อินทัพไทย", position:"เจ้าหน้าที่เอกสาร", role:"document"},
-    "16400970": {name:"นายบูรพงษ์ บุญมา", position:"พนักงาน", role:"employee"},
-    "165015053": {name:"นายมที ยมยุล", position:"พนักงาน", role:"employee"},
-    "16601248": {name:"นายกันศิริรัช หลีนส", position:"พนักงาน", role:"employee"},
-    "16601414": {name:"นางสาวมัณฑิรา ไกรศรี", position:"พนักงาน", role:"employee"},
-    "16701568": {name:"นายสุรสิทธิ์ อินทะวงษ์", position:"พนักงาน", role:"employee"},
-    "16701575": {name:"นายทีปกร เต้าเงิน", position:"พนักงาน", role:"employee"},
-    "16701586": {name:"นายอนุวัฒน์ อมรเอกอิทธิ", position:"พนักงาน", role:"employee"},
-    "16701609": {name:"นายพรชัย ปิ่นแก้ว", position:"พนักงาน", role:"employee"},
-    "16801741": {name:"นายอนุวิชัย พุกน้อย", position:"พนักงาน", role:"employee"},
-    "16901902": {name:"นายภาคภูมิ มะระเมน", position:"พนักงาน", role:"employee"}
+
+
+<script>
+/* V15.74 — inline Daily Summary verification/signature */
+document.addEventListener('DOMContentLoaded',()=>{
+  const codeInput=document.getElementById('inlineEmployeeCode');
+  if(!codeInput) return;
+
+  const EMPLOYEES={
+    "15600533":{name:"นายธวัชชัย แซ่ด่าน",position:"หัวหน้าแผนก",role:"head"},
+    "16100241":{name:"นางสาวณัฐจิตา วัลลา",position:"รองหัวหน้าแผนก",role:"deputy"},
+    "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16000223":{name:"นายเก่ง อามอน",position:"พนักงาน",role:"employee"},
+    "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16100240":{name:"นายศรัณย์ภัทร ยะกาศผล",position:"พนักงาน",role:"employee"},
+    "16100266":{name:"นางสาวเปมิกา สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
+    "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก",role:"reviewer"},
+    "16200289":{name:"นายมรงค์ชัย เผือกทุ่งผล",position:"พนักงาน",role:"employee"},
+    "16200301":{name:"นายพิเชษฐ์ สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16300359":{name:"นางสาวบุษรา อินทัพไทย",position:"เจ้าหน้าที่เอกสาร",role:"document"},
+    "16400970":{name:"นายบูรพงษ์ บุญมา",position:"พนักงาน",role:"employee"},
+    "165015053":{name:"นายมที ยมยุล",position:"พนักงาน",role:"employee"},
+    "16601248":{name:"นายกันศิริรัช หลีนส",position:"พนักงาน",role:"employee"},
+    "16601414":{name:"นางสาวมัณฑิรา ไกรศรี",position:"พนักงาน",role:"employee"},
+    "16701568":{name:"นายสุรสิทธิ์ อินทะวงษ์",position:"พนักงาน",role:"employee"},
+    "16701575":{name:"นายทีปกร เต้าเงิน",position:"พนักงาน",role:"employee"},
+    "16701586":{name:"นายอนุวัฒน์ อมรเอกอิทธิ",position:"พนักงาน",role:"employee"},
+    "16701609":{name:"นายพรชัย ปิ่นแก้ว",position:"พนักงาน",role:"employee"},
+    "16801741":{name:"นายอนุวิชัย พุกน้อย",position:"พนักงาน",role:"employee"},
+    "16901902":{name:"นายภาคภูมิ มะระเมน",position:"พนักงาน",role:"employee"}
   };
 
-  const SHIFT_CFG = {
+  const SHIFTS={
     A:{label:"กะเช้า A / A+",start:5,end:14,period:"05:00–14:00",slot:"พนักงานกะเช้า"},
     B:{label:"กะบ่าย B",start:14,end:22,period:"14:00–22:00",slot:"พนักงานกะบ่าย"},
     C:{label:"กะกลางคืน C / C+",start:22,end:5,period:"22:00–05:00",slot:"พนักงานกะกลางคืน"}
   };
 
-  const signed = {
-    A:null, B:null, C:null,
-    reviewer:null, deputy:null, head:null
-  };
+  const signed={A:null,B:null,C:null,reviewer:null,deputy:null,head:null};
+  let currentShift='A', currentEmployee=null, hasInk=false;
 
-  let detectedShift='A';
-  let currentEmployee=null;
-  let signatureHasInk=false;
-
-  function bangkokNow(){
+  function nowTH(){
     const parts=new Intl.DateTimeFormat('en-GB',{
-      timeZone:'Asia/Bangkok',
-      year:'numeric',month:'2-digit',day:'2-digit',
-      hour:'2-digit',minute:'2-digit',second:'2-digit',
-      hourCycle:'h23'
+      timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'
     }).formatToParts(new Date());
-    const o={}; parts.forEach(p=>o[p.type]=p.value);
+    const o={};parts.forEach(p=>o[p.type]=p.value);
     return o;
   }
-
-  function updateClock(){
-    const p=bangkokNow();
-    const hour=Number(p.hour);
-    detectedShift = hour>=5 && hour<14 ? 'A' : hour>=14 && hour<22 ? 'B' : 'C';
-    const cfg=SHIFT_CFG[detectedShift];
-    document.getElementById('autoCurrentTime').textContent=`${p.hour}:${p.minute}:${p.second}`;
-    document.getElementById('autoCurrentDate').textContent=`${p.day}/${p.month}/${p.year}`;
-    document.getElementById('autoDetectedShift').textContent=cfg.label;
-    document.getElementById('autoDetectedPeriod').textContent=cfg.period;
+  function tick(){
+    const p=nowTH(),h=Number(p.hour);
+    currentShift=h>=5&&h<14?'A':h>=14&&h<22?'B':'C';
+    document.getElementById('inlineClock').textContent=`${p.hour}:${p.minute}`;
+    document.getElementById('inlineShift').textContent=SHIFTS[currentShift].label;
   }
-  updateClock();
-  setInterval(updateClock,1000);
+  tick();setInterval(tick,1000);
 
-  function sourceRows(){
-    const rows=[...document.querySelectorAll('#dailyPreviewModal .full-table tbody tr')];
-    return rows.map(tr=>{
+  function rowsAll(){
+    return [...document.querySelectorAll('.modern-hourly-table tbody tr')].map(tr=>{
       const td=tr.querySelectorAll('td');
-      if(td.length<5) return null;
-      const time=td[1].textContent.trim();
-      const hour=Number(time.split(':')[0]);
+      if(td.length<5)return null;
+      const time=td[1].textContent.trim(),hour=Number(time.split(':')[0]);
       const flow=parseFloat(td[2].textContent.replace(/[^\d.]/g,''));
-      return {
-        date:td[0].textContent.trim(),
-        time,hour,flow,
-        setting:td[3].textContent.trim(),
-        status:td[4].textContent.trim()
-      };
+      return {date:td[0].textContent.trim(),time,hour,flow,setting:td[3].textContent.trim(),status:td[4].textContent.trim()};
     }).filter(Boolean);
   }
-
-  function shiftRows(key){
-    const c=SHIFT_CFG[key];
-    return sourceRows().filter(r=>{
-      if(c.start<c.end) return r.hour>=c.start && r.hour<c.end;
-      return r.hour>=c.start || r.hour<c.end;
-    });
+  function rowsShift(k){
+    const c=SHIFTS[k];
+    return rowsAll().filter(r=>c.start<c.end?(r.hour>=c.start&&r.hour<c.end):(r.hour>=c.start||r.hour<c.end));
   }
+  function employeesComplete(){return ['A','B','C'].every(k=>signed[k])}
 
-  function allEmployeeSigned(){
-    return ['A','B','C'].every(k=>!!signed[k]);
-  }
-
-  function docStatusText(){
-    if(signed.head) return 'อนุมัติแล้ว';
-    if(signed.deputy) return 'รอหัวหน้าอนุมัติ';
-    if(signed.reviewer) return 'รอผู้อนุมัติ';
-    if(allEmployeeSigned()) return 'รอผู้ตรวจสอบ';
-    return 'รอตรวจสอบ';
-  }
-
-  function updateDocStatus(){
-    document.getElementById('autoDocStatus').textContent=docStatusText();
-    const badge=document.getElementById('docApproveBadge');
-    if(badge) badge.textContent=docStatusText();
-    const st=document.getElementById('docStatusText');
-    if(st) st.textContent=docStatusText();
-  }
-
-  function initials(name){
-    return name.replace(/^(นาย|นางสาว|นาง)/,'').trim().charAt(0) || '—';
-  }
-
-  function renderHistory(){
-    const list=[];
-    ['A','B','C'].forEach(k=>{
-      if(signed[k]) list.push({role:SHIFT_CFG[k].slot,name:signed[k].name});
-    });
-    if(signed.reviewer) list.push({role:'ผู้ตรวจสอบ',name:signed.reviewer.name});
-    if(signed.deputy) list.push({role:'รองหัวหน้าแผนก',name:signed.deputy.name});
-    if(signed.head) list.push({role:'หัวหน้าแผนก',name:signed.head.name});
-    document.getElementById('autoSignHistory').innerHTML=list.length
-      ? list.map(x=>`<div class="auto-history-row"><span>${x.role}</span><b>${x.name}</b><em>ลงชื่อแล้ว</em></div>`).join('')
-      : '';
+  function route(emp){
+    const c=SHIFTS[currentShift];
+    if(emp.role==='employee'){
+      return {title:c.slot,text:`${c.label} · ${c.period}`,rows:rowsShift(currentShift),can:!signed[currentShift],key:currentShift};
+    }
+    if(emp.role==='shift_reviewer'){
+      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:c.period,rows:rowsShift(currentShift),can:!signed[currentShift],key:currentShift};
+    }
+    if(emp.role==='reviewer'){
+      return {title:'ผู้ตรวจสอบเอกสารประจำวัน',text:'รอบ 05:00–05:00',rows:rowsAll(),can:employeesComplete()&&!signed.reviewer,key:'reviewer',
+        reason:!employeesComplete()?'พนักงานทั้ง 3 กะยังลงชื่อไม่ครบ':''};
+    }
+    if(emp.role==='deputy'){
+      return {title:'รองหัวหน้าแผนก',text:'อนุมัติเอกสาร',rows:rowsAll(),can:!!signed.reviewer&&!signed.deputy,key:'deputy',
+        reason:!signed.reviewer?'รอผู้ตรวจสอบลงชื่อก่อน':''};
+    }
+    if(emp.role==='head'){
+      return {title:'หัวหน้าแผนก',text:'อนุมัติขั้นสุดท้าย',rows:rowsAll(),can:!!signed.deputy&&!signed.head,key:'head',
+        reason:!signed.deputy?'รอรองหัวหน้าแผนกลงชื่อก่อน':''};
+    }
+    return {title:'เจ้าหน้าที่เอกสาร',text:'ดูเอกสาร',rows:rowsAll(),can:false,key:null,reason:'ตำแหน่งนี้ไม่มีช่องลงชื่อ'};
   }
 
   function renderRows(rows){
-    document.getElementById('autoReviewRows').innerHTML=rows.map(r=>`
-      <tr>
-        <td>${r.date}</td>
-        <td>${r.time}</td>
-        <td><b>${Number.isFinite(r.flow)?r.flow.toFixed(1):'-'} m³/h</b></td>
-        <td>${r.setting}</td>
-        <td>${r.status}</td>
-      </tr>`).join('');
-  }
-
-  function renderSummary(rows,label,period){
+    document.getElementById('inlineReviewRows').innerHTML=rows.map(r=>`
+      <tr><td>${r.date}</td><td>${r.time}</td><td><b>${Number.isFinite(r.flow)?r.flow.toFixed(1):'-'} m³/h</b></td><td>${r.setting}</td><td>${r.status}</td></tr>
+    `).join('');
     const vals=rows.map(r=>r.flow).filter(Number.isFinite);
     const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
-    const min=vals.length?Math.min(...vals):0;
-    const max=vals.length?Math.max(...vals):0;
-    document.getElementById('autoReviewSummary').innerHTML=`
-      <div><small>ข้อมูลที่ตรวจสอบ</small><b>${label}</b></div>
-      <div><small>ช่วงเวลา</small><b>${period}</b></div>
-      <div><small>Average Flow</small><b>${vals.length?avg.toFixed(2)+' m³/h':'—'}</b></div>
-      <div><small>Min / Max</small><b>${vals.length?min.toFixed(1)+' / '+max.toFixed(1)+' m³/h':'—'}</b></div>`;
+    document.getElementById('inlineReviewStats').innerHTML=`
+      <div><small>จำนวนข้อมูล</small><b>${rows.length} รายการ</b></div>
+      <div><small>Average</small><b>${vals.length?avg.toFixed(2)+' m³/h':'—'}</b></div>
+      <div><small>Min</small><b>${vals.length?Math.min(...vals).toFixed(1)+' m³/h':'—'}</b></div>
+      <div><small>Max</small><b>${vals.length?Math.max(...vals).toFixed(1)+' m³/h':'—'}</b></div>`;
+  }
+  function renderSigned(){
+    const arr=[];
+    ['A','B','C'].forEach(k=>{if(signed[k])arr.push([SHIFTS[k].slot,signed[k].name])});
+    if(signed.reviewer)arr.push(['ผู้ตรวจสอบ',signed.reviewer.name]);
+    if(signed.deputy)arr.push(['รองหัวหน้าแผนก',signed.deputy.name]);
+    if(signed.head)arr.push(['หัวหน้าแผนก',signed.head.name]);
+    document.getElementById('inlineSignedList').innerHTML=arr.map(x=>`<div class="inline-signed-row"><span>${x[0]}</span><b>${x[1]}</b><em>ลงชื่อแล้ว</em></div>`).join('');
+  }
+  function updateState(){
+    let s='รอตรวจสอบ';
+    if(employeesComplete())s='รอผู้ตรวจสอบ';
+    if(signed.reviewer)s='รออนุมัติ';
+    if(signed.deputy)s='รอหัวหน้าอนุมัติ';
+    if(signed.head)s='อนุมัติแล้ว';
+    document.getElementById('inlineDocState').textContent=s;
+    const chip=document.querySelector('.eform-status-chip');if(chip)chip.textContent=s;
   }
 
-  function showReviewFor(emp){
-    const empty=document.getElementById('autoReviewEmpty');
-    const content=document.getElementById('autoReviewContent');
-    empty.hidden=true; content.hidden=false;
-    renderHistory();
-
-    if(emp.role==='employee' || emp.role==='shift_reviewer'){
-      const cfg=SHIFT_CFG[detectedShift];
-      const rows=shiftRows(detectedShift);
-      document.getElementById('autoReviewTitle').textContent=`ตรวจสอบข้อมูล ${cfg.label}`;
-      document.getElementById('autoReviewBadge').textContent=cfg.period;
-      renderSummary(rows,cfg.label,cfg.period);
-      renderRows(rows);
-      document.getElementById('autoReviewTableShell').hidden=false;
-      document.getElementById('autoReviewNote').innerHTML=
-        emp.role==='shift_reviewer'
-          ? `<b>ผู้ตรวจสอบประจำกะ:</b> ${cfg.label} · ผู้ช่วยหัวหน้าแผนกต้องตรวจสอบข้อมูลเฉพาะกะของตนเองก่อนลงชื่อ`
-          : `<b>ตำแหน่งลงชื่อ:</b> ${cfg.slot} · ระบบกำหนดจากเวลาที่กำลังตรวจสอบเอกสาร`;
-    }else{
-      const rows=sourceRows();
-      const title = emp.role==='reviewer' ? 'ตรวจสอบเอกสารทั้งรอบรายงาน'
-        : emp.role==='deputy' ? 'ทวนสอบเอกสารก่อนอนุมัติ'
-        : emp.role==='head' ? 'ตรวจเอกสารเพื่ออนุมัติขั้นสุดท้าย'
-        : 'ดูข้อมูลเอกสาร';
-      document.getElementById('autoReviewTitle').textContent=title;
-      document.getElementById('autoReviewBadge').textContent='05:00 → 05:00';
-      renderSummary(rows,'ทั้งรอบรายงาน','05:00–05:00');
-      renderRows(rows);
-      document.getElementById('autoReviewTableShell').hidden=false;
-      document.getElementById('autoReviewNote').innerHTML=
-        emp.role==='reviewer'
-        ? '<b>ผู้ตรวจสอบ:</b> ต้องตรวจข้อมูลและลายเซ็นพนักงานครบทั้ง 3 กะก่อนลงชื่อ'
-        : emp.role==='deputy'
-        ? '<b>ผู้อนุมัติลำดับ 1:</b> ลงชื่อได้เมื่อพนักงาน 3 กะและผู้ตรวจสอบลงชื่อครบแล้ว'
-        : emp.role==='head'
-        ? '<b>ผู้อนุมัติขั้นสุดท้าย:</b> ลงชื่อได้หลังรองหัวหน้าแผนกอนุมัติแล้ว'
-        : '<b>เจ้าหน้าที่เอกสาร:</b> ตรวจดูเอกสารได้ แต่ไม่มีช่องลงนามใน Workflow นี้';
-    }
-  }
-
-  function routeFor(emp){
-    if(emp.role==='employee' || emp.role==='shift_reviewer'){
-      const cfg=SHIFT_CFG[detectedShift];
-      const isShiftReviewer = emp.role==='shift_reviewer';
-      return {
-        title:isShiftReviewer ? `ผู้ตรวจสอบประจำ${cfg.label}` : cfg.slot,
-        text:isShiftReviewer
-          ? `ผู้ช่วยหัวหน้าแผนก · ตรวจสอบข้อมูล ${cfg.label} (${cfg.period})`
-          : `ระบบตรวจพบ ${cfg.label} (${cfg.period}) จากเวลาปัจจุบัน`,
-        canSign:!signed[detectedShift],
-        reason:signed[detectedShift]?'กะนี้มีผู้ลงชื่อรับรองแล้ว':''
-      };
-    }
-    if(emp.role==='reviewer'){
-      return {
-        title:'ผู้ตรวจสอบ · ผู้ช่วยหัวหน้าแผนก',
-        text:'ตรวจข้อมูลทั้งวันและลายเซ็นพนักงานครบทุกกะ',
-        canSign:allEmployeeSigned() && !signed.reviewer,
-        reason:!allEmployeeSigned()?'ยังลงชื่อไม่ได้: พนักงานทั้ง 3 กะยังลงชื่อไม่ครบ':signed.reviewer?'มีผู้ตรวจสอบลงชื่อแล้ว':''
-      };
-    }
-    if(emp.role==='deputy'){
-      return {
-        title:'ผู้อนุมัติลำดับ 1 · รองหัวหน้าแผนก',
-        text:'ขั้นตอนอนุมัติเอกสารหลังการตรวจสอบครบถ้วน',
-        canSign:!!signed.reviewer && !signed.deputy,
-        reason:!signed.reviewer?'ยังลงชื่อไม่ได้: เอกสารยังไม่ผ่านผู้ตรวจสอบ':signed.deputy?'รองหัวหน้าแผนกลงชื่อแล้ว':''
-      };
-    }
-    if(emp.role==='head'){
-      return {
-        title:'ผู้อนุมัติขั้นสุดท้าย · หัวหน้าแผนก',
-        text:'อนุมัติเอกสารหลังรองหัวหน้าแผนกลงชื่อแล้ว',
-        canSign:!!signed.deputy && !signed.head,
-        reason:!signed.deputy?'ยังลงชื่อไม่ได้: รอรองหัวหน้าแผนกอนุมัติก่อน':signed.head?'เอกสารอนุมัติแล้ว':''
-      };
-    }
-    return {
-      title:'เจ้าหน้าที่เอกสาร',
-      text:'สิทธิ์สำหรับจัดเตรียมและตรวจดูเอกสาร',
-      canSign:false,
-      reason:'ตำแหน่งนี้ไม่มีช่องลงนามใน Workflow การรับรองเอกสาร'
-    };
-  }
-
-  function resetSignature(){
-    const canvas=document.getElementById('autoSignatureCanvas');
-    const ctx=canvas.getContext('2d');
-    const rect=canvas.getBoundingClientRect();
-    ctx.clearRect(0,0,rect.width,rect.height);
-    signatureHasInk=false;
-    canvas.parentElement.classList.remove('has-ink');
-  }
-
-  function lookupEmployee(){
-    const code=document.getElementById('autoEmployeeCode').value.replace(/\D/g,'').slice(0,8);
-    document.getElementById('autoEmployeeCode').value=code;
-    const state=document.getElementById('employeeLookupState');
-    const found=document.getElementById('employeeFoundCard');
-    const routeCard=document.getElementById('signatureRouteCard');
-    const form=document.getElementById('autoSignForm');
-    const access=document.getElementById('autoAccessMessage');
-    document.getElementById('autoSignError').classList.remove('show');
-    currentEmployee=null;
-    resetSignature();
-
-    if(code.length<8){
-      state.textContent=`${code.length}/8`;state.className='';
-      found.hidden=true;routeCard.hidden=true;form.hidden=true;access.hidden=true;
-      document.getElementById('autoReviewEmpty').hidden=false;
-      document.getElementById('autoReviewContent').hidden=true;
-      return;
-    }
-
-    const emp=EMPLOYEES[code];
-    if(!emp){
-      state.textContent='ไม่พบ';state.className='not-found';
-      found.hidden=true;routeCard.hidden=true;form.hidden=true;
-      access.hidden=false;access.textContent='ไม่พบรหัสพนักงานในรายชื่อแผนก กรุณาตรวจสอบรหัสอีกครั้ง';
-      return;
-    }
-
-    currentEmployee={...emp,code};
-    state.textContent='พบข้อมูล';state.className='found';
-    found.hidden=false;routeCard.hidden=false;
-    document.getElementById('employeeInitial').textContent=initials(emp.name);
-    document.getElementById('employeeFoundName').textContent=emp.name;
-    document.getElementById('employeeFoundPosition').textContent=`${emp.position} · ${code}`;
-
-    const route=routeFor(emp);
-    document.getElementById('signatureRouteTitle').textContent=route.title;
-    document.getElementById('signatureRouteText').textContent=route.text;
-    showReviewFor(emp);
-
-    access.hidden=true;
-    if(route.canSign){
-      form.hidden=false;
-      document.getElementById('autoEmployeeName').value=emp.name;
-      document.getElementById('autoReviewConfirm').checked=false;
-      document.getElementById('autoConfirmText').textContent =
-        (emp.role==='employee' || emp.role==='shift_reviewer')
-          ? (emp.role==='shift_reviewer'
-              ? `ฉันได้ตรวจสอบข้อมูลของ ${SHIFT_CFG[detectedShift].label} ในฐานะผู้ตรวจสอบประจำกะครบถ้วนแล้ว`
-              : `ฉันได้ตรวจสอบข้อมูล ${SHIFT_CFG[detectedShift].label} ครบถ้วนแล้ว`)
-          : emp.role==='reviewer'
-          ? 'ฉันได้ตรวจสอบข้อมูลและลายเซ็นพนักงานครบทั้ง 3 กะแล้ว'
-          : emp.role==='deputy'
-          ? 'ฉันได้ทวนสอบเอกสารและพร้อมอนุมัติในลำดับรองหัวหน้าแผนก'
-          : 'ฉันได้ตรวจเอกสารและพร้อมอนุมัติขั้นสุดท้าย';
-    }else{
-      form.hidden=true;
-      access.hidden=false;
-      access.textContent=route.reason;
-    }
-  }
-
-  const codeInput=document.getElementById('autoEmployeeCode');
-  codeInput.addEventListener('input',lookupEmployee);
-
-  // Signature canvas
-  const canvas=document.getElementById('autoSignatureCanvas');
-  const ctx=canvas.getContext('2d');
+  const canvas=document.getElementById('inlineSignatureCanvas'),ctx=canvas.getContext('2d');
   let drawing=false;
-
   function resizeCanvas(){
-    const ratio=Math.max(window.devicePixelRatio||1,1);
-    const rect=canvas.getBoundingClientRect();
-    canvas.width=Math.max(1,Math.floor(rect.width*ratio));
-    canvas.height=Math.max(1,Math.floor(rect.height*ratio));
-    ctx.setTransform(ratio,0,0,ratio,0,0);
-    ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#183725';
-    signatureHasInk=false;
+    const rect=canvas.getBoundingClientRect(),ratio=Math.max(devicePixelRatio||1,1);
+    canvas.width=Math.max(1,Math.floor(rect.width*ratio));canvas.height=Math.max(1,Math.floor(rect.height*ratio));
+    ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#183725';hasInk=false;
   }
-  function pt(e){
-    const rect=canvas.getBoundingClientRect();
-    return {x:e.clientX-rect.left,y:e.clientY-rect.top};
-  }
-  canvas.addEventListener('pointerdown',e=>{
-    e.preventDefault();drawing=true;const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);
-  });
-  canvas.addEventListener('pointermove',e=>{
-    if(!drawing)return;e.preventDefault();const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();
-    signatureHasInk=true;canvas.parentElement.classList.add('has-ink');
-  });
+  function clearSig(){const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);hasInk=false;canvas.parentElement.classList.remove('has-ink')}
+  function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+  canvas.addEventListener('pointerdown',e=>{e.preventDefault();drawing=true;const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});
+  canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasInk=true;canvas.parentElement.classList.add('has-ink')});
   window.addEventListener('pointerup',()=>drawing=false);
-  document.getElementById('autoClearSignature').addEventListener('click',resetSignature);
+  document.getElementById('inlineClearSignature').addEventListener('click',clearSig);
+  setTimeout(resizeCanvas,100);
 
-  function showError(msg){
-    const el=document.getElementById('autoSignError');
-    el.textContent=msg;el.classList.add('show');
+  function resetUI(){
+    currentEmployee=null;
+    document.getElementById('inlinePersonCard').hidden=true;
+    document.getElementById('inlineRoute').hidden=true;
+    document.getElementById('inlineSignForm').hidden=true;
+    document.getElementById('inlineAccessMsg').hidden=true;
+    document.getElementById('inlineReviewEmpty').hidden=false;
+    document.getElementById('inlineReviewContent').hidden=true;
+    clearSig();
   }
 
-  document.getElementById('autoSignSubmit').addEventListener('click',()=>{
-    if(!currentEmployee) return;
-    const route=routeFor(currentEmployee);
-    if(!route.canSign) return showError(route.reason || 'ยังไม่สามารถลงชื่อได้');
-    if(!document.getElementById('autoReviewConfirm').checked) return showError('กรุณายืนยันว่าได้ตรวจสอบข้อมูลแล้ว');
-    if(!signatureHasInk) return showError('กรุณาลงลายเซ็นในกรอบก่อนยืนยัน');
+  codeInput.addEventListener('input',()=>{
+    const code=codeInput.value.replace(/\D/g,'').slice(0,8);codeInput.value=code;
+    const state=document.getElementById('inlineLookupState');
+    document.getElementById('inlineSignError').classList.remove('show');
+    if(code.length<8){state.textContent=`${code.length}/8`;state.className='';resetUI();return}
+    const emp=EMPLOYEES[code];
+    if(!emp){state.textContent='ไม่พบ';state.className='bad';resetUI();document.getElementById('inlineAccessMsg').hidden=false;document.getElementById('inlineAccessMsg').textContent='ไม่พบรหัสพนักงาน';return}
+    currentEmployee={...emp,code};state.textContent='พบ';state.className='ok';
 
-    const signData={name:currentEmployee.name,code:currentEmployee.code,position:currentEmployee.position,time:new Date().toISOString()};
-    if(currentEmployee.role==='employee' || currentEmployee.role==='shift_reviewer') signed[detectedShift]=signData;
-    if(currentEmployee.role==='reviewer') signed.reviewer=signData;
-    if(currentEmployee.role==='deputy') signed.deputy=signData;
-    if(currentEmployee.role==='head') signed.head=signData;
+    document.getElementById('inlinePersonCard').hidden=false;
+    document.getElementById('inlinePersonInitial').textContent=emp.name.replace(/^(นาย|นางสาว|นาง)/,'').trim().charAt(0)||'—';
+    document.getElementById('inlinePersonName').textContent=emp.name;
+    document.getElementById('inlinePersonPosition').textContent=`${emp.position} · ${code}`;
 
-    updateDocStatus();
-    renderHistory();
+    const r=route(emp);
+    document.getElementById('inlineRoute').hidden=false;
+    document.getElementById('inlineRouteTitle').textContent=r.title;
+    document.getElementById('inlineRouteText').textContent=r.text;
 
-    const access=document.getElementById('autoAccessMessage');
-    document.getElementById('autoSignForm').hidden=true;
-    access.hidden=false;
-    access.style.background='#e2f1e6';
-    access.style.borderColor='#b8d1be';
-    access.style.color='#285e3b';
-    access.textContent=`ลงชื่อสำเร็จ: ${route.title} · ${currentEmployee.name}`;
+    document.getElementById('inlineReviewEmpty').hidden=true;
+    document.getElementById('inlineReviewContent').hidden=false;
+    document.getElementById('inlineReviewTitle').textContent=r.title;
+    renderRows(r.rows);renderSigned();
 
-    // update overview cards in main document where possible
-    const cards=[...document.querySelectorAll('.doc-sign-card')];
-    if(currentEmployee.role==='employee' || currentEmployee.role==='shift_reviewer'){
-      const index={A:0,B:1,C:2}[detectedShift];
-      const c=cards[index];
-      if(c){
-        c.querySelector('em').textContent=
-          currentEmployee.role==='shift_reviewer'
-            ? `ผู้ตรวจสอบประจำกะ · ${currentEmployee.name}`
-            : `ลงชื่อแล้ว · ${currentEmployee.name}`;
-        c.querySelector('em').style.color='#28623b';
-      }
-    }
-    if(currentEmployee.role==='reviewer' && cards[3]){
-      cards[3].querySelector('em').textContent=`ตรวจสอบแล้ว · ${currentEmployee.name}`;
-      cards[3].querySelector('em').style.color='#28623b';
+    if(r.can){
+      document.getElementById('inlineSignForm').hidden=false;
+      document.getElementById('inlineAccessMsg').hidden=true;
+      document.getElementById('inlineEmployeeName').value=emp.name;
+      document.getElementById('inlineConfirm').checked=false;
+      document.getElementById('inlineConfirmText').textContent=`ตรวจสอบข้อมูลสำหรับ ${r.title} ครบถ้วนแล้ว`;
+      setTimeout(resizeCanvas,30);
+    }else{
+      document.getElementById('inlineSignForm').hidden=true;
+      document.getElementById('inlineAccessMsg').hidden=false;
+      document.getElementById('inlineAccessMsg').textContent=r.reason||'รายการนี้ลงชื่อแล้ว';
     }
   });
 
-  function openReset(){
-    updateClock();updateDocStatus();
-    codeInput.value='';
-    document.getElementById('employeeLookupState').textContent='8 หลัก';
-    document.getElementById('employeeLookupState').className='';
-    document.getElementById('employeeFoundCard').hidden=true;
-    document.getElementById('signatureRouteCard').hidden=true;
-    document.getElementById('autoSignForm').hidden=true;
-    document.getElementById('autoAccessMessage').hidden=true;
-    document.getElementById('autoReviewEmpty').hidden=false;
-    document.getElementById('autoReviewContent').hidden=true;
-    setTimeout(resizeCanvas,60);
-    setTimeout(()=>codeInput.focus(),80);
-  }
+  document.getElementById('inlineSignSubmit').addEventListener('click',()=>{
+    if(!currentEmployee)return;
+    const r=route(currentEmployee),err=document.getElementById('inlineSignError');
+    err.classList.remove('show');
+    if(!r.can){err.textContent=r.reason||'ยังลงชื่อไม่ได้';err.classList.add('show');return}
+    if(!document.getElementById('inlineConfirm').checked){err.textContent='กรุณายืนยันว่าตรวจสอบข้อมูลแล้ว';err.classList.add('show');return}
+    if(!hasInk){err.textContent='กรุณาลงลายเซ็น';err.classList.add('show');return}
 
-  document.getElementById('openSignFlow')?.addEventListener('click',openReset);
-  window.addEventListener('resize',()=>{ if(!document.getElementById('autoSignForm').hidden) resizeCanvas(); });
-  setTimeout(resizeCanvas,100);
-  updateDocStatus();
+    signed[r.key]={name:currentEmployee.name,code:currentEmployee.code,time:new Date().toISOString()};
+    renderSigned();updateState();
+    document.getElementById('inlineSignForm').hidden=true;
+    const msg=document.getElementById('inlineAccessMsg');
+    msg.hidden=false;msg.style.background='#e2f1e6';msg.style.borderColor='#b8d1be';msg.style.color='#285e3b';
+    msg.textContent=`ลงชื่อสำเร็จ · ${r.title} · ${currentEmployee.name}`;
+  });
+
+  updateState();
 });
 </script>
 
