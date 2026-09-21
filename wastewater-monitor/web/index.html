@@ -6560,6 +6560,55 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.88 — Formal PDF export: same document style as Preview */
+.export-busy[hidden]{
+  display:none!important;
+}
+.pdf-export-host{
+  position:fixed;
+  left:-12000px;
+  top:0;
+  width:1000px;
+  z-index:-1;
+  pointer-events:none;
+  background:#fff;
+}
+.pdf-export-page.formal-document{
+  width:940px!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:26px 28px 30px!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:#fff!important;
+}
+.pdf-export-page + .pdf-export-page{
+  margin-top:24px!important;
+}
+.pdf-page-number{
+  margin-top:12px;
+  padding-top:8px;
+  border-top:1px solid #aab3ad;
+  text-align:right;
+  font:700 7px "Noto Sans Thai",sans-serif;
+  color:#65756c;
+}
+.pdf-export-page .preview-table-wrap{
+  overflow:visible!important;
+  max-height:none!important;
+}
+.pdf-export-page .preview-section-title{
+  break-inside:avoid;
+}
+.pdf-export-page .signature-board{
+  break-inside:avoid;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -8644,36 +8693,244 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   function busy(title,sub){
-    let el=document.getElementById('reportExportBusy');
-    if(!el){el=document.createElement('div');el.id='reportExportBusy';el.className='export-busy';el.innerHTML='<div class="export-busy-card"><b></b><span></span></div>';document.body.appendChild(el)}
-    el.querySelector('b').textContent=title;el.querySelector('span').textContent=sub;el.hidden=false;
-    return()=>el.hidden=true;
+    // Remove any stale overlay first, then create a fresh one.
+    document.getElementById('reportExportBusy')?.remove();
+    const el=document.createElement('div');
+    el.id='reportExportBusy';
+    el.className='export-busy';
+    el.innerHTML='<div class="export-busy-card"><b></b><span></span></div>';
+    el.querySelector('b').textContent=title;
+    el.querySelector('span').textContent=sub;
+    document.body.appendChild(el);
+
+    // IMPORTANT: remove the element, not just hidden=true.
+    // The old CSS had display:grid, which could keep the overlay visible.
+    return ()=>el.remove();
+  }
+
+  function getFormalTemplate(){
+    return document.querySelector('#dailyPreviewModal .formal-document');
+  }
+
+  function syncFormalDocument(root,r){
+    if(!root||!r) return;
+    const rows=flowRows(r);
+    const next=nextISO(r.id);
+    const startDate=th(r.id);
+    const nextDate=th(next);
+
+    const headerDate=root.querySelector('.fh-meta .full-row b');
+    if(headerDate) headerDate.textContent=startDate;
+
+    const strip=[...root.querySelectorAll('.preview-doc-strip > div')];
+    if(strip[0]?.querySelector('b')) strip[0].querySelector('b').textContent=r.doc;
+    if(strip[1]?.querySelector('b')) strip[1].querySelector('b').textContent='NRT 1';
+    if(strip[2]?.querySelector('b')) strip[2].querySelector('b').textContent='บ่อบำบัดน้ำเสีย';
+    if(strip[3]?.querySelector('b')) strip[3].querySelector('b').textContent=r.status;
+
+    const title=root.querySelector('.preview-title-block p');
+    if(title){
+      title.textContent=`ประจำวันที่ ${startDate} · รอบรายงาน 05:00 วันที่ ${startDate} ถึง 05:00 วันที่ ${nextDate}`;
+    }
+
+    const info=[...root.querySelectorAll('.preview-info-grid > div')];
+    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · FM-01';
+    if(info[1]?.querySelector('b')) info[1].querySelector('b').textContent=`${r.setting.toFixed(1)} m³/h`;
+    if(info[2]?.querySelector('b')) info[2].querySelector('b').textContent=`${r.volume.toFixed(1)} m³/day`;
+    if(info[3]?.querySelector('b')) info[3].querySelector('b').textContent='ปกติ';
+
+    const tbody=root.querySelector('.full-table tbody');
+    if(tbody){
+      tbody.innerHTML=rows.map(x=>`
+        <tr>
+          <td>${x.date}</td>
+          <td>${x.time}</td>
+          <td>${x.flow.toFixed(1)} m³/h</td>
+          <td>${x.setting.toFixed(1)} m³/h</td>
+          <td><span class="pv-ok">${x.status}</span></td>
+        </tr>`).join('');
+    }
+
+    const summary=[...root.querySelectorAll('.preview-summary-row.full-summary > div')];
+    const summaryValues=[
+      [r.avg.toFixed(1),'m³/h'],
+      [r.min.toFixed(1),'m³/h'],
+      [r.max.toFixed(1),'m³/h'],
+      ['11,800','mg/L · ปกติ'],
+      ['354','mg/L · ปกติ'],
+      ['ผ่านเกณฑ์','ระบบทำงานปกติ']
+    ];
+    summary.forEach((box,i)=>{
+      const b=box.querySelector('b');
+      const span=box.querySelector('span');
+      if(b) b.textContent=summaryValues[i][0];
+      if(span) span.textContent=summaryValues[i][1];
+    });
+
+    const docStatus=root.querySelector('#docStatusText');
+    if(docStatus) docStatus.textContent=r.status;
+    const badge=root.querySelector('#docApproveBadge');
+    if(badge){
+      badge.textContent=r.status;
+      badge.classList.toggle('approved',r.status==='อนุมัติแล้ว');
+      badge.classList.toggle('progress',r.status!=='อนุมัติแล้ว');
+    }
+
+    const flowSetting=root.querySelector('#previewFlowSettingValue');
+    if(flowSetting) flowSetting.textContent=`${r.setting.toFixed(1)} m³/h`;
+  }
+
+  function cloneInto(page,node){
+    if(node) page.appendChild(node.cloneNode(true));
+  }
+
+  function buildFormalPdfPages(r){
+    const template=getFormalTemplate();
+    if(!template) throw new Error('Formal document template not found');
+
+    // Keep the Preview document synchronized with the selected report too.
+    syncFormalDocument(template,r);
+
+    const host=document.createElement('div');
+    host.className='pdf-export-host';
+    host.setAttribute('aria-hidden','true');
+
+    const makePage=(pageNo)=>{
+      const page=document.createElement('div');
+      page.className='preview-paper full-document formal-document pdf-export-page';
+      page.dataset.pdfPage=String(pageNo);
+      return page;
+    };
+
+    const header=template.querySelector('.form-header-table');
+    const strip=template.querySelector('.preview-doc-strip');
+    const title=template.querySelector('.preview-title-block');
+    const info=template.querySelector('.preview-info-grid');
+    const sectionTitles=[...template.querySelectorAll('.preview-section-title')];
+    const table=template.querySelector('.preview-table-wrap.full-table');
+    const summary=template.querySelector('.preview-summary-row.full-summary');
+    const signatures=template.querySelector('.signature-board');
+    const footer=template.querySelector('.preview-document-footer');
+
+    // PAGE 1 — real company header + report identity + all hourly records.
+    const page1=makePage(1);
+    cloneInto(page1,header);
+    cloneInto(page1,strip);
+    cloneInto(page1,title);
+    cloneInto(page1,info);
+    cloneInto(page1,sectionTitles[0]);
+    cloneInto(page1,table);
+    const page1No=document.createElement('div');
+    page1No.className='pdf-page-number';
+    page1No.textContent='หน้า 1 / 2';
+    page1.appendChild(page1No);
+
+    // PAGE 2 — repeat real header, then summary and signature section.
+    const page2=makePage(2);
+    cloneInto(page2,header);
+    cloneInto(page2,strip);
+    cloneInto(page2,sectionTitles[1]);
+    cloneInto(page2,summary);
+    cloneInto(page2,sectionTitles[2]);
+    cloneInto(page2,signatures);
+    cloneInto(page2,footer);
+    const page2No=document.createElement('div');
+    page2No.className='pdf-page-number';
+    page2No.textContent='หน้า 2 / 2';
+    page2.appendChild(page2No);
+
+    // Synchronize cloned pages once more, because cloned IDs/content are scoped.
+    syncFormalDocument(page1,r);
+    syncFormalDocument(page2,r);
+
+    host.append(page1,page2);
+    document.body.appendChild(host);
+    return {host,pages:[page1,page2]};
+  }
+
+  async function waitForPdfAssets(host){
+    if(document.fonts?.ready){
+      try{ await document.fonts.ready; }catch(_){}
+    }
+    const imgs=[...host.querySelectorAll('img')];
+    await Promise.all(imgs.map(img=>{
+      if(img.complete) return Promise.resolve();
+      return new Promise(resolve=>{
+        img.onload=resolve;
+        img.onerror=resolve;
+        setTimeout(resolve,1200);
+      });
+    }));
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   }
 
   async function exportPdf(r){
-    const done=busy('กำลังสร้าง PDF','จัดรูปแบบใบบันทึกและสรุปรายวัน');
+    const done=busy('กำลังสร้าง PDF','กำลังจัดเอกสารตามแบบฟอร์ม F-WWT-003');
+    let exportHost=null;
+
     try{
-      if(typeof html2canvas==='undefined'||!window.jspdf)throw new Error('PDF libs missing');
-      const toolbar=card.querySelector('.daily-eform-toolbar');
-      const oldToolbar=toolbar.style.display;
-      const oldHistory=historyPanel.hidden;
-      const hidden=detailEls().map(x=>x.hidden);
-      toolbar.style.display='none';historyPanel.hidden=true;detailEls().forEach(x=>x.hidden=false);
-      await new Promise(res=>setTimeout(res,80));
-      const canvas=await html2canvas(card,{scale:1.25,useCORS:true,backgroundColor:'#fff',logging:false});
-      toolbar.style.display=oldToolbar;historyPanel.hidden=oldHistory;detailEls().forEach((x,i)=>x.hidden=hidden[i]);
-      const {jsPDF}=window.jspdf,pdf=new jsPDF('p','mm','a4');
-      const pw=210,ph=297,m=8,iw=pw-2*m,ih=canvas.height*iw/canvas.width,data=canvas.toDataURL('image/jpeg',.9);
-      let offset=0,pageContent=ph-2*m;
-      while(offset<ih){
-        if(offset>0)pdf.addPage();
-        pdf.addImage(data,'JPEG',m,m-offset,iw,ih,'FAST');
-        offset+=pageContent;
+      if(typeof html2canvas==='undefined'||!window.jspdf){
+        throw new Error('PDF libraries not loaded');
       }
+
+      const built=buildFormalPdfPages(r);
+      exportHost=built.host;
+      await waitForPdfAssets(exportHost);
+
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+      const pageW=210,pageH=297,margin=7;
+      const maxW=pageW-(margin*2);
+      const maxH=pageH-(margin*2);
+
+      for(let i=0;i<built.pages.length;i++){
+        if(i>0) pdf.addPage('a4','portrait');
+
+        const canvas=await html2canvas(built.pages[i],{
+          scale:1.65,
+          useCORS:true,
+          allowTaint:false,
+          backgroundColor:'#ffffff',
+          logging:false,
+          imageTimeout:2500,
+          scrollX:0,
+          scrollY:0
+        });
+
+        const data=canvas.toDataURL('image/jpeg',0.94);
+        let drawW=maxW;
+        let drawH=canvas.height*drawW/canvas.width;
+
+        if(drawH>maxH){
+          const ratio=maxH/drawH;
+          drawH=maxH;
+          drawW=drawW*ratio;
+        }
+
+        const x=(pageW-drawW)/2;
+        const y=margin;
+        pdf.addImage(data,'JPEG',x,y,drawW,drawH,undefined,'FAST');
+      }
+
       pdf.save(`WWT-Daily-Flow-${r.id}.pdf`);
-    }catch(err){console.error(err);alert('สร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง')}
-    finally{done()}
+
+      // Let the browser start the download, then the finally block
+      // removes the overlay immediately.
+      await new Promise(resolve=>setTimeout(resolve,120));
+    }catch(err){
+      console.error('PDF export error:',err);
+      alert('สร้าง PDF ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    }finally{
+      exportHost?.remove();
+      done();
+    }
   }
+
+  // Sync the formal Preview BEFORE it opens.
+  document.getElementById('previewDailyForm')?.addEventListener('click',()=>{
+    const r=REPORTS.find(x=>x.id===selectedId)||REPORTS[0];
+    syncFormalDocument(getFormalTemplate(),r);
+  },true);
 
   function exportXlsx(r){
     if(typeof XLSX==='undefined'){alert('ไม่สามารถโหลดระบบสร้าง XLSX ได้ กรุณาตรวจสอบอินเทอร์เน็ต');return}
