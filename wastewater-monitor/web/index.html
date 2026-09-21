@@ -5416,6 +5416,217 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.78 — System Validation inside System Health */
+.validation-divider{
+  height:1px;
+  margin:18px 0;
+  background:linear-gradient(90deg,transparent,#cbd7cf 12%,#cbd7cf 88%,transparent);
+}
+.system-validation{
+  padding:2px 0 0;
+}
+.validation-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.validation-head small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.14em;
+  color:#728178;
+}
+.validation-head h3{
+  margin:4px 0 0;
+  font:800 15px "Noto Sans Thai",sans-serif;
+  color:#193122;
+}
+.validation-state{
+  padding:6px 10px;
+  border-radius:999px;
+  font:800 7px "Noto Sans Thai",sans-serif;
+  white-space:nowrap;
+}
+.validation-state.pending{
+  border:1px solid #e8d39a;
+  background:#fff4d7;
+  color:#765a16;
+}
+.validation-kpis{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  margin-top:13px;
+}
+.validation-kpi{
+  min-height:78px;
+  padding:11px 12px;
+  border:1px solid #d5dfd7;
+  border-radius:13px;
+  background:linear-gradient(180deg,#fbfdfb,#f2f6f3);
+}
+.validation-kpi small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.08em;
+  color:#75857a;
+}
+.validation-kpi b{
+  display:block;
+  margin-top:7px;
+  font:900 17px "Outfit","Noto Sans Thai",sans-serif;
+  color:#1d3827;
+}
+.validation-kpi span{
+  display:block;
+  margin-top:3px;
+  font:600 7px "Noto Sans Thai",sans-serif;
+  color:#75867b;
+}
+.mv110-validation{
+  margin-top:11px;
+  padding:14px;
+  border:1px solid #d2ddd4;
+  border-radius:15px;
+  background:#fbfdfb;
+}
+.mv110-validation-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.validation-symbol{
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#e5efe7;
+  color:#2e6842;
+  font-weight:900;
+}
+.mv110-validation-title small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.10em;
+  color:#74847a;
+}
+.mv110-validation-title b{
+  display:block;
+  margin-top:3px;
+  font:800 10px "Noto Sans Thai",sans-serif;
+  color:#223c2c;
+}
+.validation-path{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+  margin-top:13px;
+}
+.validation-path>div{
+  min-height:62px;
+  padding:9px 10px;
+  border:1px solid #d8e1da;
+  border-radius:11px;
+  background:#f3f7f4;
+}
+.validation-path>div span{
+  width:20px;height:20px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#315f43;
+  color:#fff;
+  font:800 7px "Outfit",sans-serif;
+}
+.validation-path>div b{
+  display:block;
+  margin-top:5px;
+  font:800 9px "Outfit","Noto Sans Thai",sans-serif;
+  color:#28412f;
+}
+.validation-path>div small{
+  display:block;
+  margin-top:2px;
+  font:600 7px "Noto Sans Thai",sans-serif;
+  color:#75867b;
+}
+.validation-path i{
+  font-style:normal;
+  color:#7e9184;
+  font-weight:900;
+}
+.validation-method{
+  margin-top:10px;
+  padding:10px 11px;
+  border-radius:10px;
+  background:#eef4ef;
+}
+.validation-method b{
+  display:block;
+  font:800 8px "Noto Sans Thai",sans-serif;
+  color:#31533d;
+}
+.validation-method span{
+  display:block;
+  margin-top:3px;
+  font:600 7.5px/1.5 "Noto Sans Thai",sans-serif;
+  color:#687a6f;
+}
+.validation-result-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid #e0e7e1;
+}
+.validation-result-row small{
+  display:block;
+  font:800 7px "Outfit",sans-serif;
+  letter-spacing:.08em;
+  color:#7a8980;
+}
+.validation-result-row b{
+  display:block;
+  margin-top:3px;
+  font:800 8.5px "Noto Sans Thai",sans-serif;
+  color:#755913;
+}
+.validation-result-row>span{
+  text-align:right;
+  font:600 7.5px "Noto Sans Thai",sans-serif;
+  color:#708178;
+}
+
+@media(max-width:850px){
+  .validation-kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .validation-head{align-items:flex-start;flex-direction:column}
+  .validation-kpis{grid-template-columns:1fr 1fr}
+  .validation-path{grid-template-columns:1fr}
+  .validation-path i{transform:rotate(90deg);justify-self:center}
+  .validation-result-row{align-items:flex-start;flex-direction:column}
+  .validation-result-row>span{text-align:left}
+}
+</style>
+
+
+<style>
+/* V15.80 — keep "สถานะและการทดสอบ", remove only System Validation */
+.validation-divider,
+.system-validation{
+  display:none!important;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -5424,8 +5635,7 @@ html{scroll-behavior:smooth}
 <button class="nav" type="button" data-nav-target="alerts" aria-label="Alert Center" title="Alert Center">!</button>
 <button class="nav" type="button" data-nav-target="flowlog" aria-label="Hourly Flow Log" title="Hourly Flow Log">≡</button>
 <button class="nav" type="button" data-nav-target="daily" aria-label="Daily Summary" title="Daily Summary">▤</button>
-<div class="space"></div>
-<button class="nav" type="button" data-nav-target="health" aria-label="System Health" title="System Health">⚙</button>
+<button class="nav" type="button" data-nav-target="health" aria-label="System & Validation" title="System & Validation">⚙</button>
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
