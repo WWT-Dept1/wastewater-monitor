@@ -9175,6 +9175,41 @@ body.daily-report-view .new-menu-report{
 }
 </style>
 
+
+<style>
+/* V15.114 — demo realtime movement */
+.realtime-flash{
+  animation:realtimeFlash .42s ease;
+}
+@keyframes realtimeFlash{
+  0%{opacity:.42; transform:translateY(1px)}
+  100%{opacity:1; transform:translateY(0)}
+}
+</style>
+
+
+<style>
+/* V15.115 — restore and clarify LIVE timestamp */
+.live-data-time{
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:wrap;
+  gap:6px !important;
+  margin-top:10px !important;
+  min-height:20px;
+}
+#flowLiveClock{
+  display:inline-block !important;
+  color:#315f45 !important;
+  font-weight:800 !important;
+  font-size:10px !important;
+  font-variant-numeric:tabular-nums;
+}
+#mainFlowRealtimeValue{
+  display:inline;
+}
+</style>
+
 </head><body>
 <header>
   <div class="brand">
@@ -9207,7 +9242,7 @@ body.daily-report-view .new-menu-report{
 <section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">19FM001 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
 <div class="display live-display-clean">
   <div class="live-value-row">
-    <div class="value">12.5
+    <div class="value"><span id="mainFlowRealtimeValue">12.5</span>
       <small>m³/h LIVE VALUE</small>
       <div class="live-data-time">
         <span class="live-pulse"></span>
@@ -11997,6 +12032,115 @@ document.addEventListener('DOMContentLoaded',function(){
 
   reportMenuBtn?.addEventListener('click',openDailyReportFromSystemMenu);
 });
+</script>
+
+
+<script>
+/* DEMO REALTIME VALUES
+   Safe preview mode:
+   - Does NOT overwrite the live clock markup.
+   - Stops automatically when window.WWT_REAL_DATA_ACTIVE === true.
+   - Call window.stopWWTDemoRealtime() before starting a real Supabase/ESP32 feed.
+*/
+(function(){
+  const state={
+    flow:12.5,
+    cod:11800,
+    zinc:354
+  };
+
+  function clamp(v,min,max){ return Math.min(max,Math.max(min,v)); }
+  function walk(v,step,min,max,decimals){
+    const n=clamp(v+(Math.random()-.5)*step,min,max);
+    return Number(n.toFixed(decimals));
+  }
+  function flash(el){
+    if(!el) return;
+    el.classList.remove('realtime-flash');
+    void el.offsetWidth;
+    el.classList.add('realtime-flash');
+  }
+  function setHTML(el,htmlValue){
+    if(!el) return;
+    el.innerHTML=htmlValue;
+    flash(el);
+  }
+  function setText(el,textValue){
+    if(!el) return;
+    el.textContent=textValue;
+    flash(el);
+  }
+
+  function stopDemo(){
+    if(window.__wwtRealtimeDemo){
+      clearInterval(window.__wwtRealtimeDemo);
+      window.__wwtRealtimeDemo=null;
+    }
+  }
+  window.stopWWTDemoRealtime=stopDemo;
+
+  function updateRealtimeDemo(){
+    /* Real data always wins. */
+    if(window.WWT_REAL_DATA_ACTIVE === true){
+      stopDemo();
+      return;
+    }
+
+    state.flow=walk(state.flow,.55,11.2,13.8,1);
+    state.cod=Math.round(walk(state.cod,260,11200,12550,0));
+    state.zinc=Math.round(walk(state.zinc,18,320,410,0));
+
+    /* Main LIVE Flow: update NUMBER ONLY, never replace clock/unit markup. */
+    setText(document.getElementById('mainFlowRealtimeValue'), state.flow.toFixed(1));
+
+    /* Alert Center Flow */
+    setHTML(
+      document.querySelector('.flow-live-value'),
+      state.flow.toFixed(1)+' <span>m³/h</span>'
+    );
+
+    /* Delta Flow */
+    const delta=Number((state.flow-13.0).toFixed(1));
+    const deltaEl=document.querySelector('.flowdial-center b');
+    if(deltaEl){
+      setText(deltaEl,(delta>0?'+':'')+delta.toFixed(1));
+    }
+
+    const deltaSmall=document.querySelector('.flowdial-center small');
+    if(deltaSmall){
+      const pct=Math.abs(delta/13*100).toFixed(1);
+      deltaSmall.textContent='m³/h · '+(delta<0?'ต่ำกว่า':'สูงกว่า')+' Setting '+pct+'%';
+    }
+
+    /* Main quality cards */
+    const qvals=document.querySelectorAll('.quality .qval');
+    if(qvals[0]) setHTML(qvals[0], state.cod.toLocaleString('en-US')+' <small>mg/L</small>');
+    if(qvals[1]) setHTML(qvals[1], state.zinc.toLocaleString('en-US')+' <small>mg/L</small>');
+
+    /* Alert Center quality cards */
+    const metricVals=document.querySelectorAll('.quality-metric-card > b');
+    if(metricVals[0]) setHTML(metricVals[0], state.cod.toLocaleString('en-US')+' <small>mg/L</small>');
+    if(metricVals[1]) setHTML(metricVals[1], state.zinc.toLocaleString('en-US')+' <small>mg/L</small>');
+
+    /* Alert-center timestamp text */
+    const liveMeta=document.querySelector('.flow-live-meta span');
+    if(liveMeta){
+      liveMeta.textContent='อัปเดตล่าสุด '+new Date().toLocaleTimeString('th-TH',{
+        timeZone:'Asia/Bangkok',
+        hour:'2-digit',
+        minute:'2-digit',
+        second:'2-digit',
+        hour12:false
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    if(window.WWT_REAL_DATA_ACTIVE === true) return;
+    updateRealtimeDemo();
+    window.__wwtRealtimeDemo=setInterval(updateRealtimeDemo,2500);
+  });
+})();
 </script>
 
 </body></html>
