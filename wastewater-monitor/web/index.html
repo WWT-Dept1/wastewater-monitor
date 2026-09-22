@@ -7532,6 +7532,713 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.99 — Professional verification / signature workflow */
+#dailySummarySection .clean-inline-head{
+  margin-top:24px!important;
+  padding:18px 20px!important;
+  border:1px solid #d5e1d8!important;
+  border-radius:18px 18px 0 0!important;
+  background:#f7faf8!important;
+  box-shadow:none!important;
+}
+#dailySummarySection .clean-inline-head small{
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.03em!important;
+  color:#75867b!important;
+}
+#dailySummarySection .clean-inline-head b{
+  margin-top:3px!important;
+  font-size:19px!important;
+  line-height:1.35!important;
+  font-weight:700!important;
+  color:#183526!important;
+}
+#dailySummarySection .clean-inline-head>span{
+  padding:7px 12px!important;
+  border:1px solid #ead9aa!important;
+  border-radius:999px!important;
+  background:#fff8e7!important;
+  color:#7a5c12!important;
+  font-size:9px!important;
+  font-weight:700!important;
+  box-shadow:none!important;
+}
+
+/* approval steps */
+#dailySummarySection .sign-workflow-strip{
+  display:grid;
+  grid-template-columns:auto 1fr auto 1fr auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:17px 20px;
+  border-left:1px solid #d5e1d8;
+  border-right:1px solid #d5e1d8;
+  background:#fff;
+}
+#dailySummarySection .sign-workflow-strip>i{
+  height:1px;
+  background:#dce5df;
+}
+#dailySummarySection .sw-step{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+  color:#7b897f;
+}
+#dailySummarySection .sw-step>span{
+  width:31px;height:31px;
+  flex:0 0 31px;
+  display:grid;
+  place-items:center;
+  border:1px solid #d5e0d8;
+  border-radius:50%;
+  background:#f7f9f8;
+  color:#6f7e74;
+  font:700 10px "Outfit",sans-serif;
+}
+#dailySummarySection .sw-step b{
+  display:block;
+  color:#526359;
+  font-family:"Noto Sans Thai","Leelawadee UI",sans-serif;
+  font-size:10px;
+  font-weight:700;
+  white-space:nowrap;
+}
+#dailySummarySection .sw-step small{
+  display:block;
+  margin-top:2px;
+  color:#93a097;
+  font-family:"Noto Sans Thai","Leelawadee UI",sans-serif;
+  font-size:8px;
+  white-space:nowrap;
+}
+#dailySummarySection .sw-step.active>span{
+  background:#315f45;
+  border-color:#315f45;
+  color:#fff;
+  box-shadow:0 5px 14px rgba(49,95,69,.16);
+}
+#dailySummarySection .sw-step.active b{color:#244c36}
+
+/* verification shell */
+#dailySummarySection .clean-verify-shell,
+#dailySummarySection .clean-verify-shell:not(.has-person){
+  grid-template-columns:minmax(360px,.9fr) minmax(0,1.1fr)!important;
+  gap:16px!important;
+  margin-top:0!important;
+  padding:0 20px 20px!important;
+  border:1px solid #d5e1d8;
+  border-top:0;
+  border-radius:0 0 18px 18px;
+  background:#fff;
+}
+
+#dailySummarySection .clean-sign-pane,
+#dailySummarySection .clean-review-pane{
+  border:1px solid #dbe5de!important;
+  border-radius:16px!important;
+  background:#fbfcfb!important;
+  box-shadow:none!important;
+}
+#dailySummarySection .clean-sign-pane{
+  padding:18px!important;
+}
+#dailySummarySection .clean-review-pane{
+  padding:18px!important;
+  min-height:100%!important;
+}
+
+#dailySummarySection .clean-sign-pane-head,
+#dailySummarySection .clean-review-top{
+  padding-bottom:13px!important;
+  margin-bottom:13px!important;
+  border-bottom:1px solid #e3eae5!important;
+}
+#dailySummarySection .clean-sign-pane-head small,
+#dailySummarySection .clean-review-top small{
+  font-size:8px!important;
+  font-weight:700!important;
+  letter-spacing:.07em!important;
+  color:#7b8b80!important;
+}
+#dailySummarySection .clean-sign-pane-head b,
+#dailySummarySection .clean-review-top b{
+  margin-top:4px!important;
+  color:#1f3b2b!important;
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:700!important;
+}
+
+/* shift chip */
+#dailySummarySection .clean-shift-meta{
+  min-width:94px!important;
+  padding:9px 11px!important;
+  border:1px solid #d9e3dc!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  text-align:center!important;
+}
+#dailySummarySection .clean-shift-meta span{
+  font-size:13px!important;
+  color:#264f39!important;
+}
+#dailySummarySection .clean-shift-meta strong{
+  margin-top:3px!important;
+  font-size:8px!important;
+  color:#75867b!important;
+}
+
+/* employee code field */
+#dailySummarySection .clean-code-label,
+#dailySummarySection .clean-field-label{
+  margin:12px 0 7px!important;
+  color:#52645a!important;
+  font-size:9px!important;
+  font-weight:600!important;
+}
+#dailySummarySection .clean-code-wrap input{
+  min-height:52px!important;
+  padding:0 82px 0 15px!important;
+  border:1px solid #cbd9cf!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#1c3626!important;
+  font:700 14px "Outfit","Noto Sans Thai",sans-serif!important;
+  box-shadow:none!important;
+}
+#dailySummarySection .clean-code-wrap input:focus{
+  border-color:#6e9a7a!important;
+  box-shadow:0 0 0 3px rgba(73,124,88,.10)!important;
+}
+#dailySummarySection .clean-code-wrap span{
+  right:10px!important;
+  padding:6px 8px!important;
+  border:0!important;
+  background:#f0f4f1!important;
+  color:#7c8a81!important;
+  font-size:7px!important;
+}
+
+/* identified person */
+#dailySummarySection .clean-person-card{
+  margin-top:12px!important;
+  padding:12px 13px!important;
+  border:1px solid #d5e2d8!important;
+  border-radius:13px!important;
+  background:#f5f9f6!important;
+}
+#dailySummarySection .clean-person-card .inline-person-initial{
+  width:42px!important;height:42px!important;flex-basis:42px!important;
+  background:#315f45!important;
+  box-shadow:none!important;
+}
+#dailySummarySection .clean-person-card small{font-size:7px!important}
+#dailySummarySection .clean-person-card b{font-size:11px!important}
+#dailySummarySection .clean-person-card span{font-size:8px!important}
+
+/* route */
+#dailySummarySection .clean-route{
+  margin-top:10px!important;
+  padding:11px 12px!important;
+  border:1px solid #d8e4db!important;
+  border-left:3px solid #4f8060!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#dailySummarySection .clean-route small{font-size:7px!important}
+#dailySummarySection .clean-route b{font-size:9px!important}
+#dailySummarySection .clean-route span{font-size:8px!important}
+
+/* signature form */
+#dailySummarySection .clean-confirm{
+  padding:11px 12px!important;
+  border:1px solid #dbe4dd!important;
+  border-radius:11px!important;
+  background:#f7f9f8!important;
+}
+#dailySummarySection .clean-confirm span{
+  font-size:8px!important;
+  line-height:1.45!important;
+}
+#dailySummarySection .clean-sign-form .inline-name{
+  min-height:44px!important;
+  border:1px solid #dbe4de!important;
+  border-radius:11px!important;
+  background:#f7f9f8!important;
+  color:#344a3c!important;
+  font-size:9px!important;
+}
+#dailySummarySection .clean-signature-wrap{
+  padding:9px 9px 34px!important;
+  border:1px solid #cfdcd2!important;
+  border-radius:13px!important;
+  background:#fff!important;
+}
+#dailySummarySection .clean-signature-wrap canvas{
+  height:118px!important;
+  background:
+    linear-gradient(to bottom,transparent calc(100% - 27px),#dfe6e1 calc(100% - 26px),transparent calc(100% - 25px)),
+    #fff!important;
+}
+#dailySummarySection .clean-signature-wrap>small{
+  font-size:7px!important;
+}
+#dailySummarySection .clean-submit{
+  min-height:46px!important;
+  margin-top:12px!important;
+  border-radius:12px!important;
+  background:#315f45!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:700!important;
+}
+
+/* right-side review panel */
+#dailySummarySection .clean-period-pill{
+  padding:6px 9px!important;
+  border:1px solid #dfe7e1!important;
+  background:#fff!important;
+  color:#748278!important;
+  font-size:7px!important;
+}
+#dailySummarySection .clean-review-empty{
+  min-height:155px!important;
+  margin-top:13px!important;
+  padding:22px!important;
+  border:1px dashed #ccd9cf!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  color:#6f8075!important;
+  font-size:9px!important;
+  line-height:1.6!important;
+}
+#dailySummarySection .clean-review-empty span{
+  max-width:310px;
+}
+#dailySummarySection .clean-review-empty span::before{
+  content:"✓";
+  width:34px!important;height:34px!important;
+  background:#edf4ef!important;
+  color:#4a7659!important;
+  font-size:12px!important;
+}
+#dailySummarySection .clean-review-stats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#dailySummarySection .clean-review-stats>div{
+  padding:10px!important;
+  border:1px solid #dce5df!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+#dailySummarySection .clean-review-table{
+  max-height:310px!important;
+  border-radius:12px!important;
+}
+#dailySummarySection .clean-review-table th{
+  background:#edf3ef!important;
+  color:#4f6356!important;
+  font-size:8px!important;
+}
+#dailySummarySection .clean-review-table td{
+  font-size:8px!important;
+}
+
+@media(max-width:980px){
+  #dailySummarySection .sign-workflow-strip{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  #dailySummarySection .sign-workflow-strip>i{display:none}
+  #dailySummarySection .clean-verify-shell,
+  #dailySummarySection .clean-verify-shell:not(.has-person){
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:620px){
+  #dailySummarySection .sign-workflow-strip{
+    grid-template-columns:1fr!important;
+    padding:14px;
+  }
+  #dailySummarySection .clean-verify-shell,
+  #dailySummarySection .clean-verify-shell:not(.has-person){
+    padding:0 14px 14px!important;
+  }
+  #dailySummarySection .clean-inline-head{
+    padding:14px!important;
+  }
+  #dailySummarySection .clean-review-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.100 — remove wasted empty review placeholder */
+#dailySummarySection .clean-review-pane{
+  min-height:0 !important;
+}
+
+#dailySummarySection .clean-review-pane:not(.has-data){
+  padding-bottom:14px !important;
+}
+
+#dailySummarySection .clean-review-empty{
+  display:none !important;
+}
+
+#dailySummarySection .clean-review-top{
+  margin-bottom:0 !important;
+  border-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+</style>
+
+
+<style>
+/* V15.101 — Fix Flow Setting overlap: change fs-current from flex to 3-column grid */
+#dailySummarySection .fs-current{
+  display:grid !important;
+  grid-template-columns:52px minmax(0,1fr) auto !important;
+  align-items:center !important;
+  column-gap:16px !important;
+  row-gap:10px !important;
+  min-height:auto !important;
+  padding:18px 20px !important;
+}
+
+#dailySummarySection .fs-mark{
+  width:44px !important;
+  height:44px !important;
+  flex:0 0 44px !important;
+  border-radius:14px !important;
+}
+
+#dailySummarySection .fs-current-copy{
+  min-width:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  gap:4px !important;
+}
+
+#dailySummarySection .fs-current-copy>small{
+  font-size:10px !important;
+  line-height:1.35 !important;
+  font-weight:700 !important;
+  letter-spacing:.05em !important;
+}
+
+#dailySummarySection .fs-value-line{
+  display:flex !important;
+  align-items:flex-end !important;
+  flex-wrap:wrap !important;
+  gap:6px 10px !important;
+  margin-top:1px !important;
+}
+
+#dailySummarySection .fs-value-line b{
+  font-size:32px !important;
+  line-height:1 !important;
+}
+
+#dailySummarySection .fs-value-line span{
+  font-size:12px !important;
+  margin-bottom:3px !important;
+}
+
+#dailySummarySection .fs-value-line em{
+  margin-left:2px !important;
+  margin-bottom:3px !important;
+  padding:5px 9px !important;
+  font-size:9px !important;
+  white-space:nowrap !important;
+}
+
+#dailySummarySection .fs-current-copy p{
+  margin:0 !important;
+  font-size:9px !important;
+  line-height:1.45 !important;
+}
+
+#dailySummarySection .fs-edit-btn{
+  align-self:center !important;
+  min-width:180px !important;
+  min-height:46px !important;
+  padding:0 18px !important;
+  white-space:nowrap !important;
+  font-size:10px !important;
+}
+
+@media(max-width:900px){
+  #dailySummarySection .fs-current{
+    grid-template-columns:52px minmax(0,1fr) !important;
+  }
+  #dailySummarySection .fs-edit-btn{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    min-width:0 !important;
+  }
+}
+
+@media(max-width:640px){
+  #dailySummarySection .flow-setting-record{
+    margin:0 14px 18px !important;
+  }
+  #dailySummarySection .fs-current{
+    grid-template-columns:44px minmax(0,1fr) !important;
+    padding:15px !important;
+    column-gap:12px !important;
+  }
+  #dailySummarySection .fs-mark{
+    width:40px !important;
+    height:40px !important;
+  }
+  #dailySummarySection .fs-value-line b{
+    font-size:28px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.102 — add proper breathing room above Flow Setting card */
+#dailySummarySection .flow-setting-record{
+  margin:18px 28px 22px !important;
+}
+
+@media(max-width:640px){
+  #dailySummarySection .flow-setting-record{
+    margin:14px 14px 18px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.103 — ALERT COLOR SYSTEM
+   WARNING/LOW = YELLOW ONLY
+   HIGH/RAPID = ORANGE ONLY
+   CRITICAL/NO SIGNAL = RED ONLY
+   Perimeter blink always matches the current level.
+*/
+
+/* neutralize the old red-only perimeter */
+.overlay.show .emergency{
+  animation:none !important;
+}
+.overlay.show .emergency:after{
+  animation:none !important;
+}
+
+/* ---------- WARNING / LOW FLOW : YELLOW ---------- */
+.overlay.show .emergency.level-warning{
+  color:#2f2800 !important;
+  background:
+    radial-gradient(circle at 84% 14%,rgba(255,249,198,.34),transparent 26%),
+    linear-gradient(135deg,#f5d64a 0%,#edc82d 50%,#d9ae10 100%) !important;
+  box-shadow:
+    inset 0 0 34px 8px rgba(255,222,64,.78),
+    inset 0 0 90px 22px rgba(255,205,0,.22) !important;
+  animation:warningYellowFrame 1s ease-in-out infinite !important;
+}
+.overlay.show .emergency.level-warning:after{
+  border-color:#ffe55f !important;
+  box-shadow:
+    0 0 14px #ffe55f,
+    0 0 34px rgba(255,216,0,.82),
+    inset 0 0 18px rgba(255,234,112,.55) !important;
+  animation:warningYellowBorder .82s ease-in-out infinite !important;
+}
+.emergency.level-warning .emergency-top,
+.emergency.level-warning .limit{
+  border-color:rgba(69,55,0,.22) !important;
+}
+.emergency.level-warning .emergency-top small,
+.emergency.level-warning .alert-time,
+.emergency.level-warning .alert-copy p,
+.emergency.level-warning .critical-value small,
+.emergency.level-warning .limit,
+.emergency.level-warning .sound-status{
+  color:#5f5000 !important;
+}
+.emergency.level-warning .alert-code{
+  color:#3f3300 !important;
+  background:rgba(255,255,255,.22) !important;
+  border-color:rgba(76,61,0,.25) !important;
+}
+.emergency.level-warning .siren{
+  color:#6e5700 !important;
+  background:#fff9db !important;
+}
+.emergency.level-warning .critical-auto-action{
+  color:#342b00 !important;
+  background:rgba(255,255,255,.24) !important;
+  border-color:rgba(83,67,0,.18) !important;
+}
+.emergency.level-warning .ack{
+  background:#fff8d7 !important;
+  color:#5f4b00 !important;
+  border-color:rgba(96,74,0,.18) !important;
+  box-shadow:0 16px 36px rgba(118,90,0,.18) !important;
+}
+.emergency.level-warning .ack b{
+  border-left-color:rgba(96,74,0,.22) !important;
+}
+
+/* ---------- HIGH / RAPID CHANGE : ORANGE ---------- */
+.overlay.show .emergency.level-high{
+  color:#2c1605 !important;
+  background:
+    radial-gradient(circle at 84% 14%,rgba(255,218,170,.30),transparent 26%),
+    linear-gradient(135deg,#f39a32 0%,#e9781e 52%,#c9570a 100%) !important;
+  box-shadow:
+    inset 0 0 34px 8px rgba(255,143,35,.78),
+    inset 0 0 90px 22px rgba(220,82,0,.24) !important;
+  animation:warningOrangeFrame 1s ease-in-out infinite !important;
+}
+.overlay.show .emergency.level-high:after{
+  border-color:#ff9b36 !important;
+  box-shadow:
+    0 0 14px #ff9b36,
+    0 0 34px rgba(255,113,18,.84),
+    inset 0 0 18px rgba(255,168,79,.58) !important;
+  animation:warningOrangeBorder .82s ease-in-out infinite !important;
+}
+.emergency.level-high .emergency-top,
+.emergency.level-high .limit{
+  border-color:rgba(84,35,0,.24) !important;
+}
+.emergency.level-high .emergency-top small,
+.emergency.level-high .alert-time,
+.emergency.level-high .alert-copy p,
+.emergency.level-high .critical-value small,
+.emergency.level-high .limit,
+.emergency.level-high .sound-status{
+  color:#5b2d08 !important;
+}
+.emergency.level-high .alert-code{
+  color:#411f04 !important;
+  background:rgba(255,255,255,.18) !important;
+  border-color:rgba(83,36,0,.24) !important;
+}
+.emergency.level-high .siren{
+  color:#9a3e00 !important;
+  background:#fff2e5 !important;
+}
+.emergency.level-high .critical-auto-action{
+  color:#3b1c04 !important;
+  background:rgba(255,255,255,.20) !important;
+  border-color:rgba(87,37,0,.20) !important;
+}
+.emergency.level-high .ack{
+  background:#fff0df !important;
+  color:#8b3900 !important;
+  border-color:rgba(105,42,0,.20) !important;
+  box-shadow:0 16px 36px rgba(116,47,0,.20) !important;
+}
+.emergency.level-high .ack b{
+  border-left-color:rgba(105,42,0,.22) !important;
+}
+
+/* ---------- CRITICAL / NO SIGNAL : RED ---------- */
+.overlay.show .emergency.level-critical{
+  color:#fff !important;
+  background:
+    radial-gradient(circle at 84% 14%,rgba(255,127,108,.34),transparent 26%),
+    linear-gradient(135deg,#d9443b 0%,#c52e28 48%,#941d18 100%) !important;
+  box-shadow:
+    inset 0 0 34px 8px rgba(255,70,57,.92),
+    inset 0 0 95px 26px rgba(194,17,10,.34) !important;
+  animation:warningRedFrame 1s ease-in-out infinite !important;
+}
+.overlay.show .emergency.level-critical:after{
+  border-color:#ff6258 !important;
+  box-shadow:
+    0 0 14px #ff554a,
+    0 0 34px rgba(255,39,27,.92),
+    inset 0 0 18px rgba(255,96,84,.55) !important;
+  animation:warningRedBorder .82s ease-in-out infinite !important;
+}
+
+/* matching pulse animations */
+@keyframes warningYellowFrame{
+  50%{
+    box-shadow:
+      inset 0 0 50px 14px rgba(255,229,78,.98),
+      inset 0 0 125px 34px rgba(255,203,0,.34);
+  }
+}
+@keyframes warningOrangeFrame{
+  50%{
+    box-shadow:
+      inset 0 0 50px 14px rgba(255,151,47,.98),
+      inset 0 0 125px 34px rgba(226,85,0,.34);
+  }
+}
+@keyframes warningRedFrame{
+  50%{
+    box-shadow:
+      inset 0 0 52px 15px rgba(255,81,67,1),
+      inset 0 0 130px 38px rgba(205,15,8,.48);
+  }
+}
+@keyframes warningYellowBorder{
+  0%,100%{opacity:.58;filter:brightness(.96)}
+  50%{opacity:1;filter:brightness(1.16)}
+}
+@keyframes warningOrangeBorder{
+  0%,100%{opacity:.58;filter:brightness(.94)}
+  50%{opacity:1;filter:brightness(1.18)}
+}
+@keyframes warningRedBorder{
+  0%,100%{opacity:.58;filter:brightness(.92)}
+  50%{opacity:1;filter:brightness(1.25)}
+}
+
+/* keep overlay background consistent with the active panel; no red bleed */
+.overlay:has(.emergency.level-warning){background:#e4bc1f !important;}
+.overlay:has(.emergency.level-high){background:#d96b17 !important;}
+.overlay:has(.emergency.level-critical){background:#a8241f !important;}
+
+@media(max-width:760px){
+  .emergency.level-warning .alert-copy h2,
+  .emergency.level-high .alert-copy h2{
+    color:#241e00 !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.104 — alarm sound indicator */
+.sound-status{
+  font-weight:800 !important;
+  letter-spacing:.025em;
+}
+.emergency.level-warning .sound-status:before{color:#7d6500 !important}
+.emergency.level-high .sound-status:before{color:#8b3700 !important}
+.emergency.level-critical .sound-status:before{color:#fff0ee !important}
+
+/* Different text per severity without adding visual clutter */
+.emergency.level-warning .sound-status{
+  color:#5b4a00 !important;
+}
+.emergency.level-high .sound-status{
+  color:#592804 !important;
+}
+.emergency.level-critical .sound-status{
+  color:#ffe2de !important;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -7970,7 +8677,7 @@ html{scroll-behavior:smooth}
       <div class="fs-field">
         <label>รหัสพนักงาน</label>
         <div class="fs-code-wrap">
-          <input type="text" id="fsEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน">
+          <input type="text" id="fsEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน 8–9 หลัก">
           <span id="fsLookupState">8–9 หลัก</span>
         </div>
       </div>
@@ -8232,13 +8939,35 @@ html{scroll-behavior:smooth}
   <span id="inlineDocState">รอตรวจสอบ</span>
 </div>
 
+<div class="sign-workflow-strip" aria-label="ลำดับการตรวจสอบและอนุมัติ">
+  <div class="sw-step active">
+    <span>1</span>
+    <div><b>ผู้ปฏิบัติงาน</b><small>ยืนยันข้อมูลประจำกะ</small></div>
+  </div>
+  <i></i>
+  <div class="sw-step">
+    <span>2</span>
+    <div><b>ผู้ตรวจสอบ</b><small>ตรวจทานข้อมูล</small></div>
+  </div>
+  <i></i>
+  <div class="sw-step">
+    <span>3</span>
+    <div><b>รองหัวหน้าแผนก</b><small>ทวนสอบ</small></div>
+  </div>
+  <i></i>
+  <div class="sw-step">
+    <span>4</span>
+    <div><b>หัวหน้าแผนก</b><small>อนุมัติ</small></div>
+  </div>
+</div>
+
 <div class="inline-verify-shell clean-verify-shell" id="inlineVerifyShell">
 
   <div class="inline-sign-pane clean-sign-pane">
     <div class="clean-sign-pane-head">
       <div>
-        <small>ผู้มีสิทธิ์ลงชื่อ</small>
-        <b>กรอกรหัสพนักงาน</b>
+        <small>IDENTITY VERIFICATION</small>
+        <b>ยืนยันตัวตนก่อนลงชื่อ</b>
       </div>
       <div class="clean-shift-meta">
         <span id="inlineClock">--:--</span>
@@ -8246,7 +8975,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <label class="clean-code-label">รหัสพนักงาน</label>
+    <label class="clean-code-label">รหัสพนักงานผู้ตรวจสอบ</label>
     <div class="inline-code-wrap clean-code-wrap">
       <input type="text" id="inlineEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน">
       <span id="inlineLookupState">8–9 หลัก</span>
@@ -8293,14 +9022,14 @@ html{scroll-behavior:smooth}
   <div class="inline-review-pane clean-review-pane">
     <div class="inline-review-top clean-review-top">
       <div>
-        <small>ข้อมูลประจำกะ</small>
-        <b id="inlineReviewTitle">รอระบุรหัสพนักงาน</b>
+        <small>SHIFT DATA REVIEW</small>
+        <b id="inlineReviewTitle">ข้อมูลสำหรับตรวจสอบ</b>
       </div>
       <div class="clean-period-pill" id="cleanPeriodPill">รอรหัสพนักงาน</div>
     </div>
 
     <div class="inline-review-empty clean-review-empty" id="inlineReviewEmpty">
-      <span>กรอกรหัสพนักงานเพื่อแสดงข้อมูลที่ต้องตรวจสอบ</span>
+      <span>เมื่อยืนยันรหัสพนักงาน ระบบจะแสดงข้อมูลของกะที่เกี่ยวข้องให้อัตโนมัติ</span>
     </div>
 
     <div id="inlineReviewContent" hidden>
@@ -8335,7 +9064,7 @@ html{scroll-behavior:smooth}
     <div class="emergency-grid"></div>
     <div class="emergency-top">
       <div class="siren"><span>!</span></div>
-      <div><small id="alertLevelText">คำเตือนระดับวิกฤต</small><b id="alertHeadline">ตรวจพบคุณภาพน้ำผิดปกติ</b><span class="sound-status">กำลังส่งเสียงและสัญญาณเตือน</span></div>
+      <div><small id="alertLevelText">คำเตือนระดับวิกฤต</small><b id="alertHeadline">ตรวจพบคุณภาพน้ำผิดปกติ</b><span class="sound-status" id="soundStatusText">ALARM ACTIVE · เสียงเตือนกำลังทำงาน</span></div>
       <div class="alert-time">จุดน้ำออก · ตรวจพบเมื่อสักครู่</div>
     </div>
     <div class="emergency-body">
@@ -8350,33 +9079,133 @@ html{scroll-behavior:smooth}
   </div>
 </div>
 <script>
-let warningAudioCtx=null, warningTimer=null;
-function startCriticalWarning(){
+let warningAudioCtx=null;
+let warningTimers=[];
+let warningNodes=[];
+
+function clearWarningAudio(){
+  warningTimers.forEach(t=>clearTimeout(t));
+  warningTimers=[];
+  warningNodes.forEach(n=>{ try{ n.stop?.(); }catch(e){} try{ n.disconnect?.(); }catch(e){} });
+  warningNodes=[];
+}
+
+function ensureWarningAudio(){
+  warningAudioCtx = warningAudioCtx || new (window.AudioContext||window.webkitAudioContext)();
+  return warningAudioCtx.resume();
+}
+
+function tone(freq=880, duration=.18, volume=.20, type='square', startDelay=0){
+  const ctx=warningAudioCtx;
+  if(!ctx) return;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  const now=ctx.currentTime + startDelay;
+
+  osc.type=type;
+  osc.frequency.setValueAtTime(freq,now);
+
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(Math.max(.001,volume),now+.012);
+  gain.gain.setValueAtTime(Math.max(.001,volume),Math.max(now+.018,now+duration-.035));
+  gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now+duration+.02);
+  warningNodes.push(osc,gain);
+}
+
+function sirenSweep(startFreq=780,endFreq=1320,duration=.72,volume=.18,startDelay=0){
+  const ctx=warningAudioCtx;
+  if(!ctx) return;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  const now=ctx.currentTime + startDelay;
+
+  osc.type='sawtooth';
+  osc.frequency.setValueAtTime(startFreq,now);
+  osc.frequency.exponentialRampToValueAtTime(endFreq,now+duration*.48);
+  osc.frequency.exponentialRampToValueAtTime(startFreq,now+duration);
+
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(volume,now+.02);
+  gain.gain.setValueAtTime(volume,now+duration-.05);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now+duration+.03);
+  warningNodes.push(osc,gain);
+}
+
+function scheduleWarningPattern(level){
+  clearWarningAudio();
+  const alert=document.getElementById('criticalAlert');
+  if(!alert?.classList.contains('show')) return;
+
+  /* LOW / warning: double audible warning beep */
+  if(level==='warning'){
+    tone(660,.20,.16,'square',0);
+    tone(660,.20,.16,'square',.34);
+    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1600));
+    if(navigator.vibrate) navigator.vibrate([220,130,220]);
+    return;
+  }
+
+  /* HIGH / rapid change: urgent alternating triple tone */
+  if(level==='high'){
+    tone(760,.19,.19,'square',0);
+    tone(980,.19,.19,'square',.25);
+    tone(760,.24,.20,'square',.50);
+    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1350));
+    if(navigator.vibrate) navigator.vibrate([260,100,260,100,360]);
+    return;
+  }
+
+  /* CRITICAL / no signal: repeating two-stage siren sweep */
+  sirenSweep(760,1380,.72,.21,0);
+  sirenSweep(1380,760,.72,.21,.76);
+  warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1580));
+  if(navigator.vibrate) navigator.vibrate([500,120,500,120,800]);
+}
+
+async function startCriticalWarning(level='critical'){
   const alert=document.getElementById('criticalAlert');
   if(alert) alert.classList.add('show');
-  if(navigator.vibrate) navigator.vibrate([450,160,450,160,700,220,700]);
+
   try{
-    warningAudioCtx=warningAudioCtx||new (window.AudioContext||window.webkitAudioContext)();
-    warningAudioCtx.resume();
-    const beep=()=>{
-      if(!document.getElementById('criticalAlert')?.classList.contains('show')) return;
-      const osc=warningAudioCtx.createOscillator(), gain=warningAudioCtx.createGain();
-      osc.type='square'; osc.frequency.value=880;
-      gain.gain.setValueAtTime(.0001,warningAudioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.12,warningAudioCtx.currentTime+.02);
-      gain.gain.exponentialRampToValueAtTime(.0001,warningAudioCtx.currentTime+.32);
-      osc.connect(gain); gain.connect(warningAudioCtx.destination); osc.start(); osc.stop(warningAudioCtx.currentTime+.34);
-    };
-    beep(); clearInterval(warningTimer); warningTimer=setInterval(beep,850);
-  }catch(e){}
+    await ensureWarningAudio();
+    scheduleWarningPattern(level);
+  }catch(e){
+    /* Browser may require a user gesture before audio can start. */
+  }
 }
+
 function stopCriticalWarning(){
   document.getElementById('criticalAlert')?.classList.remove('show');
-  clearInterval(warningTimer); warningTimer=null;
+  clearWarningAudio();
   if(navigator.vibrate) navigator.vibrate(0);
 }
-const testAlertBtn=document.getElementById('toggleAlertDemo');
+
 document.getElementById('ackCritical')?.addEventListener('click',stopCriticalWarning);
+
+/* Arm WebAudio after the first user interaction so automatic alerts can sound later. */
+(function armAudioOnFirstGesture(){
+  const arm=async()=>{
+    try{
+      await ensureWarningAudio();
+      if(warningAudioCtx?.state==='running'){
+        document.removeEventListener('pointerdown',arm);
+        document.removeEventListener('keydown',arm);
+      }
+    }catch(e){}
+  };
+  document.addEventListener('pointerdown',arm,{passive:true});
+  document.addEventListener('keydown',arm);
+})();
 </script><script>
 document.getElementById("viewDayBtn")?.addEventListener("click",function(){
   const full=document.getElementById("hourlyFull");
@@ -8386,13 +9215,13 @@ document.getElementById("viewDayBtn")?.addEventListener("click",function(){
 });
 </script><script>
 const ALERT_DEMOS={
-  warning:{level:'warning',levelText:'คำเตือนระดับระวัง',headline:'ตรวจพบค่า COD เริ่มสูงกว่าช่วงปกติ',code:'ระวัง · COD > 13,000 mg/L',title:'ค่า COD เข้าสู่ระดับระวัง',desc:'ระบบตรวจพบค่า COD สูงกว่าช่วงปกติ และเพิ่มความถี่ในการติดตามค่า',value:'14,200',unit:'mg/L',limit:'เกณฑ์ระดับระวัง · COD > 13,000 mg/L',action:'ระบบจะเฝ้าติดตาม COD ถี่ขึ้น และแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะน้ำเสีย'},
+  warning:{level:'warning',levelText:'COD ALERT · WARNING',headline:'ตรวจพบค่า COD สูงกว่าช่วงปกติ',code:'WARNING · COD > 13,000 mg/L',title:'ค่า COD สูงกว่าช่วงปกติ',desc:'ระบบตรวจพบค่า COD สูงกว่าค่าปกติที่กำหนด กรุณาตรวจสอบสภาวะน้ำเสียและติดตามค่าต่อเนื่อง',value:'14,200',unit:'mg/L',limit:'เกณฑ์แจ้งเตือน · COD > 13,000 mg/L',action:'ระบบจะแจ้งผู้ปฏิบัติงานและเพิ่มความถี่ในการติดตามค่า COD'},
   high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Inlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
   critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'},
-  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำผิดปกติ',code:'LOW FLOW · 19FM001',title:'Flow ต่ำกว่าช่วงเฝ้าระวัง',desc:'Flow ลดลงต่อเนื่อง อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนผู้ปฏิบัติงาน ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
-  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงผิดปกติ',code:'HIGH FLOW · 19FM001',title:'Flow สูงกว่าช่วงเฝ้าระวัง',desc:'Flow เพิ่มสูงกว่าปกติ อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนและแนะนำให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
+  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำกว่าค่ากำหนด',code:'LOW FLOW · 19FM001',title:'อัตราการไหลต่ำกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow ต่ำกว่าช่วงการทำงานที่กำหนด อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ค่า Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
+  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงกว่าค่ากำหนด',code:'HIGH FLOW · 19FM001',title:'อัตราการไหลสูงกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow สูงกว่าช่วงการทำงานที่กำหนด อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ค่า Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
   flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก 19FM001',code:'NO FLOW / DATA STALE · 19FM001',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
-  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'Flow เปลี่ยนแปลงรวดเร็วผิดปกติ',code:'RAPID CHANGE · 19FM001',title:'Flow เปลี่ยนเร็วกว่าปกติ',desc:'พบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · ค่าเปลี่ยนเร็วผิดปกติ',action:'ระบบจะแจ้งเตือนและให้ผู้ปฏิบัติงานตรวจสอบสภาวะหน้างานทันที'}
+  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'ตรวจพบการเปลี่ยนแปลงของ Flow อย่างรวดเร็ว',code:'RAPID CHANGE · 19FM001',title:'ค่า Flow เปลี่ยนแปลงเร็วผิดปกติ',desc:'ตรวจพบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'อัตราการเปลี่ยนแปลงสูงกว่าค่าที่กำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะหน้างานทันที'}
 };
 function showDemoAlert(type){
   const d=ALERT_DEMOS[type]||ALERT_DEMOS.critical;
@@ -8408,7 +9237,14 @@ function showDemoAlert(type){
   const unitEl=document.getElementById('alertUnit'); if(unitEl) unitEl.textContent=d.unit||'mg/L';
   document.getElementById('alertLimit').textContent=d.limit;
   document.getElementById('alertAction').textContent=d.action;
-  startCriticalWarning();
+  const soundText=document.getElementById('soundStatusText');
+  if(soundText){
+    soundText.textContent =
+      d.level==='warning' ? 'ALARM ACTIVE · เสียงเตือนระดับคำเตือน' :
+      d.level==='high' ? 'ALARM ACTIVE · เสียงเตือนระดับสูง' :
+      'ALARM ACTIVE · เสียงเตือนระดับวิกฤต';
+  }
+  startCriticalWarning(d.level);
 }
 document.addEventListener('DOMContentLoaded',function(){
   const popup=document.getElementById('alertTestPopup');
