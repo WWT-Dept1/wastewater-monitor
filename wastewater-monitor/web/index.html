@@ -9321,6 +9321,15 @@ body.daily-report-view .new-menu-report{
 }
 </style>
 
+
+<style>
+/* V15.123 — sidebar = operational quick navigation only
+   Daily Report stays inside the main System Menu, so the duplicate sidebar button is removed. */
+aside{
+  align-content:start;
+}
+</style>
+
 </head><body>
 <header>
   <div class="brand">
@@ -9339,7 +9348,6 @@ body.daily-report-view .new-menu-report{
 <button class="nav" type="button" data-nav-target="trend" aria-label="Flow Analytics" title="Flow Analytics">◉</button>
 <button class="nav" type="button" data-nav-target="alerts" aria-label="Alert Center" title="Alert Center">!</button>
 <button class="nav" type="button" data-nav-target="flowlog" aria-label="Hourly Flow Log" title="Hourly Flow Log">≡</button>
-<button class="nav" type="button" data-nav-target="daily" aria-label="Daily Summary" title="Daily Summary">▤</button>
 <button class="nav" type="button" data-nav-target="health" aria-label="System & Validation" title="System & Validation">⚙</button>
 </aside><main id="liveTop">
 <div class="heading">
