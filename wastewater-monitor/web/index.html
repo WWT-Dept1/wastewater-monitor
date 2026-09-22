@@ -6984,6 +6984,389 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.90 — Compact Flow hero: larger live value, less empty space */
+.flow{
+  min-height:330px !important;
+  padding:26px 28px 18px !important;
+  border-radius:28px !important;
+}
+.ftop{
+  align-items:flex-start !important;
+  margin-bottom:0 !important;
+}
+.flow-label{
+  font-size:13px !important;
+  letter-spacing:.18em !important;
+}
+.flow-name{
+  font-size:24px !important;
+  line-height:1.14 !important;
+}
+.status{
+  padding:6px 10px !important;
+  font-size:11px !important;
+}
+.display.live-display-clean{
+  width:62% !important;
+  margin-top:26px !important;
+  padding:6px 0 0 !important;
+}
+.live-value-row{
+  gap:14px !important;
+  align-items:flex-end !important;
+}
+.value{
+  font-size:132px !important;
+  line-height:.76 !important;
+  letter-spacing:-.09em !important;
+}
+.value small{
+  margin-top:8px !important;
+  font-size:12px !important;
+  letter-spacing:.03em !important;
+}
+.compact-fsi{
+  padding:0 0 6px 14px !important;
+}
+.compact-fsi .fsi-label{
+  margin-bottom:4px !important;
+  font-size:7px !important;
+}
+.compact-fsi .fsi-value{
+  font-size:23px !important;
+}
+.compact-fsi .fsi-value small{
+  font-size:9px !important;
+}
+.flowdial{
+  width:188px !important;
+  height:188px !important;
+  right:38px !important;
+  top:78px !important;
+}
+.flowdial-center{
+  width:104px !important;
+  height:104px !important;
+  right:80px !important;
+  top:120px !important;
+}
+.flowdial-center div{
+  font-size:8px !important;
+}
+.flowdial-center b{
+  font-size:20px !important;
+}
+.flowline{
+  left:28px !important;
+  right:28px !important;
+  bottom:34px !important;
+  height:26px !important;
+  opacity:.8 !important;
+}
+@media (max-width:980px){
+  .display.live-display-clean{
+    width:72% !important;
+  }
+  .value{
+    font-size:112px !important;
+  }
+  .flowdial{
+    width:168px !important;
+    height:168px !important;
+    right:24px !important;
+    top:92px !important;
+  }
+  .flowdial-center{
+    width:94px !important;
+    height:94px !important;
+    right:61px !important;
+    top:129px !important;
+  }
+}
+@media (max-width:700px){
+  .flow{
+    min-height:300px !important;
+    padding:22px 18px 16px !important;
+  }
+  .display.live-display-clean{
+    width:86% !important;
+    margin-top:20px !important;
+  }
+  .live-value-row{
+    gap:10px !important;
+  }
+  .value{
+    font-size:92px !important;
+  }
+  .flow-label{
+    font-size:11px !important;
+  }
+  .flow-name{
+    font-size:20px !important;
+  }
+  .status{
+    font-size:10px !important;
+  }
+  .flowdial{
+    width:138px !important;
+    height:138px !important;
+    right:14px !important;
+    top:105px !important;
+  }
+  .flowdial-center{
+    width:76px !important;
+    height:76px !important;
+    right:45px !important;
+    top:136px !important;
+  }
+  .flowdial-center div{
+    font-size:6px !important;
+  }
+  .flowdial-center b{
+    font-size:15px !important;
+  }
+  .flowline{
+    left:18px !important;
+    right:18px !important;
+    bottom:28px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.91 — Industrial Premium Flow Card
+   ปรับเฉพาะการ์ด Flow ให้หรู เรียบ คม แบบ control room / executive dashboard */
+
+.flow{
+  min-height:316px !important;
+  padding:28px 30px 22px !important;
+  border:1px solid rgba(41,76,55,.14) !important;
+  border-radius:26px !important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.78),rgba(244,248,245,.92)),
+    #f4f7f4 !important;
+  box-shadow:
+    0 18px 46px rgba(35,61,44,.10),
+    0 3px 10px rgba(35,61,44,.04) !important;
+}
+
+/* เอาวงตกแต่งฟุ้งๆ ออก ให้ดูคมขึ้น */
+.flow:before{
+  background:
+    radial-gradient(circle at 82% 42%, rgba(53,102,74,.055), transparent 25%),
+    linear-gradient(90deg,transparent 0 73%,rgba(53,102,74,.035) 73% 73.15%,transparent 73.15%) !important;
+  filter:none !important;
+}
+
+/* Header */
+.ftop{
+  align-items:flex-start !important;
+}
+.flow-label{
+  color:#6e8374 !important;
+  font-size:12px !important;
+  letter-spacing:.18em !important;
+  font-weight:700 !important;
+}
+.flow-name{
+  margin-top:2px !important;
+  color:#173023 !important;
+  font-size:24px !important;
+  line-height:1.16 !important;
+  font-weight:700 !important;
+  letter-spacing:-.02em !important;
+}
+.flow-name .thai{
+  color:#334a3b !important;
+  font-weight:600 !important;
+}
+.status{
+  margin-top:0 !important;
+  padding:7px 11px !important;
+  border:1px solid #c9d9ce !important;
+  border-radius:999px !important;
+  background:#f5faf6 !important;
+  color:#2f6b49 !important;
+  box-shadow:none !important;
+  font-size:10px !important;
+  letter-spacing:.12em !important;
+}
+
+/* Live value */
+.display.live-display-clean{
+  width:63% !important;
+  margin-top:24px !important;
+  padding:0 !important;
+}
+.display:after{
+  display:none !important;
+}
+.display:before{
+  margin-bottom:8px !important;
+  color:#66806e !important;
+  font-size:10px !important;
+  letter-spacing:.18em !important;
+  font-weight:700 !important;
+}
+.value{
+  color:#0f2118 !important;
+  font-size:138px !important;
+  line-height:.74 !important;
+  font-weight:800 !important;
+  letter-spacing:-.095em !important;
+  text-shadow:none !important;
+}
+.value small{
+  margin-top:9px !important;
+  color:#617467 !important;
+  font-size:11px !important;
+  font-weight:700 !important;
+  letter-spacing:.04em !important;
+}
+
+/* Flow Setting เป็นข้อมูลรอง */
+.compact-fsi{
+  margin-bottom:5px !important;
+  padding:0 0 4px 15px !important;
+  border-left:1px solid #d1ddd5 !important;
+}
+.compact-fsi .fsi-label{
+  color:#77887d !important;
+  font-size:7px !important;
+  letter-spacing:.13em !important;
+  font-weight:700 !important;
+}
+.compact-fsi .fsi-value{
+  color:#294c38 !important;
+  font-size:22px !important;
+  font-weight:700 !important;
+  letter-spacing:-.025em !important;
+}
+.compact-fsi .fsi-value small{
+  color:#7a8b80 !important;
+  font-size:9px !important;
+  font-weight:600 !important;
+}
+
+/* Range load — จากวงซ้อนหลายชั้นให้เหลือวงคมๆ */
+.flowdial{
+  width:170px !important;
+  height:170px !important;
+  right:46px !important;
+  top:88px !important;
+  background:
+    conic-gradient(from 220deg,#35664a 0 47%,#dce6df 47% 78%,transparent 78%) !important;
+  filter:none !important;
+  -webkit-mask:radial-gradient(circle,transparent 0 73%,#000 74%) !important;
+  mask:radial-gradient(circle,transparent 0 73%,#000 74%) !important;
+}
+.flowdial-center{
+  width:96px !important;
+  height:96px !important;
+  right:83px !important;
+  top:125px !important;
+  background:#ffffff !important;
+  border:1px solid #dde6df !important;
+  box-shadow:
+    0 7px 22px rgba(47,78,57,.08) !important;
+  color:#75847a !important;
+  font-size:7px !important;
+  letter-spacing:.11em !important;
+  font-weight:700 !important;
+}
+.flowdial-center b{
+  color:#2f6b49 !important;
+  font-size:21px !important;
+  font-weight:800 !important;
+}
+
+/* Trend line */
+.flowline{
+  left:30px !important;
+  right:30px !important;
+  bottom:29px !important;
+  height:24px !important;
+  opacity:.78 !important;
+  filter:none !important;
+}
+.flowline path:first-child{
+  stroke:#4e7b5d !important;
+  stroke-width:1.35 !important;
+}
+.flowline path:last-child{
+  stroke:#d7e1da !important;
+  stroke-width:.65 !important;
+}
+
+/* Responsive */
+@media(max-width:980px){
+  .flow{
+    min-height:308px !important;
+  }
+  .display.live-display-clean{
+    width:72% !important;
+  }
+  .value{
+    font-size:116px !important;
+  }
+  .flowdial{
+    width:154px !important;
+    height:154px !important;
+    right:28px !important;
+    top:96px !important;
+  }
+  .flowdial-center{
+    width:88px !important;
+    height:88px !important;
+    right:61px !important;
+    top:129px !important;
+  }
+}
+
+@media(max-width:700px){
+  .flow{
+    min-height:286px !important;
+    padding:22px 18px 18px !important;
+    border-radius:22px !important;
+  }
+  .display.live-display-clean{
+    width:86% !important;
+    margin-top:18px !important;
+  }
+  .value{
+    font-size:94px !important;
+  }
+  .flow-name{
+    font-size:20px !important;
+  }
+  .status{
+    font-size:9px !important;
+    padding:6px 8px !important;
+  }
+  .flowdial{
+    width:126px !important;
+    height:126px !important;
+    right:13px !important;
+    top:104px !important;
+  }
+  .flowdial-center{
+    width:70px !important;
+    height:70px !important;
+    right:41px !important;
+    top:132px !important;
+  }
+  .flowdial-center b{
+    font-size:16px !important;
+  }
+  .compact-fsi .fsi-value{
+    font-size:19px !important;
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
