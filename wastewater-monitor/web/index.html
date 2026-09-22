@@ -7523,6 +7523,15 @@ html{scroll-behavior:smooth}
 }
 </style>
 
+
+<style>
+/* V15.97 — remove the faint vertical decorative divider inside Flow card */
+.flow:before{
+  background:
+    radial-gradient(circle at 82% 42%, rgba(53,102,74,.055), transparent 25%) !important;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · PLANT 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -7535,7 +7544,7 @@ html{scroll-behavior:smooth}
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
-<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
+<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">19FM001 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
 <div class="display live-display-clean">
   <div class="live-value-row">
     <div class="value">12.5
@@ -7646,7 +7655,7 @@ html{scroll-behavior:smooth}
           <small>FLOW MONITORING</small>
           <b>อัตราการไหลน้ำเสีย</b>
         </div>
-        <span>FM-01</span>
+        <span>19FM001</span>
       </div>
 
       <div class="monitor-value-row">
@@ -7801,7 +7810,7 @@ html{scroll-behavior:smooth}
   <div class="health-path">
     <div class="health-row">
       <div class="health-icon">FM</div>
-      <div class="health-copy"><b>FM-01 Flowmeter</b><span>น้ำเสียเข้าระบบบำบัด</span></div>
+      <div class="health-copy"><b>19FM001 Flowmeter</b><span>น้ำเสียเข้าระบบบำบัด</span></div>
       <strong class="health-ok">ONLINE</strong>
     </div>
     <div class="health-row">
@@ -7902,7 +7911,7 @@ html{scroll-behavior:smooth}
   </div>
   <div class="field-group">
     <label>จุดตรวจวัด</label>
-    <div class="field-value">บ่อพักน้ำเสีย 2 · FM-01</div>
+    <div class="field-value">บ่อพักน้ำเสีย 2 · 19FM001</div>
   </div>
   <div class="field-group">
     <label>Flow Setting</label>
@@ -8380,10 +8389,10 @@ const ALERT_DEMOS={
   warning:{level:'warning',levelText:'คำเตือนระดับระวัง',headline:'ตรวจพบค่า COD เริ่มสูงกว่าช่วงปกติ',code:'ระวัง · COD > 13,000 mg/L',title:'ค่า COD เข้าสู่ระดับระวัง',desc:'ระบบตรวจพบค่า COD สูงกว่าช่วงปกติ และเพิ่มความถี่ในการติดตามค่า',value:'14,200',unit:'mg/L',limit:'เกณฑ์ระดับระวัง · COD > 13,000 mg/L',action:'ระบบจะเฝ้าติดตาม COD ถี่ขึ้น และแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะน้ำเสีย'},
   high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Inlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
   critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'},
-  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำผิดปกติ',code:'LOW FLOW · FM-01',title:'Flow ต่ำกว่าช่วงเฝ้าระวัง',desc:'Flow ลดลงต่อเนื่อง อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนผู้ปฏิบัติงาน ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
-  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงผิดปกติ',code:'HIGH FLOW · FM-01',title:'Flow สูงกว่าช่วงเฝ้าระวัง',desc:'Flow เพิ่มสูงกว่าปกติ อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนและแนะนำให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
-  flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก FM-01',code:'NO FLOW / DATA STALE · FM-01',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
-  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'Flow เปลี่ยนแปลงรวดเร็วผิดปกติ',code:'RAPID CHANGE · FM-01',title:'Flow เปลี่ยนเร็วกว่าปกติ',desc:'พบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · ค่าเปลี่ยนเร็วผิดปกติ',action:'ระบบจะแจ้งเตือนและให้ผู้ปฏิบัติงานตรวจสอบสภาวะหน้างานทันที'}
+  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำผิดปกติ',code:'LOW FLOW · 19FM001',title:'Flow ต่ำกว่าช่วงเฝ้าระวัง',desc:'Flow ลดลงต่อเนื่อง อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนผู้ปฏิบัติงาน ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
+  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงผิดปกติ',code:'HIGH FLOW · 19FM001',title:'Flow สูงกว่าช่วงเฝ้าระวัง',desc:'Flow เพิ่มสูงกว่าปกติ อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งเตือนและแนะนำให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
+  flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก 19FM001',code:'NO FLOW / DATA STALE · 19FM001',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
+  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'Flow เปลี่ยนแปลงรวดเร็วผิดปกติ',code:'RAPID CHANGE · 19FM001',title:'Flow เปลี่ยนเร็วกว่าปกติ',desc:'พบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'ตัวอย่างการทดสอบ · ค่าเปลี่ยนเร็วผิดปกติ',action:'ระบบจะแจ้งเตือนและให้ผู้ปฏิบัติงานตรวจสอบสภาวะหน้างานทันที'}
 };
 function showDemoAlert(type){
   const d=ALERT_DEMOS[type]||ALERT_DEMOS.critical;
@@ -8663,7 +8672,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       'รอบการบันทึก: 05:00 → 05:00 ของวันถัดไป',
       'โรงงาน: NRT 1',
       'แผนก/ฝ่าย: บ่อบำบัดน้ำเสีย',
-      'จุดตรวจวัด: บ่อพักน้ำเสีย 2 · FM-01',
+      'จุดตรวจวัด: บ่อพักน้ำเสีย 2 · 19FM001',
       'Flow Setting: 13.0 m³/h',
       '',
       'รายละเอียด Flow รายชั่วโมง',
@@ -8736,7 +8745,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         </div>
 
         <div class="preview-info-grid structured-info">
-          <div><small>จุดตรวจวัด</small><b>บ่อพักน้ำเสีย 2 · FM-01</b></div>
+          <div><small>จุดตรวจวัด</small><b>บ่อพักน้ำเสีย 2 · 19FM001</b></div>
           <div><small>Flow Setting</small><b id="previewFlowSettingValue">13.0 m³/h</b></div>
           <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
           <div><small>สถานะระบบ</small><b>ปกติ</b></div>
@@ -9591,7 +9600,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const d=parse(r.id);
       return `<article class="history-report-card${r.id===selectedId?' selected':''}" data-id="${r.id}">
         <div class="history-date-tile"><b>${String(d.getDate()).padStart(2,'0')}</b><span>ก.ย. ${String(d.getFullYear()+543).slice(-2)}</span></div>
-        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · บ่อพักน้ำเสีย 2 · FM-01</span><em>${r.status}</em></div>
+        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · บ่อพักน้ำเสีย 2 · 19FM001</span><em>${r.status}</em></div>
         <div class="history-card-actions">
           <button class="history-open" data-open="${r.id}">เปิดรายงาน</button>
           <button data-pdf="${r.id}">PDF</button>
@@ -9680,7 +9689,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
 
     const info=[...root.querySelectorAll('.preview-info-grid > div')];
-    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · FM-01';
+    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · 19FM001';
     if(info[1]?.querySelector('b')) info[1].querySelector('b').textContent=`${r.setting.toFixed(1)} m³/h`;
     if(info[2]?.querySelector('b')) info[2].querySelector('b').textContent=`${r.volume.toFixed(1)} m³/day`;
     if(info[3]?.querySelector('b')) info[3].querySelector('b').textContent='ปกติ';
@@ -9884,7 +9893,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const summary=[
       ['ใบบันทึกและสรุปการไหลน้ำเสียประจำวัน'],['เลขที่เอกสาร',r.doc],['วันที่รายงาน',th(r.id)],
       ['รอบรายงาน',`05:00 ${th(r.id)} ถึง 05:00 ${th(nextISO(r.id))}`],['โรงงาน','NRT 1'],
-      ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · FM-01'],['Flow Setting',r.setting],
+      ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · 19FM001'],['Flow Setting',r.setting],
       [],['ปริมาณน้ำรวม',r.volume,'m³/day'],['Flow เฉลี่ย',r.avg,'m³/h'],['Flow ต่ำสุด',r.min,'m³/h'],['Flow สูงสุด',r.max,'m³/h'],
       ['COD ล่าสุด',11800,'mg/L'],['Zinc ล่าสุด',354,'mg/L']
     ];
