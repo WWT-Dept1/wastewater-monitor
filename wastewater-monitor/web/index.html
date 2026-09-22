@@ -9187,14 +9187,7 @@ body.daily-report-view .new-menu-report{
   will-change:contents, opacity;
 }
 
-.realtime-pulse-up,
-.realtime-pulse-down{
-  animation:realtimeValueSoftPulse .42s ease-out;
-}
-
-@keyframes realtimeValueSoftPulse{
-  0%{opacity:.78}
-  100%{opacity:1}
+100%{opacity:1}
 }
 
 .clear-flow-value{
@@ -9311,6 +9304,20 @@ body.daily-report-view .new-menu-report{
 }
 #mainFlowRealtimeValue{
   display:inline;
+}
+</style>
+
+
+<style>
+/* V15.122 — keep realtime digits visually stable */
+#mainFlowRealtimeValue,
+.realtime-flow-alert-number,
+.flowdial-center b{
+  animation:none !important;
+  transition:none !important;
+  opacity:1 !important;
+  filter:none !important;
+  transform:none !important;
 }
 </style>
 
@@ -12143,157 +12150,158 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 <script>
-/* DEMO REALTIME VALUES
-   Flow only:
-   - Simulates Flow until the real ESP32/Supabase feed is connected.
-   - COD and Zinc stay fixed.
-   - Real data always wins.
-   - Realtime values now animate smoothly.
+/* V15.122 — ULTRA SMOOTH FLOW DEMO
+   Only the numeric value changes.
+   No blink / fade / jump / scale / blur.
 */
 (function(){
-  const state={ flow:12.5 };
-  const rafMap=new WeakMap();
+  const demoValues=[12.5,12.6,12.7,12.6,12.8,12.7,12.9,12.8,12.6,12.5,12.4,12.6];
+  let demoIndex=0;
+  let timer=null;
+  const activeAnimations=new WeakMap();
 
-  function clamp(v,min,max){ return Math.min(max,Math.max(min,v)); }
-  function walk(v,step,min,max,decimals){
-    /* Guarantee a visible but still natural change at 1 decimal place. */
-    const choices=[-0.2,-0.1,0.1,0.2];
-    let delta=choices[Math.floor(Math.random()*choices.length)];
-    let n=clamp(v+delta,min,max);
-
-    /* If clamped to the same displayed value, move gently back inward. */
-    if(Number(n.toFixed(decimals))===Number(v.toFixed(decimals))){
-      delta = v >= max ? -0.1 : (v <= min ? 0.1 : (Math.random()<.5 ? -0.1 : 0.1));
-      n=clamp(v+delta,min,max);
-    }
-    return Number(n.toFixed(decimals));
-  }
-  function easeInOutCubic(t){ return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
-
-  function pulse(el,direction){
-    if(!el) return;
-    el.classList.remove('realtime-pulse-up','realtime-pulse-down');
-    void el.offsetWidth;
-    el.classList.add(direction >= 0 ? 'realtime-pulse-up' : 'realtime-pulse-down');
+  function smoothstep(t){
+    return t*t*(3 - 2*t);
   }
 
-  function animateNumericText(el,toValue,opts={}){
+  function readNumber(el,fallback){
+    if(!el) return fallback;
+    const raw = Number(
+      el.dataset.currentValue ??
+      String(el.textContent).replace(/[^\d.-]/g,'')
+    );
+    return Number.isFinite(raw) ? raw : fallback;
+  }
+
+  function animateNumber(el,toValue,options={}){
     if(!el) return;
-    const decimals = opts.decimals ?? 1;
-    const prefix = opts.prefix ?? '';
-    const suffix = opts.suffix ?? '';
-    const duration = opts.duration ?? 1100;
 
-    const previous = Number(el.dataset.value ?? el.textContent.replace(/[^\d.-]/g,'') || 0);
-    const start = performance.now();
-    const direction = toValue - previous;
+    const duration=options.duration ?? 1800;
+    const decimals=options.decimals ?? 1;
+    const prefix=options.prefix ?? '';
 
-    if(rafMap.has(el)) cancelAnimationFrame(rafMap.get(el));
-    pulse(el, direction);
+    const running=activeAnimations.get(el);
+    if(running) cancelAnimationFrame(running);
+
+    const fromValue=readNumber(el,toValue);
+    const start=performance.now();
 
     function frame(now){
-      const t = Math.min(1, (now - start) / duration);
-      const eased = easeInOutCubic(t);
-      const current = previous + (toValue - previous) * eased;
-      el.textContent = prefix + current.toFixed(decimals) + suffix;
-      if(t < 1){
-        rafMap.set(el, requestAnimationFrame(frame));
+      const p=Math.min(1,(now-start)/duration);
+      const eased=smoothstep(p);
+      const value=fromValue+(toValue-fromValue)*eased;
+
+      el.textContent=prefix+value.toFixed(decimals);
+
+      if(p<1){
+        activeAnimations.set(el,requestAnimationFrame(frame));
       }else{
-        el.textContent = prefix + Number(toValue).toFixed(decimals) + suffix;
-        el.dataset.value = String(toValue);
+        el.textContent=prefix+Number(toValue).toFixed(decimals);
+        el.dataset.currentValue=String(toValue);
+        activeAnimations.delete(el);
       }
     }
 
-    el.dataset.value = String(previous);
-    rafMap.set(el, requestAnimationFrame(frame));
+    activeAnimations.set(el,requestAnimationFrame(frame));
   }
 
-  function setText(el,textValue){
-    if(!el) return;
-    el.textContent=textValue;
-  }
+  function ensureAlertFlowNode(){
+    const wrap=document.querySelector('.flow-live-value');
+    if(!wrap) return null;
 
-  function ensureAnimatedNodes(){
-    const flowWrap = document.querySelector('.flow-live-value');
-    if(flowWrap && !flowWrap.querySelector('.realtime-flow-alert-number')){
-      const raw = (flowWrap.textContent || '').match(/-?\d+(?:\.\d+)?/);
-      const initial = raw ? raw[0] : '12.5';
-      flowWrap.innerHTML = '<span class="realtime-number realtime-flow-alert-number" data-value="'+initial+'">'+initial+'</span> <span>m³/h</span>';
+    let number=wrap.querySelector('.realtime-flow-alert-number');
+    if(!number){
+      const initial=(wrap.textContent.match(/-?\d+(?:\.\d+)?/)||['12.5'])[0];
+      wrap.innerHTML=
+        '<span class="realtime-number realtime-flow-alert-number">'+initial+'</span>'+
+        ' <span>m³/h</span>';
+      number=wrap.querySelector('.realtime-flow-alert-number');
     }
-
-    const main = document.getElementById('mainFlowRealtimeValue');
-    if(main) main.classList.add('realtime-number');
-
-    const delta = document.querySelector('.flowdial-center b');
-    if(delta) delta.classList.add('realtime-number');
+    return number;
   }
 
-  function stopDemo(){
-    if(window.__wwtRealtimeDemo){
-      clearInterval(window.__wwtRealtimeDemo);
-      window.__wwtRealtimeDemo=null;
-    }
-  }
-  window.stopWWTDemoRealtime=stopDemo;
-
-  function updateRealtimeDemo(){
-    if(window.WWT_REAL_DATA_ACTIVE === true){
+  function updateDemo(){
+    if(window.WWT_REAL_DATA_ACTIVE===true){
       stopDemo();
       return;
     }
 
-    ensureAnimatedNodes();
-    state.flow=walk(state.flow,.2,11.8,13.4,1);
+    demoIndex=(demoIndex+1)%demoValues.length;
+    const flow=demoValues[demoIndex];
 
-    /* Main LIVE Flow */
-    animateNumericText(
+    animateNumber(
       document.getElementById('mainFlowRealtimeValue'),
-      state.flow,
-      { decimals:1, duration:1280 }
+      flow,
+      {duration:1900,decimals:1}
     );
 
-    /* Alert Center Flow */
-    animateNumericText(
-      document.querySelector('.realtime-flow-alert-number'),
-      state.flow,
-      { decimals:1, duration:1280 }
+    animateNumber(
+      ensureAlertFlowNode(),
+      flow,
+      {duration:1900,decimals:1}
     );
 
-    /* Delta Flow */
-    const delta=Number((state.flow-13.0).toFixed(1));
-    const deltaEl=document.querySelector('.flowdial-center b');
-    if(deltaEl){
-      animateNumericText(
-        deltaEl,
-        delta,
-        { decimals:1, prefix: delta > 0 ? '+' : '', duration:1180 }
-      );
-    }
+    const delta=Number((flow-13.0).toFixed(1));
+    animateNumber(
+      document.querySelector('.flowdial-center b'),
+      delta,
+      {duration:1750,decimals:1,prefix:delta>0?'+':''}
+    );
 
     const deltaSmall=document.querySelector('.flowdial-center small');
     if(deltaSmall){
       const pct=Math.abs(delta/13*100).toFixed(1);
-      setText(deltaSmall,'m³/h · '+(delta<0?'ต่ำกว่า':'สูงกว่า')+' Setting '+pct+'%');
+      deltaSmall.textContent=
+        'm³/h · '+(delta<0?'ต่ำกว่า':'สูงกว่า')+' Setting '+pct+'%';
     }
 
-    /* Alert-center timestamp */
     const liveMeta=document.querySelector('.flow-live-meta span');
     if(liveMeta){
-      setText(liveMeta,'อัปเดตล่าสุด '+new Date().toLocaleTimeString('th-TH',{
-        timeZone:'Asia/Bangkok',
-        hour:'2-digit',
-        minute:'2-digit',
-        second:'2-digit',
-        hour12:false
-      }));
+      liveMeta.textContent=
+        'อัปเดตล่าสุด '+
+        new Date().toLocaleTimeString('th-TH',{
+          timeZone:'Asia/Bangkok',
+          hour:'2-digit',
+          minute:'2-digit',
+          second:'2-digit',
+          hour12:false
+        });
     }
   }
 
+  function stopDemo(){
+    if(timer){
+      clearInterval(timer);
+      timer=null;
+    }
+  }
+
+  window.stopWWTDemoRealtime=stopDemo;
+
   document.addEventListener('DOMContentLoaded',function(){
-    ensureAnimatedNodes();
-    if(window.WWT_REAL_DATA_ACTIVE === true) return;
-    updateRealtimeDemo();
-    window.__wwtRealtimeDemo=setInterval(updateRealtimeDemo,2600);
+    if(window.WWT_REAL_DATA_ACTIVE===true) return;
+
+    const main=document.getElementById('mainFlowRealtimeValue');
+    if(main){
+      main.dataset.currentValue=String(readNumber(main,12.5));
+    }
+
+    const alertNumber=ensureAlertFlowNode();
+    if(alertNumber){
+      alertNumber.dataset.currentValue=String(readNumber(alertNumber,12.5));
+    }
+
+    const deltaEl=document.querySelector('.flowdial-center b');
+    if(deltaEl){
+      deltaEl.dataset.currentValue=String(readNumber(deltaEl,-0.5));
+    }
+
+    /* First smooth movement shortly after page load. */
+    setTimeout(updateDemo,900);
+
+    /* Enough time between samples so the tween finishes naturally. */
+    timer=setInterval(updateDemo,3200);
+    window.__wwtRealtimeDemo=timer;
   });
 })();
 </script>
