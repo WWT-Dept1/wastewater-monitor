@@ -86,7 +86,7 @@ body{margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden}header{hei
 .flowdial{
  position:absolute;width:210px;height:210px;right:54px;top:102px;border-radius:50%;
  z-index:2;
- background:conic-gradient(from 220deg,#315C39 0 96%,rgba(210,221,218,.5) 96% 100%);
+ background:conic-gradient(from 220deg,#315C39 0 47%,rgba(210,221,218,.5) 47% 78%,transparent 78%);
  -webkit-mask:radial-gradient(circle,transparent 0 68%,#000 69%);
  mask:radial-gradient(circle,transparent 0 68%,#000 69%);
  filter:drop-shadow(5px 7px 7px rgba(117,139,135,.20)) drop-shadow(-4px -4px 6px rgba(255,255,255,.8));
@@ -6447,188 +6447,785 @@ html{scroll-behavior:smooth}
 
 
 <style>
-/* V15.86 — จัด Flow Setting ให้อยู่ข้างค่า Flow และเอา stat cards ออก */
-.live-display-clean{
-  width:74%!important;
-  padding:18px 20px!important;
+/* =========================================================
+   V15.86 — DAILY SUMMARY REDESIGN
+   เป้าหมาย: อ่านง่าย, กระชับ, ดูเป็นเอกสารระบบมืออาชีพ
+   ========================================================= */
+
+#dailySummarySection{
+  --ds-ink:#10271b;
+  --ds-muted:#67776d;
+  --ds-green:#2f6547;
+  --ds-green-2:#3e7b59;
+  --ds-line:#d8e4dc;
+  --ds-soft:#f4f8f5;
+  --ds-mint:#e8f2eb;
+  --ds-paper:#ffffff;
+  padding:26px 18px 44px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(84,138,102,.10), transparent 28%),
+    linear-gradient(180deg,#eef5f0 0%,#f8faf8 32%,#eef4f0 100%);
 }
-.live-value-row{
+
+#dailySummaryCard{
+  width:min(1180px,100%);
+  margin:0 auto;
+  border:1px solid rgba(52,93,69,.13);
+  border-radius:28px;
+  overflow:hidden;
+  background:rgba(255,255,255,.96);
+  box-shadow:
+    0 24px 70px rgba(25,56,38,.10),
+    0 4px 14px rgba(25,56,38,.04);
+}
+
+/* Toolbar */
+#dailySummarySection .refined-report-toolbar{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:18px;
+  padding:15px 20px;
+  background:#fbfdfb;
+  border-bottom:1px solid var(--ds-line);
 }
-.flow-setting-inline{
-  min-width:180px;
-  max-width:210px;
-  padding:14px 16px;
-  border-radius:18px;
-  border:1px solid rgba(49,92,57,.10);
-  background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(236,243,238,.95));
-  box-shadow:
-    6px 6px 14px rgba(170,184,175,.18),
-    -5px -5px 12px rgba(255,255,255,.85);
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:center;
-}
-.fsi-label{
-  font:800 8px "Outfit","Noto Sans Thai",sans-serif;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:#6f8577;
-  margin-bottom:6px;
-}
-.fsi-value{
-  font:900 24px/1 "Outfit","Noto Sans Thai",sans-serif;
-  color:#1f3a2a;
-  letter-spacing:-.03em;
-}
-.fsi-value small{
-  font:800 11px "Outfit",sans-serif;
-  color:#6c8174;
-}
-.fsi-note{
-  margin-top:6px;
-  font:700 8px "Noto Sans Thai",sans-serif;
-  color:#809086;
-}
-@media (max-width: 980px){
-  .live-display-clean{width:86%!important}
-  .live-value-row{flex-direction:column;align-items:flex-start}
-  .flow-setting-inline{width:100%;max-width:none}
-}
-</style>
 
+#dailySummarySection .refined-tabs{
+  display:inline-flex;
+  width:auto;
+  gap:5px;
+  padding:4px;
+  border:1px solid #dce7df;
+  border-radius:14px;
+  background:#eef4f0;
+}
 
-<style>
-/* V15.87 — compact Flow Setting beside live Flow value */
-.live-display-clean{
-  width:68%!important;
-  padding:16px 18px!important;
-}
-.live-value-row{
-  display:flex!important;
-  align-items:flex-end!important;
-  justify-content:flex-start!important;
-  gap:20px!important;
-}
-.compact-fsi{
-  min-width:0!important;
+#dailySummarySection .refined-tabs .eform-tab{
   width:auto!important;
-  max-width:none!important;
-  padding:0 0 4px 18px!important;
-  border:0!important;
-  border-left:1px solid rgba(55,94,68,.18)!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
+  min-width:118px;
+  padding:10px 16px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#6c796f;
+  font-weight:800;
 }
-.compact-fsi .fsi-label{
-  display:block!important;
-  margin:0 0 5px!important;
-  font:800 7px "Outfit","Noto Sans Thai",sans-serif!important;
-  letter-spacing:.12em!important;
-  color:#73877a!important;
-}
-.compact-fsi .fsi-value{
-  font:900 25px/1 "Outfit","Noto Sans Thai",sans-serif!important;
-  color:#1f3a2a!important;
-  letter-spacing:-.035em!important;
-  white-space:nowrap!important;
-}
-.compact-fsi .fsi-value small{
-  font:800 9px "Outfit",sans-serif!important;
-  color:#718579!important;
-}
-@media(max-width:980px){
-  .live-display-clean{width:78%!important}
-  .live-value-row{
-    flex-direction:row!important;
-    align-items:flex-end!important;
-  }
-  .compact-fsi{
-    width:auto!important;
-    padding-left:14px!important;
-  }
-}
-@media(max-width:620px){
-  .live-display-clean{width:88%!important}
-  .live-value-row{gap:12px!important}
-  .compact-fsi .fsi-value{font-size:21px!important}
-}
-</style>
 
-
-<style>
-/* V15.88 — Formal PDF export: same document style as Preview */
-.export-busy[hidden]{
-  display:none!important;
+#dailySummarySection .refined-tabs .eform-tab.active{
+  background:#fff;
+  color:var(--ds-green);
+  box-shadow:0 3px 12px rgba(30,70,45,.08);
 }
-.pdf-export-host{
-  position:fixed;
-  left:-12000px;
-  top:0;
-  width:1000px;
-  z-index:-1;
-  pointer-events:none;
+
+#dailySummarySection .refined-actions{
+  display:flex;
+  width:auto;
+  gap:8px;
+}
+
+#dailySummarySection .refined-actions button{
+  width:auto!important;
+  min-width:92px;
+  padding:10px 16px;
+  border:1px solid #cbdcd1;
+  border-radius:12px;
+  background:#fff;
+  color:#31543f;
+  font-weight:850;
+  transition:.18s ease;
+}
+
+#dailySummarySection .refined-actions button:hover{
+  transform:translateY(-1px);
+  border-color:#9dbba7;
+  box-shadow:0 5px 13px rgba(34,79,51,.08);
+}
+
+#dailySummarySection .refined-actions .primary-export{
+  background:var(--ds-green);
+  border-color:var(--ds-green);
+  color:#fff;
+}
+
+/* Hero/report title */
+#dailySummarySection .daily-sheet-head.eform-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:26px;
+  align-items:end;
+  padding:32px 30px 26px;
+  background:
+    linear-gradient(135deg,rgba(233,244,236,.95),rgba(250,252,250,.98));
+  border-bottom:1px solid var(--ds-line);
+}
+
+#dailySummarySection .daily-report-eyebrow{
+  display:block;
+  margin-bottom:8px;
+  color:#5b7c68;
+  font:900 10px/1.2 "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:.13em;
+}
+
+#dailySummarySection .eform-head-main h2{
+  margin:0;
+  color:var(--ds-ink);
+  font-size:clamp(24px,3vw,36px);
+  line-height:1.15;
+  letter-spacing:-.035em;
+}
+
+#dailySummarySection .eform-head-main p{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  align-items:center;
+  margin:12px 0 0;
+  color:var(--ds-muted);
+  font-size:13px;
+}
+
+#dailySummarySection .eform-head-main p strong{
+  color:#294d38;
+  font-weight:850;
+}
+
+#dailySummarySection .eform-head-main p span{
+  padding-left:14px;
+  border-left:1px solid #bfd0c4;
+}
+
+#dailySummarySection .eform-doc-inline{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  align-self:center;
+}
+
+#dailySummarySection .eform-doc-chip{
+  min-width:235px;
+  padding:11px 14px;
+  border:1px solid #d2e0d6;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(39,77,52,.04);
+}
+
+#dailySummarySection .eform-doc-chip label{
+  color:#7b897f;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+
+#dailySummarySection .eform-doc-chip b{
+  display:block;
+  margin-top:3px;
+  color:#244c35;
+  font-size:13px;
+}
+
+#dailySummarySection .eform-status-chip{
+  padding:11px 14px;
+  border:1px solid #bcd6c4;
+  border-radius:999px;
+  background:#eaf5ed;
+  color:#326947;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+/* Basic report fields — compact cards instead of large blank rows */
+#dailySummarySection .daily-form-fields{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  padding:20px 30px 12px;
   background:#fff;
 }
-.pdf-export-page.formal-document{
-  width:940px!important;
-  max-width:none!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:26px 28px 30px!important;
-  box-sizing:border-box!important;
+
+#dailySummarySection .field-group{
+  min-height:78px;
+  padding:14px 15px;
+  border:1px solid #dce7df!important;
+  border-radius:15px;
+  background:#fafcfb;
+}
+
+#dailySummarySection .field-group label{
+  display:block;
+  margin-bottom:7px;
+  color:#7a887f;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.035em;
+}
+
+#dailySummarySection .field-value{
+  padding:0!important;
   border:0!important;
-  box-shadow:none!important;
-  background:#fff!important;
+  color:#1b3324;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.35;
 }
-.pdf-export-page + .pdf-export-page{
-  margin-top:24px!important;
+
+/* New scan-friendly KPI strip */
+#dailySummarySection .daily-overview-strip{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(100px,1fr)) minmax(220px,1.45fr);
+  gap:8px;
+  margin:0;
+  padding:8px 30px 22px;
+  background:#fff;
 }
-.pdf-page-number{
-  margin-top:12px;
-  padding-top:8px;
-  border-top:1px solid #aab3ad;
-  text-align:right;
-  font:700 7px "Noto Sans Thai",sans-serif;
-  color:#65756c;
+
+#dailySummarySection .dos-item,
+#dailySummarySection .dos-status{
+  min-height:88px;
+  padding:14px 15px;
+  border:1px solid #d8e5dc;
+  border-radius:16px;
+  background:linear-gradient(145deg,#f8fbf9,#eff5f1);
 }
-.pdf-export-page .preview-table-wrap{
-  overflow:visible!important;
-  max-height:none!important;
+
+#dailySummarySection .dos-item small,
+#dailySummarySection .dos-status small{
+  display:block;
+  color:#75867b;
+  font:850 8.5px/1.2 "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:.08em;
 }
-.pdf-export-page .preview-section-title{
-  break-inside:avoid;
+
+#dailySummarySection .dos-item b{
+  display:inline-block;
+  margin-top:8px;
+  color:#173d29;
+  font:900 24px/1 "Outfit","Noto Sans Thai",sans-serif;
+  letter-spacing:-.04em;
 }
-.pdf-export-page .signature-board{
-  break-inside:avoid;
+
+#dailySummarySection .dos-item span{
+  margin-left:5px;
+  color:#5f7165;
+  font-size:10px;
+  font-weight:800;
+}
+
+#dailySummarySection .dos-volume{
+  background:linear-gradient(145deg,#e7f2ea,#f5faf6);
+  border-color:#bed5c5;
+}
+
+#dailySummarySection .dos-status{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  background:#2f6547;
+  border-color:#2f6547;
+}
+
+#dailySummarySection .dos-status i{
+  width:11px;height:11px;border-radius:50%;
+  background:#87dda6;
+  box-shadow:0 0 0 6px rgba(135,221,166,.13);
+}
+
+#dailySummarySection .dos-status small{color:#cfe3d5}
+#dailySummarySection .dos-status b{
+  display:block;
+  margin-top:5px;
+  color:#fff;
+  font-size:12px;
+}
+
+/* Flow Setting — tighter and visually distinct */
+#dailySummarySection .flow-setting-record{
+  margin:0 30px 24px;
+  border:1px solid #c8dbcf;
+  border-radius:18px;
+  overflow:hidden;
+  background:#f7faf8;
+  box-shadow:none;
+}
+
+#dailySummarySection .fs-current{
+  min-height:88px;
+  padding:15px 18px;
+  background:
+    linear-gradient(100deg,#edf6ef 0%,#f9fbfa 58%,#f5f9f6 100%);
+}
+
+#dailySummarySection .fs-mark{
+  width:42px;height:42px;
+  border-radius:13px;
+  background:#326a4b;
+  color:#fff;
+  box-shadow:0 7px 14px rgba(50,106,75,.17);
+}
+
+#dailySummarySection .fs-current-copy small{
+  color:#63786b;
+  font-size:8.5px;
+  letter-spacing:.08em;
+}
+
+#dailySummarySection .fs-value-line b{
+  font-size:25px;
+  color:#173b29;
+}
+
+#dailySummarySection .fs-edit-btn{
+  min-width:150px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid #b9d0c0;
+  color:#326449;
+  font-weight:850;
+}
+
+/* Main paper sections */
+#dailySummarySection .paper-sheet.modern-sheet.eform-sheet{
+  margin:0;
+  padding:0 30px 32px;
+  border:0;
+  background:#fff;
+  box-shadow:none;
+}
+
+#dailySummarySection .sheet-section-head{
+  margin:0 0 10px;
+  padding:15px 17px;
+  border:1px solid #d8e3dc;
+  border-radius:15px;
+  background:#f1f6f3;
+}
+
+#dailySummarySection .sheet-section-head small{
+  color:#63806d;
+  font:900 9px "Outfit",sans-serif;
+  letter-spacing:.10em;
+}
+
+#dailySummarySection .sheet-section-head b{
+  display:block;
+  margin-top:4px;
+  color:#173525;
+  font-size:18px;
+}
+
+#dailySummarySection .sheet-section-head > span{
+  color:#75847a;
+  font-size:10px;
+  font-weight:700;
+}
+
+/* Hourly table becomes a clear data surface */
+#dailySummarySection .modern-hourly-wrap{
+  max-height:470px;
+  overflow:auto;
+  margin-bottom:24px;
+  border:1px solid #d9e4dc;
+  border-radius:16px;
+  background:#fff;
+}
+
+#dailySummarySection .modern-hourly-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+#dailySummarySection .modern-hourly-table thead{
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+
+#dailySummarySection .modern-hourly-table th{
+  padding:12px 14px;
+  background:#e8f0eb;
+  color:#375744;
+  border-bottom:1px solid #d3dfd6;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.025em;
+}
+
+#dailySummarySection .modern-hourly-table td{
+  padding:11px 14px;
+  color:#536158;
+  border-bottom:1px solid #edf1ee;
+  font-size:11.5px;
+}
+
+#dailySummarySection .modern-hourly-table tbody tr:nth-child(even) td{
+  background:#fbfcfb;
+}
+
+#dailySummarySection .modern-hourly-table tbody tr:hover td{
+  background:#f0f7f2;
+}
+
+#dailySummarySection .modern-hourly-table td b{
+  color:#173a28;
+  font-size:12.5px;
+}
+
+#dailySummarySection .row-status{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 9px;
+  border:1px solid #c8dfcf;
+  border-radius:999px;
+  background:#edf7f0;
+  color:#33704a;
+  font-size:9px;
+  font-weight:900;
+}
+
+/* Daily totals */
+#dailySummarySection .summary-head{margin-top:4px}
+
+#dailySummarySection .daily-total-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  margin:0 0 22px;
+}
+
+#dailySummarySection .daily-total-grid > div{
+  min-height:96px;
+  padding:15px;
+  border:1px solid #dbe6de;
+  border-radius:15px;
+  background:#fafcfb;
+}
+
+#dailySummarySection .daily-total-grid small{
+  color:#7a897f;
+  font-size:9px;
+  font-weight:800;
+}
+
+#dailySummarySection .daily-total-grid b{
+  display:block;
+  margin-top:8px;
+  color:#183a28;
+  font-size:22px;
+  line-height:1;
+}
+
+#dailySummarySection .daily-total-grid span{
+  display:block;
+  margin-top:6px;
+  color:#718078;
+  font-size:9.5px;
+  font-weight:700;
+}
+
+/* Remark */
+#dailySummarySection .form-remark{
+  margin:0 0 24px;
+  padding:17px;
+  border:1px solid #dce6df;
+  border-radius:16px;
+  background:#f8faf9;
+}
+
+#dailySummarySection .form-remark > b{
+  color:#244c35;
+  font-size:12px;
+}
+
+#dailySummarySection .form-remark textarea{
+  min-height:92px;
+  margin-top:10px;
+  padding:13px 14px;
+  border:1px solid #d7e1da;
+  border-radius:12px;
+  background:#fff;
+  color:#425148;
+  line-height:1.55;
+}
+
+/* Verification separated from report data */
+#dailySummarySection .clean-inline-head{
+  margin-top:6px;
+  background:#e9f2ec;
+  border-color:#cfe0d4;
+}
+
+#dailySummarySection .clean-verify-shell{
+  border:1px solid #d8e4dc;
+  border-radius:18px;
+  overflow:hidden;
+  background:#fbfcfb;
+  box-shadow:none;
+}
+
+/* History view */
+#dailySummarySection .daily-history-panel{
+  padding:24px 30px 30px;
+}
+
+/* Responsive */
+@media(max-width:980px){
+  #dailySummarySection .daily-sheet-head.eform-head{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  #dailySummarySection .eform-doc-inline{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+  #dailySummarySection .daily-form-fields{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #dailySummarySection .daily-overview-strip{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #dailySummarySection .dos-status{grid-column:1/-1}
+  #dailySummarySection .daily-total-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:680px){
+  #dailySummarySection{
+    padding:12px 8px 28px;
+  }
+  #dailySummaryCard{border-radius:18px}
+  #dailySummarySection .refined-report-toolbar{
+    align-items:stretch;
+    flex-direction:column;
+    padding:12px;
+  }
+  #dailySummarySection .refined-tabs,
+  #dailySummarySection .refined-actions{
+    width:100%;
+  }
+  #dailySummarySection .refined-tabs .eform-tab,
+  #dailySummarySection .refined-actions button{
+    flex:1;
+    min-width:0;
+    padding:9px 8px;
+  }
+  #dailySummarySection .daily-sheet-head.eform-head{
+    padding:24px 17px 20px;
+  }
+  #dailySummarySection .eform-head-main h2{
+    font-size:25px;
+  }
+  #dailySummarySection .eform-head-main p{
+    display:block;
+    line-height:1.7;
+  }
+  #dailySummarySection .eform-head-main p span{
+    display:block;
+    padding-left:0;
+    border-left:0;
+  }
+  #dailySummarySection .eform-doc-inline{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  #dailySummarySection .eform-doc-chip{min-width:0}
+  #dailySummarySection .daily-form-fields{
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    padding:14px 14px 8px;
+  }
+  #dailySummarySection .field-group{
+    min-height:70px;
+    padding:11px;
+  }
+  #dailySummarySection .daily-overview-strip{
+    grid-template-columns:1fr 1fr;
+    padding:7px 14px 18px;
+  }
+  #dailySummarySection .dos-item{
+    min-height:78px;
+    padding:12px;
+  }
+  #dailySummarySection .dos-item b{font-size:21px}
+  #dailySummarySection .flow-setting-record{
+    margin:0 14px 18px;
+  }
+  #dailySummarySection .fs-current{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  #dailySummarySection .fs-edit-btn{
+    width:100%;
+    margin-top:8px;
+  }
+  #dailySummarySection .paper-sheet.modern-sheet.eform-sheet{
+    padding:0 14px 22px;
+  }
+  #dailySummarySection .sheet-section-head{
+    align-items:flex-start;
+    gap:5px;
+    flex-direction:column;
+  }
+  #dailySummarySection .modern-hourly-wrap{
+    max-height:410px;
+    overflow:auto;
+  }
+  #dailySummarySection .modern-hourly-table{
+    min-width:690px;
+  }
+  #dailySummarySection .daily-total-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media print{
+  #dailySummarySection{
+    padding:0!important;
+    background:#fff!important;
+  }
+  #dailySummaryCard{
+    border:0!important;
+    box-shadow:none!important;
+  }
+  #dailySummarySection .refined-report-toolbar{
+    display:none!important;
+  }
+  #dailySummarySection .modern-hourly-wrap{
+    max-height:none!important;
+    overflow:visible!important;
+  }
 }
 </style>
 
 
 <style>
-/* V15.89 — use the dial for Flow vs Flow Setting, not range load */
-.flowdial-center{
-  line-height:1.2!important;
+/* V15.87 — clean daily summary + refined Thai typography */
+#dailySummarySection{
+  font-family:
+    "Noto Sans Thai",
+    "Leelawadee UI",
+    "Tahoma",
+    "Th Sarabun New",
+    sans-serif !important;
 }
-.flowdial-center>div{
-  font-size:7px!important;
-  letter-spacing:.06em!important;
+
+#dailySummarySection .daily-overview-strip{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  padding-bottom:24px !important;
 }
-.flowdial-center b{
-  font-size:20px!important;
-  margin-top:4px!important;
+
+/* Thai typography */
+#dailySummarySection .eform-head-main h2,
+#dailySummarySection .sheet-section-head b,
+#dailySummarySection .field-value,
+#dailySummarySection .fs-value-line b,
+#dailySummarySection .daily-total-grid b,
+#dailySummarySection .clean-inline-head b,
+#dailySummarySection .form-remark > b{
+  font-family:
+    "Noto Sans Thai",
+    "Leelawadee UI",
+    "Tahoma",
+    sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:-0.015em !important;
 }
-.flowdial-center span{
-  display:block;
-  margin-top:4px;
-  font:800 7px "Outfit",sans-serif;
-  letter-spacing:0;
-  color:#7a8a81;
+
+#dailySummarySection .eform-head-main p,
+#dailySummarySection .field-group label,
+#dailySummarySection .dos-item,
+#dailySummarySection .fs-current-copy,
+#dailySummarySection .sheet-section-head,
+#dailySummarySection .modern-hourly-table,
+#dailySummarySection .form-remark,
+#dailySummarySection button{
+  font-family:
+    "Noto Sans Thai",
+    "Leelawadee UI",
+    "Tahoma",
+    sans-serif !important;
+}
+
+/* Avoid overly heavy Thai text */
+#dailySummarySection .eform-head-main h2{
+  font-size:34px !important;
+  line-height:1.28 !important;
+  font-weight:700 !important;
+}
+
+#dailySummarySection .eform-head-main p{
+  font-size:13px !important;
+  line-height:1.7 !important;
+  font-weight:500 !important;
+}
+
+#dailySummarySection .field-group label{
+  font-size:10px !important;
+  font-weight:600 !important;
+  color:#6f7d74 !important;
+}
+
+#dailySummarySection .field-value{
+  font-size:14px !important;
+  line-height:1.55 !important;
+}
+
+#dailySummarySection .dos-item small{
+  font-family:"Outfit","Noto Sans Thai","Leelawadee UI",sans-serif !important;
+  font-weight:700 !important;
+}
+
+#dailySummarySection .sheet-section-head b{
+  font-size:18px !important;
+  line-height:1.4 !important;
+}
+
+#dailySummarySection .modern-hourly-table th{
+  font-family:"Noto Sans Thai","Leelawadee UI","Tahoma",sans-serif !important;
+  font-weight:700 !important;
+}
+
+#dailySummarySection .modern-hourly-table td{
+  font-family:"Noto Sans Thai","Leelawadee UI","Tahoma",sans-serif !important;
+  font-weight:400 !important;
+  line-height:1.55 !important;
+}
+
+#dailySummarySection .row-status{
+  font-family:"Noto Sans Thai","Leelawadee UI","Tahoma",sans-serif !important;
+  font-weight:600 !important;
+}
+
+#dailySummarySection .fs-edit-btn,
+#dailySummarySection .refined-actions button,
+#dailySummarySection .refined-tabs .eform-tab{
+  font-weight:600 !important;
+  letter-spacing:0 !important;
+}
+
+/* Cleaner KPI cards */
+#dailySummarySection .dos-item{
+  background:#fbfdfb !important;
+  border:1px solid #dce6df !important;
+  box-shadow:none !important;
+}
+
+#dailySummarySection .dos-volume{
+  background:#f4f8f5 !important;
+  border-color:#cfded4 !important;
+}
+
+/* Mobile */
+@media(max-width:680px){
+  #dailySummarySection .daily-overview-strip{
+    grid-template-columns:1fr 1fr !important;
+  }
+  #dailySummarySection .eform-head-main h2{
+    font-size:26px !important;
+  }
 }
 </style>
 
@@ -6644,17 +7241,8 @@ html{scroll-behavior:smooth}
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
-<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
-<div class="display live-display-clean">
-  <div class="live-value-row">
-    <div class="value">12.5<small>m³/h LIVE VALUE</small></div>
-    <div class="flow-setting-inline compact-fsi" aria-label="Flow Setting">
-      <span class="fsi-label">FLOW SETTING</span>
-      <div class="fsi-value">13.0 <small>m³/h</small></div>
-    </div>
-  </div>
-</div>
-<div class="flowdial"></div><div class="flowdial-center"><div>เทียบค่า SETTING<b>96%</b><span>12.5 / 13.0</span></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
+<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">FM-01 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div><div class="display"><div class="value">12.5<small>m³/h LIVE VALUE</small></div></div><div class="flowdial"></div><div class="flowdial-center"><div>RANGE LOAD<b>47%</b></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div><div class="stats"><div class="stat"><small>AVERAGE</small><b>12.6 m³/h</b></div><div class="stat"><small>PEAK</small><b>15.1 m³/h</b></div><div class="stat"><small>DAILY VOLUME EST.</small><b>643.1 m³</b></div></div></div>
+<div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
 
@@ -6971,8 +7559,9 @@ html{scroll-behavior:smooth}
 
 <div class="daily-sheet-head eform-head">
   <div class="eform-head-main">
+    <small class="daily-report-eyebrow">DAILY FLOW REPORT · NRT 1</small>
     <h2>ใบบันทึกและสรุปการไหลน้ำเสียประจำวัน</h2>
-    <p>วันที่รายงาน 13/09/2569 · รอบรายงาน 05:00 ของวันที่ 13/09/2569 ถึง 05:00 ของวันที่ 14/09/2569</p>
+    <p><strong>13 ก.ย. 2569</strong><span>รอบบันทึก 05:00 → 05:00 ของวันถัดไป</span></p>
   </div>
   <div class="eform-doc-inline">
     <div class="eform-doc-chip">
@@ -7007,6 +7596,29 @@ html{scroll-behavior:smooth}
   <div class="field-group">
     <label>Flow Setting</label>
     <div class="field-value" id="dailyFlowSettingValue">13.0 m³/h</div>
+  </div>
+</div>
+
+<div class="daily-overview-strip" aria-label="สรุปค่าหลักของรายงาน">
+  <div class="dos-item dos-volume">
+    <small>VOLUME · 24H</small>
+    <b>301.0</b>
+    <span>m³/day</span>
+  </div>
+  <div class="dos-item">
+    <small>AVERAGE FLOW</small>
+    <b>12.6</b>
+    <span>m³/h</span>
+  </div>
+  <div class="dos-item">
+    <small>MIN FLOW</small>
+    <b>10.5</b>
+    <span>m³/h</span>
+  </div>
+  <div class="dos-item">
+    <small>PEAK FLOW</small>
+    <b>15.1</b>
+    <span>m³/h</span>
   </div>
 </div>
 
@@ -7282,8 +7894,8 @@ html{scroll-behavior:smooth}
   <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
   <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
   <div><small>Flow Setting</small><b>13.0</b><span>m³/h</span></div>
-  <div><small>ข้อมูลที่ได้รับ</small><b>25 / 25</b><span>รายการครบตามรอบ</span></div>
-  <div><small>ข้อมูลขาดหาย</small><b>0</b><span>รายการ</span></div>
+  <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
+  <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
   <div><small>Alerts</small><b>0</b><span>เหตุการณ์</span></div>
 </div>
 <div class="form-remark">
@@ -7751,8 +8363,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       'Flow เฉลี่ย: 12.6 m³/h',
       'Flow ต่ำสุด: 10.5 m³/h',
       'Flow สูงสุด: 15.1 m³/h',
-      'ข้อมูลที่ได้รับ: 25 / 25 รายการ',
-      'ข้อมูลขาดหาย: 0 รายการ'
+      'COD ล่าสุด: 11,800 mg/L · ปกติ',
+      'Zinc ล่าสุด: 354 mg/L · ปกติ'
     ].join('\n');
 
     try{
@@ -7874,8 +8486,8 @@ document.addEventListener('DOMContentLoaded',()=>{
           <div><small>Flow เฉลี่ย</small><b>12.6</b><span>m³/h</span></div>
           <div><small>Flow ต่ำสุด</small><b>10.5</b><span>m³/h</span></div>
           <div><small>Flow สูงสุด</small><b>15.1</b><span>m³/h</span></div>
-          <div><small>ข้อมูลที่ได้รับ</small><b>25 / 25</b><span>รายการครบตามรอบ</span></div>
-          <div><small>ข้อมูลขาดหาย</small><b>0</b><span>รายการ</span></div>
+          <div><small>COD ล่าสุด</small><b>11,800</b><span>mg/L · ปกติ</span></div>
+          <div><small>Zinc ล่าสุด</small><b>354</b><span>mg/L · ปกติ</span></div>
           <div><small>ผลประเมิน</small><b>ผ่านเกณฑ์</b><span>ระบบทำงานปกติ</span></div>
         </div>
 
@@ -8716,244 +9328,36 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   function busy(title,sub){
-    // Remove any stale overlay first, then create a fresh one.
-    document.getElementById('reportExportBusy')?.remove();
-    const el=document.createElement('div');
-    el.id='reportExportBusy';
-    el.className='export-busy';
-    el.innerHTML='<div class="export-busy-card"><b></b><span></span></div>';
-    el.querySelector('b').textContent=title;
-    el.querySelector('span').textContent=sub;
-    document.body.appendChild(el);
-
-    // IMPORTANT: remove the element, not just hidden=true.
-    // The old CSS had display:grid, which could keep the overlay visible.
-    return ()=>el.remove();
-  }
-
-  function getFormalTemplate(){
-    return document.querySelector('#dailyPreviewModal .formal-document');
-  }
-
-  function syncFormalDocument(root,r){
-    if(!root||!r) return;
-    const rows=flowRows(r);
-    const next=nextISO(r.id);
-    const startDate=th(r.id);
-    const nextDate=th(next);
-
-    const headerDate=root.querySelector('.fh-meta .full-row b');
-    if(headerDate) headerDate.textContent=startDate;
-
-    const strip=[...root.querySelectorAll('.preview-doc-strip > div')];
-    if(strip[0]?.querySelector('b')) strip[0].querySelector('b').textContent=r.doc;
-    if(strip[1]?.querySelector('b')) strip[1].querySelector('b').textContent='NRT 1';
-    if(strip[2]?.querySelector('b')) strip[2].querySelector('b').textContent='บ่อบำบัดน้ำเสีย';
-    if(strip[3]?.querySelector('b')) strip[3].querySelector('b').textContent=r.status;
-
-    const title=root.querySelector('.preview-title-block p');
-    if(title){
-      title.textContent=`ประจำวันที่ ${startDate} · รอบรายงาน 05:00 วันที่ ${startDate} ถึง 05:00 วันที่ ${nextDate}`;
-    }
-
-    const info=[...root.querySelectorAll('.preview-info-grid > div')];
-    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · FM-01';
-    if(info[1]?.querySelector('b')) info[1].querySelector('b').textContent=`${r.setting.toFixed(1)} m³/h`;
-    if(info[2]?.querySelector('b')) info[2].querySelector('b').textContent=`${r.volume.toFixed(1)} m³/day`;
-    if(info[3]?.querySelector('b')) info[3].querySelector('b').textContent='ปกติ';
-
-    const tbody=root.querySelector('.full-table tbody');
-    if(tbody){
-      tbody.innerHTML=rows.map(x=>`
-        <tr>
-          <td>${x.date}</td>
-          <td>${x.time}</td>
-          <td>${x.flow.toFixed(1)} m³/h</td>
-          <td>${x.setting.toFixed(1)} m³/h</td>
-          <td><span class="pv-ok">${x.status}</span></td>
-        </tr>`).join('');
-    }
-
-    const summary=[...root.querySelectorAll('.preview-summary-row.full-summary > div')];
-    const summaryValues=[
-      [r.avg.toFixed(1),'m³/h'],
-      [r.min.toFixed(1),'m³/h'],
-      [r.max.toFixed(1),'m³/h'],
-      ['25 / 25','รายการครบตามรอบ'],
-      ['0','รายการ'],
-      ['ผ่านเกณฑ์','ข้อมูลครบและระบบทำงานปกติ']
-    ];
-    summary.forEach((box,i)=>{
-      const b=box.querySelector('b');
-      const span=box.querySelector('span');
-      if(b) b.textContent=summaryValues[i][0];
-      if(span) span.textContent=summaryValues[i][1];
-    });
-
-    const docStatus=root.querySelector('#docStatusText');
-    if(docStatus) docStatus.textContent=r.status;
-    const badge=root.querySelector('#docApproveBadge');
-    if(badge){
-      badge.textContent=r.status;
-      badge.classList.toggle('approved',r.status==='อนุมัติแล้ว');
-      badge.classList.toggle('progress',r.status!=='อนุมัติแล้ว');
-    }
-
-    const flowSetting=root.querySelector('#previewFlowSettingValue');
-    if(flowSetting) flowSetting.textContent=`${r.setting.toFixed(1)} m³/h`;
-  }
-
-  function cloneInto(page,node){
-    if(node) page.appendChild(node.cloneNode(true));
-  }
-
-  function buildFormalPdfPages(r){
-    const template=getFormalTemplate();
-    if(!template) throw new Error('Formal document template not found');
-
-    // Keep the Preview document synchronized with the selected report too.
-    syncFormalDocument(template,r);
-
-    const host=document.createElement('div');
-    host.className='pdf-export-host';
-    host.setAttribute('aria-hidden','true');
-
-    const makePage=(pageNo)=>{
-      const page=document.createElement('div');
-      page.className='preview-paper full-document formal-document pdf-export-page';
-      page.dataset.pdfPage=String(pageNo);
-      return page;
-    };
-
-    const header=template.querySelector('.form-header-table');
-    const strip=template.querySelector('.preview-doc-strip');
-    const title=template.querySelector('.preview-title-block');
-    const info=template.querySelector('.preview-info-grid');
-    const sectionTitles=[...template.querySelectorAll('.preview-section-title')];
-    const table=template.querySelector('.preview-table-wrap.full-table');
-    const summary=template.querySelector('.preview-summary-row.full-summary');
-    const signatures=template.querySelector('.signature-board');
-    const footer=template.querySelector('.preview-document-footer');
-
-    // PAGE 1 — real company header + report identity + all hourly records.
-    const page1=makePage(1);
-    cloneInto(page1,header);
-    cloneInto(page1,strip);
-    cloneInto(page1,title);
-    cloneInto(page1,info);
-    cloneInto(page1,sectionTitles[0]);
-    cloneInto(page1,table);
-    const page1No=document.createElement('div');
-    page1No.className='pdf-page-number';
-    page1No.textContent='หน้า 1 / 2';
-    page1.appendChild(page1No);
-
-    // PAGE 2 — repeat real header, then summary and signature section.
-    const page2=makePage(2);
-    cloneInto(page2,header);
-    cloneInto(page2,strip);
-    cloneInto(page2,sectionTitles[1]);
-    cloneInto(page2,summary);
-    cloneInto(page2,sectionTitles[2]);
-    cloneInto(page2,signatures);
-    cloneInto(page2,footer);
-    const page2No=document.createElement('div');
-    page2No.className='pdf-page-number';
-    page2No.textContent='หน้า 2 / 2';
-    page2.appendChild(page2No);
-
-    // Synchronize cloned pages once more, because cloned IDs/content are scoped.
-    syncFormalDocument(page1,r);
-    syncFormalDocument(page2,r);
-
-    host.append(page1,page2);
-    document.body.appendChild(host);
-    return {host,pages:[page1,page2]};
-  }
-
-  async function waitForPdfAssets(host){
-    if(document.fonts?.ready){
-      try{ await document.fonts.ready; }catch(_){}
-    }
-    const imgs=[...host.querySelectorAll('img')];
-    await Promise.all(imgs.map(img=>{
-      if(img.complete) return Promise.resolve();
-      return new Promise(resolve=>{
-        img.onload=resolve;
-        img.onerror=resolve;
-        setTimeout(resolve,1200);
-      });
-    }));
-    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    let el=document.getElementById('reportExportBusy');
+    if(!el){el=document.createElement('div');el.id='reportExportBusy';el.className='export-busy';el.innerHTML='<div class="export-busy-card"><b></b><span></span></div>';document.body.appendChild(el)}
+    el.querySelector('b').textContent=title;el.querySelector('span').textContent=sub;el.hidden=false;
+    return()=>el.hidden=true;
   }
 
   async function exportPdf(r){
-    const done=busy('กำลังสร้าง PDF','กำลังจัดเอกสารตามแบบฟอร์ม F-WWT-003');
-    let exportHost=null;
-
+    const done=busy('กำลังสร้าง PDF','จัดรูปแบบใบบันทึกและสรุปรายวัน');
     try{
-      if(typeof html2canvas==='undefined'||!window.jspdf){
-        throw new Error('PDF libraries not loaded');
+      if(typeof html2canvas==='undefined'||!window.jspdf)throw new Error('PDF libs missing');
+      const toolbar=card.querySelector('.daily-eform-toolbar');
+      const oldToolbar=toolbar.style.display;
+      const oldHistory=historyPanel.hidden;
+      const hidden=detailEls().map(x=>x.hidden);
+      toolbar.style.display='none';historyPanel.hidden=true;detailEls().forEach(x=>x.hidden=false);
+      await new Promise(res=>setTimeout(res,80));
+      const canvas=await html2canvas(card,{scale:1.25,useCORS:true,backgroundColor:'#fff',logging:false});
+      toolbar.style.display=oldToolbar;historyPanel.hidden=oldHistory;detailEls().forEach((x,i)=>x.hidden=hidden[i]);
+      const {jsPDF}=window.jspdf,pdf=new jsPDF('p','mm','a4');
+      const pw=210,ph=297,m=8,iw=pw-2*m,ih=canvas.height*iw/canvas.width,data=canvas.toDataURL('image/jpeg',.9);
+      let offset=0,pageContent=ph-2*m;
+      while(offset<ih){
+        if(offset>0)pdf.addPage();
+        pdf.addImage(data,'JPEG',m,m-offset,iw,ih,'FAST');
+        offset+=pageContent;
       }
-
-      const built=buildFormalPdfPages(r);
-      exportHost=built.host;
-      await waitForPdfAssets(exportHost);
-
-      const {jsPDF}=window.jspdf;
-      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-      const pageW=210,pageH=297,margin=7;
-      const maxW=pageW-(margin*2);
-      const maxH=pageH-(margin*2);
-
-      for(let i=0;i<built.pages.length;i++){
-        if(i>0) pdf.addPage('a4','portrait');
-
-        const canvas=await html2canvas(built.pages[i],{
-          scale:1.65,
-          useCORS:true,
-          allowTaint:false,
-          backgroundColor:'#ffffff',
-          logging:false,
-          imageTimeout:2500,
-          scrollX:0,
-          scrollY:0
-        });
-
-        const data=canvas.toDataURL('image/jpeg',0.94);
-        let drawW=maxW;
-        let drawH=canvas.height*drawW/canvas.width;
-
-        if(drawH>maxH){
-          const ratio=maxH/drawH;
-          drawH=maxH;
-          drawW=drawW*ratio;
-        }
-
-        const x=(pageW-drawW)/2;
-        const y=margin;
-        pdf.addImage(data,'JPEG',x,y,drawW,drawH,undefined,'FAST');
-      }
-
       pdf.save(`WWT-Daily-Flow-${r.id}.pdf`);
-
-      // Let the browser start the download, then the finally block
-      // removes the overlay immediately.
-      await new Promise(resolve=>setTimeout(resolve,120));
-    }catch(err){
-      console.error('PDF export error:',err);
-      alert('สร้าง PDF ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
-    }finally{
-      exportHost?.remove();
-      done();
-    }
+    }catch(err){console.error(err);alert('สร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง')}
+    finally{done()}
   }
-
-  // Sync the formal Preview BEFORE it opens.
-  document.getElementById('previewDailyForm')?.addEventListener('click',()=>{
-    const r=REPORTS.find(x=>x.id===selectedId)||REPORTS[0];
-    syncFormalDocument(getFormalTemplate(),r);
-  },true);
 
   function exportXlsx(r){
     if(typeof XLSX==='undefined'){alert('ไม่สามารถโหลดระบบสร้าง XLSX ได้ กรุณาตรวจสอบอินเทอร์เน็ต');return}
@@ -8963,7 +9367,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       ['รอบรายงาน',`05:00 ${th(r.id)} ถึง 05:00 ${th(nextISO(r.id))}`],['โรงงาน','NRT 1'],
       ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · FM-01'],['Flow Setting',r.setting],
       [],['ปริมาณน้ำรวม',r.volume,'m³/day'],['Flow เฉลี่ย',r.avg,'m³/h'],['Flow ต่ำสุด',r.min,'m³/h'],['Flow สูงสุด',r.max,'m³/h'],
-      ['ข้อมูลที่ได้รับ','25 / 25','รายการ'],['ข้อมูลขาดหาย',0,'รายการ']
+      ['COD ล่าสุด',11800,'mg/L'],['Zinc ล่าสุด',354,'mg/L']
     ];
     const ws1=XLSX.utils.aoa_to_sheet(summary);ws1['!cols']=[{wch:28},{wch:34},{wch:14}];XLSX.utils.book_append_sheet(wb,ws1,'สรุปรายวัน');
     const hourly=[['วันที่','เวลา','Flow Rate (m³/h)','Flow Setting (m³/h)','สถานะ'],...rows.map(x=>[x.date,x.time,x.flow,x.setting,x.status])];
