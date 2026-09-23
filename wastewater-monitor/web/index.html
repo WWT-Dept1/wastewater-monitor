@@ -8557,28 +8557,46 @@ html{scroll-behavior:smooth}
   display:none !important;
 }
 
-/* V15.112 — clean floating sidebar; report shortcut removed */
+/* Sidebar — follows page scroll, never follows the mouse */
 aside{
   position:sticky !important;
-  top:0;
-  height:100vh;
-  align-self:start;
-  padding:0 14px !important;
-  overflow:visible;
+  top:0 !important;
+  height:100vh !important;
+  align-self:start !important;
+  padding:0 12px !important;
+  overflow:visible !important;
 }
+
 .nav-follower{
-  position:absolute;
-  top:22px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  flex-direction:column;
-  gap:13px;
-  align-items:center;
-  will-change:transform,top;
-  transition:top .18s cubic-bezier(.22,.8,.3,1);
-  z-index:8;
+  position:absolute !important;
+  top:50% !important;
+  left:50% !important;
+  transform:translate(-50%,-50%) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:16px !important;
+  align-items:center !important;
+  z-index:20 !important;
+  transition:none !important;
+  will-change:auto !important;
 }
+
+/* Slightly larger, easier-to-press navigation buttons */
+.nav-follower .nav{
+  width:58px !important;
+  height:58px !important;
+  min-width:58px !important;
+  min-height:58px !important;
+  flex:0 0 58px !important;
+  border-radius:18px !important;
+  display:grid !important;
+  place-items:center !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:18px !important;
+  cursor:pointer !important;
+}
+
 @media(max-width:850px){
   aside{display:none !important}
 }
@@ -12529,50 +12547,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 
-<script>
-/* V15.112 — sidebar follows the mouse vertically on desktop */
-document.addEventListener('DOMContentLoaded',()=>{
-  const follower=document.getElementById('navFollower');
-  const aside=follower?.closest('aside');
-  if(!follower||!aside) return;
 
-  let targetTop=22;
-  let currentTop=22;
-  let raf=0;
-
-  const clampTop=(clientY)=>{
-    const rect=aside.getBoundingClientRect();
-    const h=follower.offsetHeight || 180;
-    const min=18;
-    const max=Math.max(min, window.innerHeight-h-18);
-    return Math.max(min, Math.min(max, clientY-rect.top-(h/2)));
-  };
-
-  const animate=()=>{
-    currentTop += (targetTop-currentTop)*0.22;
-    follower.style.top=currentTop+'px';
-    if(Math.abs(targetTop-currentTop)>.25){
-      raf=requestAnimationFrame(animate);
-    }else{
-      currentTop=targetTop;
-      follower.style.top=currentTop+'px';
-      raf=0;
-    }
-  };
-
-  document.addEventListener('mousemove',(e)=>{
-    if(window.innerWidth<=850) return;
-    targetTop=clampTop(e.clientY);
-    if(!raf) raf=requestAnimationFrame(animate);
-  },{passive:true});
-
-  window.addEventListener('resize',()=>{
-    if(window.innerWidth<=850) return;
-    targetTop=Math.min(targetTop,Math.max(18,window.innerHeight-follower.offsetHeight-18));
-    if(!raf) raf=requestAnimationFrame(animate);
-  });
-});
-</script>
 
 
 <script>
@@ -12930,6 +12905,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('keydown',(e)=>{
     if(e.key==='Escape') closeDrawer();
   });
+});
+</script>
+
+
+<script>
+/* Sidebar position safety: fixed to viewport center while the page scrolls */
+document.addEventListener('DOMContentLoaded',()=>{
+  const follower=document.getElementById('navFollower');
+  if(!follower) return;
+  follower.style.top='50%';
+  follower.style.transform='translate(-50%,-50%)';
 });
 </script>
 
