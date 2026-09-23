@@ -8557,17 +8557,30 @@ html{scroll-behavior:smooth}
   display:none !important;
 }
 
-/* Make the Daily Report sidebar item clearly open a separate page */
-aside .nav[data-nav-target="daily"]{
-  position:relative;
+/* V15.112 — clean floating sidebar; report shortcut removed */
+aside{
+  position:sticky !important;
+  top:0;
+  height:100vh;
+  align-self:start;
+  padding:0 14px !important;
+  overflow:visible;
 }
-aside .nav[data-nav-target="daily"]::after{
-  content:"↗";
+.nav-follower{
   position:absolute;
-  right:5px;
-  top:4px;
-  font-size:7px;
-  color:#698071;
+  top:22px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  align-items:center;
+  will-change:transform,top;
+  transition:top .18s cubic-bezier(.22,.8,.3,1);
+  z-index:8;
+}
+@media(max-width:850px){
+  aside{display:none !important}
 }
 </style>
 
@@ -8823,13 +8836,80 @@ aside .nav[data-nav-target="daily"]::after{
   .connection-demo{right:12px;bottom:12px;width:calc(100vw - 24px)}
 }
 </style>
+
+<style>
+/* V15.113 — improve numeric readability: keep values and units visually separated */
+.value,
+.qval,
+.flowdial-center b,
+.gauge b,
+.stat b,
+.hourly-row b,
+.period b,
+.period strong{
+  font-variant-numeric:tabular-nums !important;
+}
+
+/* COD / Zinc value + unit */
+.qval{
+  letter-spacing:-.025em !important;
+  display:flex !important;
+  align-items:baseline !important;
+  flex-wrap:nowrap !important;
+  gap:9px !important;
+}
+.qval small{
+  margin-left:0 !important;
+  letter-spacing:0 !important;
+  line-height:1 !important;
+  flex:0 0 auto !important;
+}
+
+/* Main live value: number and unit/label should not visually collide */
+.value{
+  letter-spacing:-.045em !important;
+}
+.value > small{
+  letter-spacing:.035em !important;
+  margin-top:15px !important;
+}
+
+/* Delta Flow */
+.flowdial-center b{
+  letter-spacing:-.01em !important;
+  margin-top:5px !important;
+}
+.flowdial-center small{
+  display:block !important;
+  margin-top:5px !important;
+  letter-spacing:.015em !important;
+}
+
+/* Common number/unit combinations elsewhere */
+.stat b small,
+.period b small,
+.period strong small,
+.hourly-row b small{
+  margin-left:5px !important;
+  letter-spacing:0 !important;
+}
+
+/* Mobile: preserve separation without making cards wider */
+@media(max-width:700px){
+  .qval{gap:7px !important;letter-spacing:-.02em !important;}
+  .qval small{font-size:8.5px !important;}
+  .value{letter-spacing:-.035em !important;}
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
+<div class="nav-follower" id="navFollower">
 <button class="nav on" type="button" data-nav-target="top" aria-label="Live Operations" title="Live Operations">⌂</button>
 <button class="nav" type="button" data-nav-target="flowlog" aria-label="Hourly Flow Log" title="Hourly Flow Log">≡</button>
-<button class="nav" type="button" data-nav-target="daily" aria-label="Daily Summary" title="Daily Summary">▤</button>
 <button class="nav" type="button" data-nav-target="health" aria-label="System & Validation" title="System & Validation">⚙</button>
+</div>
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
@@ -11454,16 +11534,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
+
 <script>
-document.addEventListener('DOMContentLoaded',function(){
-  const dailyBtn=document.querySelector('aside .nav[data-nav-target="daily"]');
-  if(dailyBtn){
-    dailyBtn.addEventListener('click',function(e){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      window.location.href='WWT-Daily-Report-V1-preview.html';
-    },true);
-  }
+/* V15.112 — sidebar follows the mouse vertically on desktop */
+document.addEventListener('DOMContentLoaded',()=>{
+  const follower=document.getElementById('navFollower');
+  const aside=follower?.closest('aside');
+  if(!follower||!aside) return;
+
+  let targetTop=22;
+  let currentTop=22;
+  let raf=0;
+
+  const clampTop=(clientY)=>{
+    const rect=aside.getBoundingClientRect();
+    const h=follower.offsetHeight || 180;
+    const min=18;
+    const max=Math.max(min, window.innerHeight-h-18);
+    return Math.max(min, Math.min(max, clientY-rect.top-(h/2)));
+  };
+
+  const animate=()=>{
+    currentTop += (targetTop-currentTop)*0.22;
+    follower.style.top=currentTop+'px';
+    if(Math.abs(targetTop-currentTop)>.25){
+      raf=requestAnimationFrame(animate);
+    }else{
+      currentTop=targetTop;
+      follower.style.top=currentTop+'px';
+      raf=0;
+    }
+  };
+
+  document.addEventListener('mousemove',(e)=>{
+    if(window.innerWidth<=850) return;
+    targetTop=clampTop(e.clientY);
+    if(!raf) raf=requestAnimationFrame(animate);
+  },{passive:true});
+
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth<=850) return;
+    targetTop=Math.min(targetTop,Math.max(18,window.innerHeight-follower.offsetHeight-18));
+    if(!raf) raf=requestAnimationFrame(animate);
+  });
 });
 </script>
 
