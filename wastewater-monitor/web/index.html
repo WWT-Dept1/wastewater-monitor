@@ -8781,15 +8781,44 @@ aside .nav[data-nav-target="daily"]::after{
 .connection-demo-grid button{border:1px solid rgba(65,91,71,.10);border-radius:12px;padding:10px 8px;background:#eef2eb;color:#33473a;font:800 9px/1.15 "Noto Sans Thai",sans-serif;cursor:pointer}
 .connection-demo-grid button:hover{filter:brightness(.985)}
 .connection-demo-help{margin:11px 0 0;font-size:9px;line-height:1.5;color:#738178}
-.connection-banner{display:none;margin:12px 0 0;padding:10px 12px;border-radius:12px;font:700 10px/1.45 "Noto Sans Thai",sans-serif}
+.connection-banner{
+  display:none;
+  position:absolute;
+  left:31px;
+  right:31px;
+  bottom:67px;
+  z-index:7;
+  margin:0;
+  padding:9px 12px;
+  border-radius:12px;
+  font:700 9px/1.4 "Noto Sans Thai",sans-serif;
+  box-shadow:0 8px 18px rgba(58,72,61,.08);
+  backdrop-filter:blur(8px);
+}
 .connection-banner.show{display:block}
-.connection-banner.delayed{background:#f5ead2;color:#7d5a1f;border:1px solid rgba(178,123,36,.16)}
-.connection-banner.offline{background:#f4dfdc;color:#8e3933;border:1px solid rgba(179,71,63,.15)}
+.connection-banner.delayed{
+  background:rgba(248,239,216,.95);
+  color:#7d5a1f;
+  border:1px solid rgba(178,123,36,.16)
+}
+.connection-banner.offline{
+  background:rgba(247,229,226,.96);
+  color:#8e3933;
+  border:1px solid rgba(179,71,63,.15)
+}
 @media(max-width:700px){
   .connection-demo-open{
     margin-left:3px;
     font-size:6px;
     padding:5px 7px;
+  }
+  .connection-banner{
+    left:18px;
+    right:18px;
+    bottom:50px;
+    padding:8px 10px;
+    font-size:8px;
+    line-height:1.35;
   }
   .connection-demo{right:12px;bottom:12px;width:calc(100vw - 24px)}
 }
@@ -8798,8 +8827,6 @@ aside .nav[data-nav-target="daily"]::after{
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
 <button class="nav on" type="button" data-nav-target="top" aria-label="Live Operations" title="Live Operations">⌂</button>
-<button class="nav" type="button" data-nav-target="trend" aria-label="Flow Analytics" title="Flow Analytics">◉</button>
-<button class="nav" type="button" data-nav-target="alerts" aria-label="Alert Center" title="Alert Center">!</button>
 <button class="nav" type="button" data-nav-target="flowlog" aria-label="Hourly Flow Log" title="Hourly Flow Log">≡</button>
 <button class="nav" type="button" data-nav-target="daily" aria-label="Daily Summary" title="Daily Summary">▤</button>
 <button class="nav" type="button" data-nav-target="health" aria-label="System & Validation" title="System & Validation">⚙</button>
