@@ -9827,6 +9827,55 @@ body.daily-report-view{
 }
 </style>
 
+
+<style>
+/* V15.129 — HARD FIX: report drawer is fully off-screen when closed.
+   Uses right-position instead of transform to avoid conflicts with older CSS. */
+#wwtDrawer.report-focus-drawer{
+  position:fixed !important;
+  top:78px !important;
+  left:auto !important;
+  right:-520px !important;
+  width:min(430px, calc(100vw - 28px)) !important;
+  max-width:430px !important;
+  transform:none !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:
+    right .24s cubic-bezier(.22,.8,.3,1),
+    opacity .18s ease,
+    visibility 0s linear .24s !important;
+}
+
+#wwtDrawer.report-focus-drawer.open{
+  right:18px !important;
+  transform:none !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  transition:
+    right .24s cubic-bezier(.22,.8,.3,1),
+    opacity .18s ease,
+    visibility 0s !important;
+}
+
+@media(max-width:700px){
+  #wwtDrawer.report-focus-drawer{
+    top:76px !important;
+    right:calc(-100vw - 60px) !important;
+    width:calc(100vw - 16px) !important;
+    max-width:none !important;
+    max-height:calc(100vh - 88px) !important;
+    overflow-y:auto !important;
+  }
+
+  #wwtDrawer.report-focus-drawer.open{
+    right:8px !important;
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round menu-trigger" aria-label="Open report menu" title="Open report menu">☰</button></div></header>
 <div class="shell"><aside>
@@ -11821,7 +11870,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     "16100229":{name:"นายนรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน"},
-    "16100266":{name:"นางสาวณปภัช สนิทกุลเจริญ",position:"พนักงาน"},
+    "16100266":{name:"นางสาวณปภัช สนิทกูลเจริญ",position:"พนักงาน"},
     "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน"},
     "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก"},
@@ -12828,6 +12877,59 @@ document.addEventListener('DOMContentLoaded',()=>{
   menuBtn?.addEventListener('click',()=>{
     if(drawer) drawer.setAttribute('aria-hidden','false');
   },true);
+});
+</script>
+
+
+<script>
+/* V15.129 — hard close/open controller for report drawer only */
+document.addEventListener('DOMContentLoaded',()=>{
+  const drawer=document.getElementById('wwtDrawer');
+  const shade=document.getElementById('drawerShade');
+  const closeBtn=document.getElementById('drawerClose');
+  const menuBtn=[...document.querySelectorAll('header button')]
+    .find(b=>b.textContent.includes('☰')||b.textContent.includes('≡')||b.textContent.includes('三'));
+
+  if(!drawer) return;
+
+  function closeDrawer(){
+    drawer.classList.remove('open','show','active');
+    drawer.setAttribute('aria-hidden','true');
+    shade?.classList.remove('open','show','active');
+  }
+
+  function openDrawer(){
+    drawer.classList.remove('show','active');
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden','false');
+    shade?.classList.remove('show','active');
+    shade?.classList.add('open');
+  }
+
+  /* Start completely closed on every page load. */
+  closeDrawer();
+
+  menuBtn?.addEventListener('click',(e)=>{
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if(drawer.classList.contains('open')) closeDrawer();
+    else openDrawer();
+  },true);
+
+  closeBtn?.addEventListener('click',(e)=>{
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    closeDrawer();
+  },true);
+
+  shade?.addEventListener('click',(e)=>{
+    e.preventDefault();
+    closeDrawer();
+  },true);
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape') closeDrawer();
+  });
 });
 </script>
 
