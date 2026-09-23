@@ -8756,7 +8756,23 @@ aside .nav[data-nav-target="daily"]::after{
 .live-data-time[data-state="offline"]~*{}
 .flow.connection-stale .value{opacity:.58!important}
 .flow.connection-stale .value small:after{content:" · LAST KNOWN VALUE";color:#a13f38;font-weight:800;letter-spacing:.06em}
-.connection-demo-open{margin-top:9px;border:0;background:transparent;color:#6d7e72;font:800 7px/1 "Outfit",sans-serif;letter-spacing:.12em;padding:5px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.connection-demo-open{
+  margin-left:5px;
+  border:1px solid rgba(67,94,75,.16);
+  background:#edf2ec;
+  color:#53695a;
+  font:800 6.8px/1 "Outfit",sans-serif;
+  letter-spacing:.10em;
+  padding:6px 8px;
+  border-radius:999px;
+  cursor:pointer;
+  text-decoration:none;
+  white-space:nowrap;
+  box-shadow:2px 2px 5px rgba(95,112,100,.12),-2px -2px 5px rgba(255,255,255,.75);
+}
+.connection-demo-open:active{
+  box-shadow:inset 2px 2px 4px rgba(95,112,100,.12),inset -2px -2px 4px rgba(255,255,255,.72);
+}
 .connection-demo{position:fixed;right:18px;bottom:18px;z-index:9999;width:min(330px,calc(100vw - 36px));padding:16px;border-radius:20px;background:rgba(246,248,244,.97);border:1px solid rgba(66,92,72,.12);box-shadow:0 18px 48px rgba(35,48,39,.20);backdrop-filter:blur(14px);display:none;font-family:"Noto Sans Thai","Leelawadee UI",sans-serif}
 .connection-demo.show{display:block}
 .connection-demo-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
@@ -8769,7 +8785,14 @@ aside .nav[data-nav-target="daily"]::after{
 .connection-banner.show{display:block}
 .connection-banner.delayed{background:#f5ead2;color:#7d5a1f;border:1px solid rgba(178,123,36,.16)}
 .connection-banner.offline{background:#f4dfdc;color:#8e3933;border:1px solid rgba(179,71,63,.15)}
-@media(max-width:700px){.connection-demo-open{font-size:6.5px}.connection-demo{right:12px;bottom:12px;width:calc(100vw - 24px)}}
+@media(max-width:700px){
+  .connection-demo-open{
+    margin-left:3px;
+    font-size:6px;
+    padding:5px 7px;
+  }
+  .connection-demo{right:12px;bottom:12px;width:calc(100vw - 24px)}
+}
 </style>
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
@@ -8793,8 +8816,8 @@ aside .nav[data-nav-target="daily"]::after{
         <b id="connectionState">LIVE</b>
         <span id="flowLiveClock">--:--:--</span>
         <em id="connectionNote">อัปเดตล่าสุด</em>
+        <button class="connection-demo-open" id="connectionDemoOpen" type="button">TEST CONNECTION</button>
       </div>
-      <button class="connection-demo-open" id="connectionDemoOpen" type="button">TEST CONNECTION</button>
     </div>
     <div class="flow-setting-inline compact-fsi" aria-label="Flow Setting">
       <span class="fsi-label">FLOW SETTING</span>
