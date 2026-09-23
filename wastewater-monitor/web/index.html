@@ -9785,6 +9785,48 @@ body.daily-report-view{
 }
 </style>
 
+
+<style>
+/* V15.128 — FINAL drawer visibility fix only
+   Closed = completely outside viewport and non-interactive.
+   Open = visible. Applies at every screen width. */
+#wwtDrawer.report-focus-drawer{
+  transform:translateX(calc(100% + 40px)) !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:
+    transform .24s cubic-bezier(.22,.8,.3,1),
+    opacity .18s ease,
+    visibility 0s linear .24s !important;
+}
+
+#wwtDrawer.report-focus-drawer.open{
+  transform:translateX(0) !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  transition:
+    transform .24s cubic-bezier(.22,.8,.3,1),
+    opacity .18s ease,
+    visibility 0s !important;
+}
+
+@media(max-width:700px){
+  #wwtDrawer.report-focus-drawer{
+    position:fixed !important;
+    top:76px !important;
+    left:auto !important;
+    right:8px !important;
+    width:calc(100vw - 16px) !important;
+    max-width:395px !important;
+    max-height:calc(100vh - 88px) !important;
+    overflow-y:auto !important;
+    margin:0 !important;
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round menu-trigger" aria-label="Open report menu" title="Open report menu">☰</button></div></header>
 <div class="shell"><aside>
@@ -11499,15 +11541,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     "16100241":{name:"นางสาวณัฏฐณิชา วัลลา",position:"รองหัวหน้าแผนก",role:"deputy"},
     "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16000223":{name:"นายเก่ง จางทอน",position:"พนักงาน",role:"employee"},
-    "16100229":{name:"นายณนรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน",role:"employee"},
-    "16100266":{name:"นางสาวณปภัช สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
+    "16100266":{name:"นางสาวนปภัส สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
     "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก",role:"reviewer"},
     "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน",role:"employee"},
     "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16300359":{name:"นางสาวบุษรา ถิ่นทัพไทย",position:"เจ้าหน้าที่เอกสาร",role:"document"},
-    "16400970":{name:"นายนัฐพงษ์ บุญทา",position:"พนักงาน",role:"employee"},
+    "16400970":{name:"นายณัฐพงษ์ บุญทา",position:"พนักงาน",role:"employee"},
     "165015053":{name:"นายนที ยมมูล",position:"พนักงาน",role:"employee"},
     "16601248":{name:"นายกันติธัช หมื่นสี",position:"พนักงาน",role:"employee"},
     "16601414":{name:"นางสาวนัสทริกา ไกรศรี",position:"พนักงาน",role:"employee"},
@@ -11776,15 +11818,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     "16100241":{name:"นางสาวณัฏฐณิชา วัลลา",position:"รองหัวหน้าแผนก"},
     "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16000223":{name:"นายเก่ง จางทอน",position:"พนักงาน"},
-    "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก"},
+    "16100229":{name:"นายนรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน"},
-    "16100266":{name:"นางสาวนปภัส สนิทกุลเจริญ",position:"พนักงาน"},
+    "16100266":{name:"นางสาวณปภัช สนิทกุลเจริญ",position:"พนักงาน"},
     "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน"},
     "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก"},
     "16300359":{name:"นางสาวบุษรา ถิ่นทัพไทย",position:"เจ้าหน้าที่เอกสาร"},
-    "16400970":{name:"นายณัฐพงษ์ บุญทา",position:"พนักงาน"},
+    "16400970":{name:"นายนัฐพงษ์ บุญทา",position:"พนักงาน"},
     "165015053":{name:"นายนที ยมมูล",position:"พนักงาน"},
     "16601248":{name:"นายกันติธัช หมื่นสี",position:"พนักงาน"},
     "16601414":{name:"นางสาวนัสทริกา ไกรศรี",position:"พนักงาน"},
@@ -12749,6 +12791,44 @@ document.addEventListener('DOMContentLoaded',()=>{
     window.__wwtRealtimeDemo=setInterval(tick,2500);
   });
 })();
+</script>
+
+
+<script>
+/* V15.128 — defensive close behavior for report drawer only */
+document.addEventListener('DOMContentLoaded',()=>{
+  const drawer=document.getElementById('wwtDrawer');
+  const shade=document.getElementById('drawerShade');
+  const closeBtn=document.getElementById('drawerClose');
+
+  function forceCloseReportDrawer(){
+    if(drawer){
+      drawer.classList.remove('open','show','active');
+      drawer.setAttribute('aria-hidden','true');
+    }
+    if(shade){
+      shade.classList.remove('open','show','active');
+    }
+  }
+
+  closeBtn?.addEventListener('click',(e)=>{
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    forceCloseReportDrawer();
+  },true);
+
+  shade?.addEventListener('click',forceCloseReportDrawer,true);
+
+  /* Start closed every time the page loads. */
+  forceCloseReportDrawer();
+
+  const menuBtn=[...document.querySelectorAll('header button')]
+    .find(b=>b.textContent.includes('☰')||b.textContent.includes('≡')||b.textContent.includes('三'));
+
+  menuBtn?.addEventListener('click',()=>{
+    if(drawer) drawer.setAttribute('aria-hidden','false');
+  },true);
+});
 </script>
 
 </body></html>
