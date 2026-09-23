@@ -8745,6 +8745,32 @@ aside .nav[data-nav-target="daily"]::after{
 }
 </style>
 
+
+<style>
+/* V15.109 — connection freshness / offline protection + presentation demo */
+.live-data-time[data-state="delayed"] .live-pulse{background:#b27b24!important;box-shadow:0 0 0 4px rgba(178,123,36,.10)!important;animation:none!important}
+.live-data-time[data-state="delayed"] b{color:#8a621f!important}
+.live-data-time[data-state="offline"] .live-pulse{background:#b3473f!important;box-shadow:0 0 0 4px rgba(179,71,63,.10)!important;animation:none!important}
+.live-data-time[data-state="offline"] b{color:#a13f38!important}
+.live-data-time[data-state="offline"] em{color:#9a625e!important}
+.live-data-time[data-state="offline"]~*{}
+.flow.connection-stale .value{opacity:.58!important}
+.flow.connection-stale .value small:after{content:" · LAST KNOWN VALUE";color:#a13f38;font-weight:800;letter-spacing:.06em}
+.connection-demo-open{margin-top:9px;border:0;background:transparent;color:#6d7e72;font:800 7px/1 "Outfit",sans-serif;letter-spacing:.12em;padding:5px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.connection-demo{position:fixed;right:18px;bottom:18px;z-index:9999;width:min(330px,calc(100vw - 36px));padding:16px;border-radius:20px;background:rgba(246,248,244,.97);border:1px solid rgba(66,92,72,.12);box-shadow:0 18px 48px rgba(35,48,39,.20);backdrop-filter:blur(14px);display:none;font-family:"Noto Sans Thai","Leelawadee UI",sans-serif}
+.connection-demo.show{display:block}
+.connection-demo-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.connection-demo-head b{font-size:12px;color:#26372b}.connection-demo-head span{display:block;font-size:9px;color:#7a8b80;margin-top:2px}.connection-demo-close{border:0;background:transparent;font-size:18px;cursor:pointer;color:#68786d}
+.connection-demo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.connection-demo-grid button{border:1px solid rgba(65,91,71,.10);border-radius:12px;padding:10px 8px;background:#eef2eb;color:#33473a;font:800 9px/1.15 "Noto Sans Thai",sans-serif;cursor:pointer}
+.connection-demo-grid button:hover{filter:brightness(.985)}
+.connection-demo-help{margin:11px 0 0;font-size:9px;line-height:1.5;color:#738178}
+.connection-banner{display:none;margin:12px 0 0;padding:10px 12px;border-radius:12px;font:700 10px/1.45 "Noto Sans Thai",sans-serif}
+.connection-banner.show{display:block}
+.connection-banner.delayed{background:#f5ead2;color:#7d5a1f;border:1px solid rgba(178,123,36,.16)}
+.connection-banner.offline{background:#f4dfdc;color:#8e3933;border:1px solid rgba(179,71,63,.15)}
+@media(max-width:700px){.connection-demo-open{font-size:6.5px}.connection-demo{right:12px;bottom:12px;width:calc(100vw - 24px)}}
+</style>
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -8762,12 +8788,13 @@ aside .nav[data-nav-target="daily"]::after{
   <div class="live-value-row">
     <div class="value">12.5
       <small>m³/h LIVE VALUE</small>
-      <div class="live-data-time">
-        <span class="live-pulse"></span>
-        <b>LIVE</b>
+      <div class="live-data-time" id="liveConnectionRow" data-state="live">
+        <span class="live-pulse" id="connectionDot"></span>
+        <b id="connectionState">LIVE</b>
         <span id="flowLiveClock">--:--:--</span>
-        <em>อัปเดตล่าสุด</em>
+        <em id="connectionNote">อัปเดตล่าสุด</em>
       </div>
+      <button class="connection-demo-open" id="connectionDemoOpen" type="button">TEST CONNECTION</button>
     </div>
     <div class="flow-setting-inline compact-fsi" aria-label="Flow Setting">
       <span class="fsi-label">FLOW SETTING</span>
@@ -8775,6 +8802,7 @@ aside .nav[data-nav-target="daily"]::after{
     </div>
   </div>
 </div>
+<div class="connection-banner" id="connectionBanner" role="status" aria-live="polite"></div>
 <div class="flowdial"></div><div class="flowdial-center"><div>Δ FLOW<b>-0.5</b><small>m³/h · ต่ำกว่า Setting 3.8%</small></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
@@ -11279,23 +11307,99 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <script>
 (function(){
-  const el = document.getElementById('flowLiveClock');
-  if(!el) return;
+  const clock=document.getElementById('flowLiveClock');
+  const row=document.getElementById('liveConnectionRow');
+  const stateEl=document.getElementById('connectionState');
+  const note=document.getElementById('connectionNote');
+  const banner=document.getElementById('connectionBanner');
+  const flowCard=document.querySelector('.flow');
+  const openBtn=document.getElementById('connectionDemoOpen');
+  if(!clock||!row||!stateEl||!note) return;
 
-  const fmt = new Intl.DateTimeFormat('th-TH', {
-    timeZone:'Asia/Bangkok',
-    hour:'2-digit',
-    minute:'2-digit',
-    second:'2-digit',
-    hour12:false
-  });
+  const fmt=new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  let lastDataAt=Date.now();
+  let forcedState=null;
+  let demoTimer=null;
 
-  function tick(){
-    el.textContent = fmt.format(new Date());
+  const demo=document.createElement('div');
+  demo.className='connection-demo';
+  demo.id='connectionDemoPanel';
+  demo.innerHTML=`
+    <div class="connection-demo-head"><div><b>ทดสอบสถานะการเชื่อมต่อ</b><span>Presentation / Demonstration</span></div><button class="connection-demo-close" type="button" aria-label="ปิด">×</button></div>
+    <div class="connection-demo-grid">
+      <button type="button" data-connection-demo="live">LIVE<br><small>ข้อมูลปกติ</small></button>
+      <button type="button" data-connection-demo="delayed">DELAYED<br><small>ข้อมูลล่าช้า</small></button>
+      <button type="button" data-connection-demo="offline">OFFLINE<br><small>จำลองเน็ตขัดข้อง</small></button>
+      <button type="button" data-connection-demo="recover">RECOVER<br><small>จำลองการกลับมาออนไลน์</small></button>
+    </div>
+    <p class="connection-demo-help">สถานะจริงอ้างอิงจากอายุของข้อมูลล่าสุด: ≤30 วินาที = LIVE, 31–60 วินาที = DELAYED, มากกว่า 60 วินาที = OFFLINE</p>`;
+  document.body.appendChild(demo);
+
+  function stateFromAge(ageMs){
+    if(ageMs<=30000) return 'live';
+    if(ageMs<=60000) return 'delayed';
+    return 'offline';
   }
 
-  tick();
-  setInterval(tick,1000);
+  function paint(){
+    const age=Math.max(0,Date.now()-lastDataAt);
+    const state=forcedState||stateFromAge(age);
+    row.dataset.state=state;
+    const lastText=fmt.format(new Date(lastDataAt));
+    clock.textContent=lastText;
+    flowCard?.classList.toggle('connection-stale',state==='offline');
+    if(banner){banner.className='connection-banner';}
+
+    if(state==='live'){
+      stateEl.textContent='LIVE';
+      note.textContent='อัปเดตล่าสุด';
+      if(banner) banner.textContent='';
+    }else if(state==='delayed'){
+      stateEl.textContent='DELAYED';
+      note.textContent='ข้อมูลล่าสุด '+Math.ceil(age/1000)+' วินาทีที่แล้ว';
+      if(banner){banner.classList.add('show','delayed');banner.textContent='ข้อมูลล่าช้า · กำลังรอข้อมูลใหม่จากอุปกรณ์หน้างาน';}
+    }else{
+      stateEl.textContent='OFFLINE';
+      note.textContent='LAST UPDATE';
+      if(banner){banner.classList.add('show','offline');banner.textContent='OFFLINE · ค่าที่แสดงเป็นค่าล่าสุดที่ได้รับเมื่อ '+lastText+' ไม่ใช่ค่าปัจจุบัน';}
+    }
+  }
+
+  function markDataReceived(ts){
+    forcedState=null;
+    lastDataAt=ts?new Date(ts).getTime():Date.now();
+    if(!Number.isFinite(lastDataAt)) lastDataAt=Date.now();
+    paint();
+  }
+
+  // Public hook for the real ESP32/API data handler.
+  // Call window.WWTConnectionStatus.markDataReceived(payload.timestamp) whenever a new valid sample arrives.
+  window.WWTConnectionStatus={
+    markDataReceived,
+    getLastDataAt:()=>new Date(lastDataAt),
+    clearDemo:()=>{forcedState=null;paint();}
+  };
+
+  openBtn?.addEventListener('click',()=>demo.classList.toggle('show'));
+  demo.querySelector('.connection-demo-close')?.addEventListener('click',()=>demo.classList.remove('show'));
+  demo.querySelectorAll('[data-connection-demo]').forEach(btn=>btn.addEventListener('click',()=>{
+    const mode=btn.dataset.connectionDemo;
+    clearInterval(demoTimer); demoTimer=null;
+    if(mode==='live'){
+      forcedState='live'; lastDataAt=Date.now();
+    }else if(mode==='delayed'){
+      forcedState='delayed'; lastDataAt=Date.now()-45000;
+    }else if(mode==='offline'){
+      forcedState='offline'; lastDataAt=Date.now()-90000;
+    }else if(mode==='recover'){
+      forcedState=null; lastDataAt=Date.now();
+      demoTimer=setInterval(()=>markDataReceived(),5000);
+    }
+    paint();
+  }));
+
+  paint();
+  setInterval(paint,1000);
 })();
 </script>
 
