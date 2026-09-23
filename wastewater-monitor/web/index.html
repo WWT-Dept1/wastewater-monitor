@@ -10121,6 +10121,72 @@ body.daily-report-view{
 }
 </style>
 
+
+<style>
+/* V15.135 — fix the main Flow number overlapping FLOW SETTING */
+@media (min-width:981px){
+  .display.live-display-clean{
+    width:72% !important;
+    margin-top:26px !important;
+  }
+
+  .live-value-row{
+    min-height:208px !important;
+    grid-template-columns:minmax(0,1fr) 190px !important;
+    gap:24px !important;
+    align-items:end !important;
+  }
+
+  .value{
+    font-size:clamp(140px, 11.5vw, 176px) !important;
+    line-height:.74 !important;
+    letter-spacing:-.08em !important;
+    min-width:0 !important;
+  }
+
+  .value small{
+    font-size:14px !important;
+    margin-top:12px !important;
+  }
+
+  .compact-fsi{
+    min-height:84px !important;
+    padding:10px 0 10px 20px !important;
+    min-width:0 !important;
+  }
+
+  .compact-fsi .fsi-label{
+    font-size:8px !important;
+  }
+
+  .compact-fsi .fsi-value{
+    font-size:30px !important;
+    line-height:1 !important;
+  }
+
+  .compact-fsi .fsi-value small{
+    font-size:12px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.136 — fix ONLY the spacing between digits in the main Flow value */
+#mainFlowRealtimeValue{
+  display:inline-block !important;
+  letter-spacing:-0.025em !important;
+  font-variant-numeric:tabular-nums !important;
+  font-feature-settings:"tnum" 1 !important;
+  white-space:nowrap !important;
+}
+
+/* Cancel the overly-tight tracking inherited from .value for the number itself */
+.value{
+  letter-spacing:0 !important;
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round menu-trigger" aria-label="Open report menu" title="Open report menu">☰</button></div></header>
 <div class="shell"><aside>
