@@ -9894,6 +9894,233 @@ body.daily-report-view{
 }
 </style>
 
+
+<style>
+/* V15.133 — enlarge only the desktop Inlet Flow content so it fits the card better */
+@media (min-width: 981px){
+  .flow{
+    min-height: 470px !important;
+    padding: 34px 36px 34px !important;
+  }
+
+  .flow-label{
+    font-size: 15px !important;
+  }
+
+  .flow-name{
+    font-size: 30px !important;
+    line-height: 1.16 !important;
+  }
+
+  .status{
+    padding: 10px 16px !important;
+    font-size: 12px !important;
+  }
+
+  .display.live-display-clean{
+    width: 74% !important;
+    margin-top: 34px !important;
+  }
+
+  .live-value-row{
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 215px !important;
+    align-items: end !important;
+    gap: 34px !important;
+    min-height: 250px !important;
+  }
+
+  .value{
+    font-size: 164px !important;
+    line-height: .76 !important;
+    letter-spacing: -.085em !important;
+  }
+
+  .value small{
+    margin-top: 14px !important;
+    font-size: 14px !important;
+  }
+
+  .live-data-time{
+    margin-top: 18px !important;
+    gap: 10px !important;
+    min-height: 32px !important;
+  }
+
+  .compact-fsi{
+    min-height: 86px !important;
+    padding: 10px 0 10px 22px !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .compact-fsi .fsi-label{
+    font-size: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .compact-fsi .fsi-value{
+    font-size: 30px !important;
+    line-height: 1 !important;
+  }
+
+  .compact-fsi .fsi-value small{
+    font-size: 12px !important;
+  }
+
+  .flowdial{
+    width: 196px !important;
+    height: 196px !important;
+    right: 54px !important;
+    top: 118px !important;
+  }
+
+  .flowdial-center{
+    width: 112px !important;
+    height: 112px !important;
+    right: 96px !important;
+    top: 160px !important;
+    font-size: 8px !important;
+  }
+
+  .flowdial-center > div{
+    width: 84px !important;
+  }
+
+  .flowdial-center b{
+    font-size: 27px !important;
+  }
+
+  .flowdial-center small{
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+  }
+
+  .flowline{
+    left: 36px !important;
+    right: 36px !important;
+    bottom: 22px !important;
+    height: 28px !important;
+  }
+
+  .connection-banner{
+    left: 36px !important;
+    right: 36px !important;
+    bottom: 58px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.134 — make the CONTENT visibly larger without making the card taller */
+@media (min-width:981px){
+  .flow{
+    min-height:430px !important;
+    padding:30px 34px 28px !important;
+  }
+
+  .flow-label{
+    font-size:16px !important;
+    letter-spacing:.20em !important;
+  }
+
+  .flow-name{
+    font-size:34px !important;
+    line-height:1.12 !important;
+  }
+
+  .status{
+    font-size:13px !important;
+    padding:10px 17px !important;
+  }
+
+  .display.live-display-clean{
+    width:76% !important;
+    margin-top:28px !important;
+  }
+
+  .live-value-row{
+    min-height:220px !important;
+    grid-template-columns:minmax(0,1fr) 225px !important;
+    gap:32px !important;
+  }
+
+  .value{
+    font-size:190px !important;
+    line-height:.72 !important;
+    letter-spacing:-.09em !important;
+  }
+
+  .value small{
+    font-size:15px !important;
+    margin-top:15px !important;
+  }
+
+  .live-data-time{
+    margin-top:18px !important;
+    font-size:11px !important;
+    gap:10px !important;
+  }
+
+  .connection-demo-open{
+    font-size:8px !important;
+    padding:7px 10px !important;
+  }
+
+  .compact-fsi{
+    min-height:92px !important;
+    padding:12px 0 12px 24px !important;
+  }
+
+  .compact-fsi .fsi-label{
+    font-size:9px !important;
+    margin-bottom:7px !important;
+  }
+
+  .compact-fsi .fsi-value{
+    font-size:34px !important;
+  }
+
+  .compact-fsi .fsi-value small{
+    font-size:13px !important;
+  }
+
+  .flowdial{
+    width:220px !important;
+    height:220px !important;
+    right:50px !important;
+    top:105px !important;
+  }
+
+  .flowdial-center{
+    width:126px !important;
+    height:126px !important;
+    right:97px !important;
+    top:152px !important;
+  }
+
+  .flowdial-center > div{
+    width:94px !important;
+    font-size:9px !important;
+  }
+
+  .flowdial-center b{
+    font-size:32px !important;
+  }
+
+  .flowdial-center small{
+    font-size:9px !important;
+  }
+
+  .flowline{
+    left:34px !important;
+    right:34px !important;
+    bottom:18px !important;
+    height:30px !important;
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round menu-trigger" aria-label="Open report menu" title="Open report menu">☰</button></div></header>
 <div class="shell"><aside>
