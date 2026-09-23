@@ -9539,6 +9539,252 @@ body.daily-report-view .sys-menu-report-item{
 }
 </style>
 
+
+<style>
+/* V15.126 — report navigation + drawer close + MOBILE inlet-flow repair */
+
+/* ---------- REPORT VIEW ---------- */
+/* Daily report is hidden while viewing the live dashboard. */
+body:not(.daily-report-view) #dailySummarySection{
+  display:none !important;
+}
+
+/* When report is opened, show the report as its own workspace. */
+body.daily-report-view .shell{
+  display:none !important;
+}
+body.daily-report-view #dailySummarySection{
+  display:block !important;
+  width:min(1320px, calc(100% - 32px)) !important;
+  margin:22px auto 50px !important;
+}
+body.daily-report-view{
+  overflow-x:hidden !important;
+}
+
+.daily-report-backbar{
+  display:flex;
+  justify-content:flex-start;
+  margin:0 0 12px;
+}
+.daily-report-backbar button{
+  min-height:40px;
+  padding:0 14px;
+  border:1px solid rgba(92,111,99,.15);
+  border-radius:12px;
+  background:#f7f9f8;
+  color:#43584a;
+  font:700 10px/1 "Noto Sans Thai","Leelawadee UI",sans-serif;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(85,104,92,.08);
+}
+
+/* ---------- DRAWER: real closed/open states ---------- */
+@media(max-width:700px){
+  #wwtDrawer.report-focus-drawer{
+    position:fixed !important;
+    top:76px !important;
+    left:auto !important;
+    right:8px !important;
+    width:calc(100vw - 16px) !important;
+    max-width:395px !important;
+    max-height:calc(100vh - 88px) !important;
+    overflow-y:auto !important;
+    margin:0 !important;
+
+    transform:translateX(calc(100% + 28px)) !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+
+    transition:
+      transform .24s cubic-bezier(.22,.8,.3,1),
+      opacity .18s ease,
+      visibility 0s linear .24s !important;
+  }
+
+  #wwtDrawer.report-focus-drawer.open{
+    transform:translateX(0) !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transition:
+      transform .24s cubic-bezier(.22,.8,.3,1),
+      opacity .18s ease,
+      visibility 0s !important;
+  }
+}
+
+/* ---------- MOBILE INLET FLOW ---------- */
+@media(max-width:700px){
+  .flow{
+    min-height:395px !important;
+    padding:20px 18px 18px !important;
+    overflow:hidden !important;
+  }
+
+  .ftop{
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:8px !important;
+  }
+  .flow-name{
+    font-size:17px !important;
+    line-height:1.22 !important;
+  }
+  .status{
+    max-width:96px !important;
+    font-size:7.5px !important;
+    padding:6px 8px !important;
+  }
+
+  .display.live-display-clean{
+    width:100% !important;
+    margin-top:20px !important;
+    padding:0 112px 0 0 !important;
+    overflow:visible !important;
+  }
+
+  .live-value-row{
+    display:block !important;
+    min-height:0 !important;
+  }
+
+  .value{
+    font-size:76px !important;
+    line-height:.88 !important;
+    letter-spacing:-.045em !important;
+    white-space:nowrap !important;
+  }
+
+  .value > small{
+    margin-top:10px !important;
+    font-size:8px !important;
+  }
+
+  .live-data-time{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    gap:5px 6px !important;
+    margin-top:10px !important;
+    min-height:28px !important;
+  }
+
+  .connection-demo-open{
+    margin-left:0 !important;
+  }
+
+  .compact-fsi{
+    width:100% !important;
+    max-width:155px !important;
+    margin:12px 0 0 !important;
+    padding:10px 0 0 !important;
+    border-left:0 !important;
+    border-top:1px solid #d8e2db !important;
+  }
+
+  .compact-fsi .fsi-value{
+    font-size:19px !important;
+    line-height:1.05 !important;
+  }
+
+  .flowdial{
+    width:106px !important;
+    height:106px !important;
+    right:17px !important;
+    top:140px !important;
+  }
+
+  .flowdial-center{
+    width:72px !important;
+    height:72px !important;
+    right:34px !important;
+    top:157px !important;
+  }
+
+  .flowdial-center > div{
+    width:61px !important;
+  }
+
+  .flowdial-center b{
+    font-size:18px !important;
+  }
+
+  /* Status warning sits above the sparkline, not across the data row. */
+  .connection-banner{
+    left:18px !important;
+    right:18px !important;
+    bottom:52px !important;
+    padding:8px 10px !important;
+    font-size:7.5px !important;
+    line-height:1.35 !important;
+    border-radius:11px !important;
+  }
+
+  .flowline{
+    left:18px !important;
+    right:18px !important;
+    bottom:18px !important;
+    height:20px !important;
+  }
+
+  body.daily-report-view #dailySummarySection{
+    width:calc(100% - 16px) !important;
+    margin:12px 8px 32px !important;
+  }
+  .daily-report-backbar{
+    position:sticky;
+    top:8px;
+    z-index:40;
+  }
+}
+
+/* Narrow phone: put Δ Flow lower so it cannot collide with 12.5 */
+@media(max-width:420px){
+  .flow{
+    min-height:420px !important;
+  }
+
+  .display.live-display-clean{
+    padding-right:0 !important;
+  }
+
+  .value{
+    font-size:72px !important;
+  }
+
+  .live-data-time{
+    max-width:100% !important;
+  }
+
+  .compact-fsi{
+    max-width:145px !important;
+  }
+
+  .flowdial{
+    top:238px !important;
+    right:18px !important;
+    width:96px !important;
+    height:96px !important;
+  }
+
+  .flowdial-center{
+    top:253px !important;
+    right:33px !important;
+    width:66px !important;
+    height:66px !important;
+  }
+
+  .flowdial-center > div{
+    width:56px !important;
+  }
+
+  .connection-banner{
+    bottom:50px !important;
+  }
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round menu-trigger" aria-label="Open report menu" title="Open report menu">☰</button></div></header>
 <div class="shell"><aside>
@@ -9553,7 +9799,7 @@ body.daily-report-view .sys-menu-report-item{
 <section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">19FM001 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
 <div class="display live-display-clean">
   <div class="live-value-row">
-    <div class="value">12.5
+    <div class="value"><span id="mainFlowRealtimeValue">12.5</span>
       <small>m³/h LIVE VALUE</small>
       <div class="live-data-time" id="liveConnectionRow" data-state="live">
         <span class="live-pulse" id="connectionDot"></span>
@@ -9878,6 +10124,9 @@ body.daily-report-view .sys-menu-report-item{
 </div>
 
 <section class="daily-summary-sheet" id="dailySummarySection">
+  <div class="daily-report-backbar">
+    <button type="button" id="reportBackToLive">← กลับหน้า LIVE</button>
+  </div>
   <section class="original-form-page" id="dailySummaryCard">
     
 
@@ -11250,15 +11499,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     "16100241":{name:"นางสาวณัฏฐณิชา วัลลา",position:"รองหัวหน้าแผนก",role:"deputy"},
     "14600082":{name:"นายนิคม สถิตย์เกิด",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16000223":{name:"นายเก่ง จางทอน",position:"พนักงาน",role:"employee"},
-    "16100229":{name:"นายณรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
+    "16100229":{name:"นายณนรินทร์ ทาเอื้อ",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16100239":{name:"นายกิตติศักดิ์ อังสุรินทร์",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16100240":{name:"นายศรัณย์ภัทร ยะคาเขต",position:"พนักงาน",role:"employee"},
-    "16100266":{name:"นางสาวนปภัส สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
+    "16100266":{name:"นางสาวณปภัช สนิทกุลเจริญ",position:"พนักงาน",role:"employee"},
     "16200287":{name:"นายฐาปกรณ์ พุ่มไชยะ",position:"ผู้ช่วยหัวหน้าแผนก",role:"reviewer"},
     "16200289":{name:"นายณรงค์ชัย เผือกพูลผล",position:"พนักงาน",role:"employee"},
     "16200301":{name:"นายนพเกล้า สุวรรณวิจิตร",position:"ผู้ช่วยหัวหน้าแผนก",role:"shift_reviewer"},
     "16300359":{name:"นางสาวบุษรา ถิ่นทัพไทย",position:"เจ้าหน้าที่เอกสาร",role:"document"},
-    "16400970":{name:"นายณัฐพงษ์ บุญทา",position:"พนักงาน",role:"employee"},
+    "16400970":{name:"นายนัฐพงษ์ บุญทา",position:"พนักงาน",role:"employee"},
     "165015053":{name:"นายนที ยมมูล",position:"พนักงาน",role:"employee"},
     "16601248":{name:"นายกันติธัช หมื่นสี",position:"พนักงาน",role:"employee"},
     "16601414":{name:"นางสาวนัสทริกา ไกรศรี",position:"พนักงาน",role:"employee"},
@@ -12320,37 +12569,184 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
-<script>
-/* V15.120 — open Daily Report from TOP System Menu.
-   Sidebar is intentionally untouched. */
-(function(){
-  function openDailyReportFromSystemMenu(){
-    document.body.classList.add('daily-report-view');
 
+
+
+<script>
+/* V15.126 — reliable Daily Report navigation; sidebar/other modules are untouched */
+(function(){
+  function closeDrawer(){
     const drawer=document.getElementById('wwtDrawer');
     const shade=document.getElementById('drawerShade');
     drawer?.classList.remove('open','show');
-    shade?.classList.remove('show','open');
-
-    window.scrollTo({top:0,behavior:'smooth'});
+    shade?.classList.remove('open','show');
   }
 
-  function closeDailyReport(){
+  function openReport(){
+    closeDrawer();
+    document.body.classList.add('daily-report-view');
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:0,behavior:'auto'});
+      document.getElementById('dailySummarySection')?.scrollIntoView({block:'start'});
+    });
+  }
+
+  function backToLive(){
     document.body.classList.remove('daily-report-view');
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'auto'});
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('openDailyReportMenu')?.addEventListener('click',e=>{
+    document.getElementById('openDailyReportMenu')?.addEventListener('click',(e)=>{
       e.preventDefault();
       e.stopImmediatePropagation();
-      openDailyReportFromSystemMenu();
+      openReport();
     },true);
 
-    document.getElementById('reportBackToLive')?.addEventListener('click',e=>{
+    document.getElementById('reportBackToLive')?.addEventListener('click',(e)=>{
       e.preventDefault();
-      closeDailyReport();
+      backToLive();
     });
+
+    document.getElementById('drawerClose')?.addEventListener('click',closeDrawer);
+    document.getElementById('drawerShade')?.addEventListener('click',closeDrawer);
+  });
+})();
+</script>
+
+
+<script>
+/* V15.127 — RESTORE FLOW MOVEMENT ONLY
+   - Demo Flow moves naturally until real data is connected.
+   - COD / Zinc / Report / Menu / Trend are untouched.
+   - Real data can take over by setting window.WWT_REAL_DATA_ACTIVE = true.
+*/
+(function(){
+  const state={ flow:12.5 };
+  const rafMap=new WeakMap();
+
+  function clamp(v,min,max){
+    return Math.min(max,Math.max(min,v));
+  }
+
+  function nextFlow(v){
+    const choices=[-0.2,-0.1,0.1,0.2];
+    let delta=choices[Math.floor(Math.random()*choices.length)];
+    let n=clamp(v+delta,11.2,13.8);
+
+    if(Number(n.toFixed(1))===Number(v.toFixed(1))){
+      delta=v>=13.8?-0.1:(v<=11.2?0.1:(Math.random()<.5?-0.1:0.1));
+      n=clamp(v+delta,11.2,13.8);
+    }
+    return Number(n.toFixed(1));
+  }
+
+  function ease(t){
+    return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+  }
+
+  function animateNumber(el,toValue,duration=900){
+    if(!el) return;
+    const from=Number(el.dataset.value ?? el.textContent.replace(/[^\d.-]/g,'') ?? toValue);
+    const start=performance.now();
+
+    if(rafMap.has(el)) cancelAnimationFrame(rafMap.get(el));
+
+    function frame(now){
+      const t=Math.min(1,(now-start)/duration);
+      const v=from+(toValue-from)*ease(t);
+      el.textContent=v.toFixed(1);
+
+      if(t<1){
+        rafMap.set(el,requestAnimationFrame(frame));
+      }else{
+        el.textContent=toValue.toFixed(1);
+        el.dataset.value=String(toValue);
+      }
+    }
+
+    el.dataset.value=String(from);
+    rafMap.set(el,requestAnimationFrame(frame));
+  }
+
+  function updateFlowDisplay(flow){
+    const main=document.getElementById('mainFlowRealtimeValue');
+    animateNumber(main,flow);
+
+    const alertFlow=document.querySelector('.flow-live-value');
+    if(alertFlow){
+      const num=alertFlow.querySelector('.realtime-flow-alert-number');
+      if(num){
+        animateNumber(num,flow);
+      }else{
+        alertFlow.innerHTML='<span class="realtime-flow-alert-number" data-value="'+flow.toFixed(1)+'">'+flow.toFixed(1)+'</span> <span>m³/h</span>';
+      }
+    }
+
+    const delta=Number((flow-13.0).toFixed(1));
+    const deltaEl=document.querySelector('.flowdial-center b');
+    if(deltaEl) deltaEl.textContent=(delta>0?'+':'')+delta.toFixed(1);
+
+    const deltaSmall=document.querySelector('.flowdial-center small');
+    if(deltaSmall){
+      const pct=Math.abs(delta/13*100).toFixed(1);
+      deltaSmall.textContent='m³/h · '+(delta<0?'ต่ำกว่า':'สูงกว่า')+' Setting '+pct+'%';
+    }
+
+    const meta=document.querySelector('.flow-live-meta span');
+    if(meta){
+      meta.textContent='อัปเดตล่าสุด '+new Date().toLocaleTimeString('th-TH',{
+        timeZone:'Asia/Bangkok',
+        hour:'2-digit',
+        minute:'2-digit',
+        second:'2-digit',
+        hour12:false
+      });
+    }
+
+    try{
+      window.WWTConnectionStatus?.markDataReceived?.();
+    }catch(e){}
+  }
+
+  function tick(){
+    if(window.WWT_REAL_DATA_ACTIVE===true){
+      if(window.__wwtRealtimeDemo){
+        clearInterval(window.__wwtRealtimeDemo);
+        window.__wwtRealtimeDemo=null;
+      }
+      return;
+    }
+
+    state.flow=nextFlow(state.flow);
+    updateFlowDisplay(state.flow);
+  }
+
+  window.WWTFlowRealtime={
+    set(flow,timestamp){
+      const n=Number(flow);
+      if(!Number.isFinite(n)) return false;
+      window.WWT_REAL_DATA_ACTIVE=true;
+      state.flow=n;
+      updateFlowDisplay(n);
+      try{
+        window.WWTConnectionStatus?.markDataReceived?.(timestamp);
+      }catch(e){}
+      return true;
+    },
+    resumeDemo(){
+      window.WWT_REAL_DATA_ACTIVE=false;
+      if(!window.__wwtRealtimeDemo){
+        window.__wwtRealtimeDemo=setInterval(tick,2500);
+      }
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(window.WWT_REAL_DATA_ACTIVE===true) return;
+    updateFlowDisplay(state.flow);
+    if(window.__wwtRealtimeDemo) clearInterval(window.__wwtRealtimeDemo);
+    window.__wwtRealtimeDemo=setInterval(tick,2500);
   });
 })();
 </script>
