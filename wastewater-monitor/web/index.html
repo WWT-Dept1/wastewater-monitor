@@ -9062,6 +9062,109 @@ aside{
 }
 </style>
 
+
+<style>
+/* V15.116 — give the LINE alert area and stacked cards more breathing room */
+.clean-detail-panel{
+  gap:24px !important;
+}
+
+.premium-monitor-card{
+  margin:0 !important;
+}
+
+.premium-action-row{
+  gap:16px !important;
+  margin-top:6px !important;
+}
+
+.premium-line-row{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:16px !important;
+  margin:0 !important;
+  padding:12px 14px !important;
+  border-radius:16px !important;
+}
+
+.line-compact-info{
+  gap:11px !important;
+}
+
+.line-compact-info > div{
+  min-width:0 !important;
+}
+
+.line-compact-info b{
+  margin-bottom:3px !important;
+}
+
+.line-compact-info small{
+  line-height:1.45 !important;
+}
+
+.premium-line-row .line-compact-btn{
+  min-width:112px !important;
+  min-height:40px !important;
+  padding:0 16px !important;
+  border-radius:13px !important;
+  margin-left:2px !important;
+}
+
+.line-test-result{
+  margin-top:12px !important;
+}
+
+.flow-monitor-card{
+  margin-bottom:6px !important;
+}
+
+@media(max-width:980px){
+  .clean-detail-panel{
+    gap:18px !important;
+  }
+
+  .premium-line-row{
+    grid-template-columns:1fr !important;
+    align-items:stretch !important;
+  }
+
+  .premium-line-row .line-compact-btn{
+    width:100% !important;
+    margin-left:0 !important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.117 — real-time trend status */
+.trend-realtime-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:9px;
+  color:#6d7f72;
+  font:700 8px/1.4 "Noto Sans Thai","Outfit",sans-serif;
+}
+.trend-realtime-status i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#a6b2aa;
+  box-shadow:0 0 0 4px rgba(166,178,170,.10);
+}
+.trend-realtime-status.live i{
+  background:#43a267;
+  box-shadow:0 0 0 4px rgba(67,162,103,.10);
+}
+.trend-realtime-status.waiting i{
+  background:#c99a46;
+  box-shadow:0 0 0 4px rgba(201,154,70,.10);
+}
+</style>
+
 </head><body>
 <header><div class="brand"><div class="logo">W</div><div><b>Wastewater Live Control</b><small>PROCESS INTELLIGENCE · FACTORY 1</small></div></div><div class="tools"><span class="live">LIVE</span><button class="round">☰</button><button class="round">◇</button></div></header>
 <div class="shell"><aside>
@@ -9107,9 +9210,9 @@ aside{
     </div>
 
     <div class="premium-trend-actions">
-      <span class="premium-period">13/09/2569 05:00 → 14/09/2569 05:00</span>
+      <span class="premium-period" id="trendPeriodLabel">กำลังตรวจสอบรอบข้อมูล...</span>
       <div class="premium-nav">
-        <b>25 จุด · ทุกชั่วโมง</b>
+        <b id="trendPointCount">รอข้อมูลจริง</b>
         <button type="button" id="trendScrollLeft" aria-label="เลื่อนกราฟซ้าย">‹</button>
         <button type="button" id="trendScrollRight" aria-label="เลื่อนกราฟขวา">›</button>
       </div>
@@ -9145,6 +9248,9 @@ aside{
       <span>←</span>
       เลื่อนซ้าย–ขวาเพื่อดูข้อมูลครบทุกชั่วโมง
       <span>→</span>
+    </div>
+    <div class="trend-realtime-status" id="trendRealtimeStatus">
+      <i></i><span>พร้อมรับข้อมูลจริง · รอข้อมูลจากอุปกรณ์</span>
     </div>
   </div>
 
@@ -11737,6 +11843,245 @@ document.addEventListener('DOMContentLoaded',()=>{
     targetTop=Math.min(targetTop,Math.max(18,window.innerHeight-follower.offsetHeight-18));
     if(!raf) raf=requestAnimationFrame(animate);
   });
+});
+</script>
+
+
+<script>
+/* V15.117 — real-time 05:00→05:00 Flow Trend
+   Real device/API integration:
+   window.WWTRealtimeTrend.pushSample({ flow: 12.6, timestamp: "2026-09-23T10:30:00+07:00" })
+   Optional polling endpoint:
+   window.WWT_FLOW_LATEST_ENDPOINT = "/api/flow/latest";
+   Expected JSON can contain: flow | flowRate | value and timestamp | ts | time
+*/
+document.addEventListener('DOMContentLoaded',()=>{
+  const section=document.getElementById('flowTrendSection');
+  if(!section) return;
+
+  const svg=section.querySelector('.premium-trend-canvas svg');
+  const periodEl=document.getElementById('trendPeriodLabel');
+  const countEl=document.getElementById('trendPointCount');
+  const statusEl=document.getElementById('trendRealtimeStatus');
+  const area=svg?.querySelector('.premium-flow-area');
+  const line=svg?.querySelector('.premium-flow-line');
+  const pointEls=[...(svg?.querySelectorAll('.premium-hour-point')||[])];
+  const yLines=[...(svg?.querySelectorAll('.premium-grid-h')||[])];
+  const yLabels=[...(svg?.querySelectorAll('.premium-y-label')||[])];
+  const xLabels=[...(svg?.querySelectorAll('.premium-x-label')||[])];
+
+  if(!svg||!area||!line) return;
+
+  const STORE_KEY='wwt_realtime_flow_cycle_v1';
+  const X0=68, X1=1926, YTOP=40, YBOTTOM=231;
+  const HOURS=25;
+  const TZ='Asia/Bangkok';
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function localParts(d){
+    const p=new Intl.DateTimeFormat('en-CA',{
+      timeZone:TZ, year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'
+    }).formatToParts(d).reduce((o,x)=>(o[x.type]=x.value,o),{});
+    return {y:+p.year,m:+p.month,d:+p.day,h:+p.hour,min:+p.minute,s:+p.second};
+  }
+  function bangkokDate(y,m,d,h=0,min=0,s=0){
+    // Thailand is UTC+7 year-round.
+    return new Date(Date.UTC(y,m-1,d,h-7,min,s));
+  }
+  function cycleBounds(now=new Date()){
+    const p=localParts(now);
+    let start=bangkokDate(p.y,p.m,p.d,5,0,0);
+    if(now < start) start=new Date(start.getTime()-86400000);
+    return {start,end:new Date(start.getTime()+86400000)};
+  }
+  function thDate(d){
+    const p=localParts(d);
+    return `${pad(p.d)}/${pad(p.m)}/${p.y+543}`;
+  }
+  function periodText(){
+    const {start,end}=cycleBounds();
+    return `${thDate(start)} 05:00 → ${thDate(end)} 05:00`;
+  }
+  function setStatus(text,mode='waiting'){
+    if(!statusEl) return;
+    statusEl.className='trend-realtime-status '+mode;
+    const span=statusEl.querySelector('span');
+    if(span) span.textContent=text;
+  }
+  function readStore(){
+    try{
+      const x=JSON.parse(localStorage.getItem(STORE_KEY)||'[]');
+      return Array.isArray(x)?x:[];
+    }catch(e){ return []; }
+  }
+  function writeStore(rows){
+    try{ localStorage.setItem(STORE_KEY,JSON.stringify(rows.slice(-5000))); }catch(e){}
+  }
+  function normalizeSample(payload){
+    if(payload==null) return null;
+    if(typeof payload==='number') payload={flow:payload};
+    const raw=payload.flow ?? payload.flowRate ?? payload.value ?? payload.inletFlow;
+    const flow=Number(raw);
+    if(!Number.isFinite(flow)) return null;
+    const rawTs=payload.timestamp ?? payload.ts ?? payload.time ?? payload.datetime ?? Date.now();
+    const ts=new Date(rawTs);
+    if(Number.isNaN(ts.getTime())) return null;
+    return {flow,ts:ts.toISOString()};
+  }
+  function currentRows(){
+    const {start,end}=cycleBounds();
+    return readStore()
+      .filter(r=>{
+        const t=new Date(r.ts).getTime();
+        return Number.isFinite(t) && t>=start.getTime() && t<=end.getTime();
+      })
+      .sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+  }
+  function hourlyBuckets(rows){
+    const {start}=cycleBounds();
+    const buckets=new Array(HOURS).fill(null);
+    rows.forEach(r=>{
+      const t=new Date(r.ts).getTime();
+      const idx=Math.floor((t-start.getTime())/3600000);
+      if(idx<0||idx>=HOURS) return;
+      // latest sample wins within each hourly slot
+      if(!buckets[idx] || new Date(r.ts)>new Date(buckets[idx].ts)) buckets[idx]=r;
+    });
+    return buckets;
+  }
+  function clearStaticDemo(){
+    line.setAttribute('d','');
+    area.setAttribute('d','');
+    pointEls.forEach(g=>g.style.display='none');
+  }
+  function render(){
+    if(periodEl) periodEl.textContent=periodText();
+
+    const rows=currentRows();
+    const buckets=hourlyBuckets(rows);
+    const points=buckets.map((r,i)=>r?{...r,i}:null).filter(Boolean);
+
+    if(!points.length){
+      clearStaticDemo();
+      if(countEl) countEl.textContent='0 จุด · รอข้อมูลจริง';
+      setStatus('พร้อมรับข้อมูลจริง · รอข้อมูลจากอุปกรณ์','waiting');
+      return;
+    }
+
+    const vals=points.map(p=>p.flow);
+    let ymin=Math.floor(Math.min(...vals)-1);
+    let ymax=Math.ceil(Math.max(...vals)+1);
+    if(ymax-ymin<5){ const mid=(ymax+ymin)/2; ymin=Math.floor(mid-2.5); ymax=Math.ceil(mid+2.5); }
+    if(ymin===ymax) ymax=ymin+1;
+
+    const xFor=i=>X0+(X1-X0)*(i/(HOURS-1));
+    const yFor=v=>YBOTTOM-((v-ymin)/(ymax-ymin))*(YBOTTOM-YTOP);
+
+    // Six horizontal levels, bottom → top.
+    for(let j=0;j<Math.min(yLines.length,yLabels.length,6);j++){
+      const frac=j/5;
+      const y=YBOTTOM-frac*(YBOTTOM-YTOP);
+      const v=ymin+frac*(ymax-ymin);
+      yLines[j].setAttribute('y1',y.toFixed(1));
+      yLines[j].setAttribute('y2',y.toFixed(1));
+      yLabels[j].setAttribute('y',(y+3).toFixed(1));
+      yLabels[j].textContent=(Math.round(v*10)/10).toString();
+    }
+
+    const path=points.map((p,n)=>`${n?'L':'M'} ${xFor(p.i).toFixed(1)} ${yFor(p.flow).toFixed(1)}`).join(' ');
+    line.setAttribute('d',path);
+    area.setAttribute('d', path+` L ${xFor(points.at(-1).i).toFixed(1)} ${YBOTTOM} L ${xFor(points[0].i).toFixed(1)} ${YBOTTOM} Z`);
+
+    pointEls.forEach((g,i)=>{
+      const r=buckets[i];
+      if(!r){ g.style.display='none'; return; }
+      g.style.display='';
+      const x=xFor(i), y=yFor(r.flow);
+      const c=g.querySelector('circle'), t=g.querySelector('text'), title=g.querySelector('title');
+      if(c){ c.setAttribute('cx',x.toFixed(1)); c.setAttribute('cy',y.toFixed(1)); }
+      if(t){
+        t.setAttribute('x',x.toFixed(1));
+        t.setAttribute('y',Math.max(YTOP+8,y-13).toFixed(1));
+        t.textContent=r.flow.toFixed(1);
+      }
+      if(title){
+        const p=localParts(new Date(r.ts));
+        title.textContent=`${pad(p.h)}:${pad(p.min)} · ${r.flow.toFixed(1)} m³/h`;
+      }
+    });
+
+    if(countEl) countEl.textContent=`${points.length} จุด · REAL-TIME`;
+    const last=rows[rows.length-1];
+    const lp=localParts(new Date(last.ts));
+    setStatus(`รับข้อมูลจริงล่าสุด ${pad(lp.h)}:${pad(lp.min)}:${pad(lp.s)} · ${last.flow.toFixed(1)} m³/h`,'live');
+
+    // Keep the connection/offline module synchronized with actual data arrival.
+    try{ window.WWTConnectionStatus?.markDataReceived?.(last.ts); }catch(e){}
+  }
+
+  function pushSample(payload){
+    const s=normalizeSample(payload);
+    if(!s) return false;
+    const {start,end}=cycleBounds(new Date(s.ts));
+    const t=new Date(s.ts).getTime();
+    if(t<start.getTime() || t>end.getTime()) return false;
+
+    let rows=readStore();
+    rows.push(s);
+    // Deduplicate identical timestamp; keep the latest value.
+    const byTs=new Map();
+    rows.forEach(r=>byTs.set(r.ts,r));
+    rows=[...byTs.values()].sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+    writeStore(rows);
+    render();
+    return true;
+  }
+
+  function replaceSamples(list){
+    if(!Array.isArray(list)) return false;
+    const normalized=list.map(normalizeSample).filter(Boolean);
+    writeStore(normalized);
+    render();
+    return true;
+  }
+
+  window.WWTRealtimeTrend={
+    pushSample,
+    replaceSamples,
+    render,
+    clear(){
+      localStorage.removeItem(STORE_KEY);
+      render();
+    },
+    getCurrentCycle(){
+      const b=cycleBounds();
+      return {start:b.start.toISOString(),end:b.end.toISOString(),period:periodText()};
+    }
+  };
+
+  // Optional real backend polling. A missing endpoint is ignored without changing the UI.
+  const endpoint=window.WWT_FLOW_LATEST_ENDPOINT || '/api/flow/latest';
+  async function pollLatest(){
+    try{
+      const res=await fetch(endpoint,{cache:'no-store',headers:{'Accept':'application/json'}});
+      if(!res.ok) return;
+      const data=await res.json();
+      if(Array.isArray(data)) data.forEach(pushSample);
+      else if(Array.isArray(data?.data)) data.data.forEach(pushSample);
+      else pushSample(data?.data ?? data);
+    }catch(e){}
+  }
+
+  render();
+  pollLatest();
+  setInterval(pollLatest,10000);
+
+  // Refresh period automatically when the 05:00 operating day changes.
+  setInterval(()=>{
+    if(periodEl) periodEl.textContent=periodText();
+    render();
+  },60000);
 });
 </script>
 
