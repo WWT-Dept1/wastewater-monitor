@@ -13068,8 +13068,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     busy=true;
     try{
       const base=CONFIG.SUPABASE_URL.replace(/\/$/,'');
-      const q=new URLSearchParams({select:'id,created_at,device_id,flow_m3h',device_id:'eq.'+CONFIG.DEVICE_ID,order:'created_at.desc',limit:'1'});
-      const res=await fetch(base+'/rest/v1/'+encodeURIComponent(CONFIG.TABLE)+'?'+q.toString(),{method:'GET',headers:buildHeaders(),cache:'no-store'});
+      // Use the same REST URL form that was verified successfully in the browser.
+      // Putting the publishable key in the query avoids an unnecessary CORS preflight
+      // when this HTML is opened directly from a local file:// URL.
+      const q=new URLSearchParams({
+        select:'id,created_at,device_id,flow_m3h',
+        device_id:'eq.'+CONFIG.DEVICE_ID,
+        order:'created_at.desc',
+        limit:'1',
+        apikey:CONFIG.SUPABASE_PUBLIC_KEY.trim()
+      });
+      const res=await fetch(base+'/rest/v1/'+encodeURIComponent(CONFIG.TABLE)+'?'+q.toString(),{
+        method:'GET',
+        headers:{Accept:'application/json'},
+        cache:'no-store'
+      });
       if(!res.ok){
         const body=await res.text().catch(()=> '');
         throw new Error('Supabase '+res.status+(body?' · '+body.slice(0,180):''));
@@ -13081,7 +13094,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       updateFlowDisplay(row.flow_m3h,row.created_at);
     }catch(err){
       console.error('[WWT Supabase Flow]',err);
-      setOfflineMessage('เชื่อมต่อ Supabase ไม่สำเร็จ');
+      setOfflineMessage('เชื่อมต่อ Supabase ไม่สำเร็จ · เปิด Console ดูรายละเอียด');
     }finally{ busy=false; }
   }
 
