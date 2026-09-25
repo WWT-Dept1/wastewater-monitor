@@ -10452,7 +10452,7 @@ body.daily-report-view{
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
-  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง · โหลดต่อเนื่องเกิน 1,000 records ได้แล้ว <b id="flowLogLoadedCount"></b></div>
+  <div class="flowlog-data-note">บันทึกอัตโนมัติทุกชั่วโมงที่นาที :30 เช่น 14:30 → 15:30 → 16:30 · ใช้ข้อมูลจริงจาก Supabase <b id="flowLogLoadedCount"></b></div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -13285,7 +13285,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script>
 /* V15.141 — REAL DATA BUS: Supabase -> Trend + Hourly Log + Daily Summary
    Uses real rows from public.flow_readings only. No demo/static Flow values are used by these sections.
-   Hourly record rule: use ALL real readings inside each hour of the 05:00→05:00 operating cycle.
+   Hourly record rule: commit one record every hour at minute :30 (05:30, 06:30, …, 04:30) using real Supabase readings.
    The current Trend hour is refreshed from the latest live reading.
 */
 (function(){
@@ -13410,51 +13410,66 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function aggregateHourly(readings){
-    const buckets=new Map();
-
-    for(const r of readings){
-      const slot=Math.floor((r.timestamp.getTime()-cycle.start.getTime())/HOUR);
-      if(slot<0||slot>24) continue;
-      if(!buckets.has(slot)) buckets.set(slot,[]);
-      buckets.get(slot).push(r);
-    }
-
+    // บันทึกรายชั่วโมงที่นาที :30
+    // ตัวอย่าง 14:30 → 15:30 → 16:30
+    // Flow Rate ใช้ค่าจริงที่อยู่ใกล้เวลาบันทึก :30 ที่สุด
+    // Actual/Volume ใช้ข้อมูลจริงทั้งหมดตั้งแต่รอบ :30 ก่อนหน้า ถึง :30 ปัจจุบัน
     const out=[];
-    for(const [slot,list] of [...buckets.entries()].sort((a,b)=>a[0]-b[0])){
-      list.sort((a,b)=>a.timestamp-b.timestamp);
+    const nowLimit=isCurrentCycle()?Date.now():cycle.end.getTime();
+    const firstTarget=cycle.start.getTime()+(30*60*1000); // 05:30
 
-      const slotTime=new Date(cycle.start.getTime()+slot*HOUR);
-      const slotEnd=new Date(Math.min(
-        slotTime.getTime()+HOUR,
-        cycle.end.getTime(),
-        isCurrentCycle() ? Date.now() : cycle.end.getTime()
-      ));
+    const sorted=(readings||[]).slice().sort((a,b)=>a.timestamp-b.timestamp);
 
-      const avgFlow=list.reduce((sum,r)=>sum+r.flow,0)/list.length;
+    for(let slot=0;slot<24;slot++){
+      const targetMs=firstTarget+(slot*HOUR);
+      if(targetMs>cycle.end.getTime() || targetMs>nowLimit) break;
 
-      // คำนวณปริมาตรจากข้อมูลจริงทุกจุดภายในชั่วโมง
-      // ใช้ค่าล่าสุดค้างไว้จนถึง sample ถัดไป (last-value hold)
+      const targetTime=new Date(targetMs);
+      const windowStart=slot===0 ? cycle.start.getTime() : targetMs-HOUR;
+      const windowEnd=targetMs;
+
+      const list=sorted.filter(r=>{
+        const t=r.timestamp.getTime();
+        return t>=windowStart && t<=windowEnd;
+      });
+
+      if(!list.length) continue;
+
+      // Reading nearest to the exact :30 target becomes the displayed Flow Rate.
+      let nearest=list[0];
+      let nearestDiff=Math.abs(nearest.timestamp.getTime()-targetMs);
+      for(const r of list){
+        const diff=Math.abs(r.timestamp.getTime()-targetMs);
+        if(diff<nearestDiff){
+          nearest=r;
+          nearestDiff=diff;
+        }
+      }
+
+      // Integrate every real reading in the interval for Actual/volume.
       let volume=0;
       for(let i=0;i<list.length;i++){
         const current=list[i];
-        const nextTime=i+1<list.length
-          ? Math.min(list[i+1].timestamp.getTime(),slotEnd.getTime())
-          : slotEnd.getTime();
-        const dtHours=Math.max(0,nextTime-current.timestamp.getTime())/HOUR;
+        const nextMs=i+1<list.length
+          ? Math.min(list[i+1].timestamp.getTime(),windowEnd)
+          : windowEnd;
+        const startMs=Math.max(current.timestamp.getTime(),windowStart);
+        const dtHours=Math.max(0,nextMs-startMs)/HOUR;
         volume+=current.flow*dtHours;
       }
 
       out.push({
         slot,
-        slotTime,
-        flow:avgFlow,
+        slotTime:targetTime,
+        flow:nearest.flow,
         volume,
         sampleCount:list.length,
         firstTimestamp:list[0].timestamp,
         lastTimestamp:list[list.length-1].timestamp,
-        timestamp:list[list.length-1].timestamp,
+        timestamp:nearest.timestamp,
         minFlow:Math.min(...list.map(x=>x.flow)),
-        maxFlow:Math.max(...list.map(x=>x.flow))
+        maxFlow:Math.max(...list.map(x=>x.flow)),
+        targetMinute:30
       });
     }
 
@@ -13484,10 +13499,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   function trendRows(){
     const map=new Map(hourly.map(r=>[r.slot,{...r}]));
     if(liveLatest&&cycle&&isCurrentCycle()){
-      const idx=Math.floor((liveLatest.timestamp.getTime()-cycle.start.getTime())/HOUR);
-      if(idx>=0&&idx<=24){
-        const slotTime=new Date(cycle.start.getTime()+idx*HOUR);
-        map.set(idx,{slot:idx,slotTime,flow:liveLatest.flow,timestamp:liveLatest.timestamp,live:true});
+      // Hourly record is committed only at :30, so do not create a premature
+      // 16:30 row while the current clock is still before 16:30.
+      const firstTarget=cycle.start.getTime()+(30*60*1000);
+      const idx=Math.floor((liveLatest.timestamp.getTime()-firstTarget)/HOUR);
+      if(idx>=0&&idx<24){
+        const slotTime=new Date(firstTarget+idx*HOUR);
+        if(liveLatest.timestamp.getTime()>=slotTime.getTime()){
+          const existing=map.get(idx);
+          if(existing){
+            map.set(idx,{...existing,flow:liveLatest.flow,timestamp:liveLatest.timestamp,live:true});
+          }
+        }
       }
     }
     return [...map.values()].sort((a,b)=>a.slot-b.slot);
@@ -13918,7 +13941,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 (function(){
   function pad(n){return String(n).padStart(2,'0')}
   function thDate(d){const x=new Date(d);return `${pad(x.getDate())}/${pad(x.getMonth()+1)}/${x.getFullYear()+543}`}
-  function timeLabel(slot){return pad((5+slot)%24)+':00'}
+  function timeLabel(slot){return pad((5+slot)%24)+':30'}
   function noDataCell(){return '<td class="legacy-no-data" title="ยังไม่ได้เชื่อม Sensor">NO DATA</td>'}
   function autoCell(v, cls=''){return `<td class="auto-cell ${cls}">${v}</td>`}
 
