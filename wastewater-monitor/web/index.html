@@ -10198,7 +10198,7 @@ body.daily-report-view{
 </aside><main id="liveTop">
 <div class="heading"><div><h1>Live Operations</h1><p>Real-time flow & water quality monitoring</p></div><div class="cycle">DAILY CYCLE · 05:00 → 05:00</div></div>
 
-<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">19FM001 <span class="thai">· น้ำเสียเข้าระบบบำบัด</span></span></div><span class="status">● NORMAL FLOW</span></div>
+<section class="hero"><div class="flow"><div class="ftop"><div class="flow-meta"><span class="flow-label">Inlet Flow</span><span class="flow-name">19FM006 <span class="thai">· น้ำออกจากระบบบำบัด SED1-2</span></span></div><span class="status">● NORMAL FLOW</span></div>
 <div class="display live-display-clean">
   <div class="live-value-row">
     <div class="value"><span id="mainFlowRealtimeValue">--</span>
@@ -10312,7 +10312,7 @@ body.daily-report-view{
           <b>อัตราการไหลน้ำเสีย</b>
           <p>ติดตามค่าจาก Flowmeter แบบต่อเนื่อง</p>
         </div>
-        <span class="device-chip">19FM001</span>
+        <span class="device-chip">19FM006</span>
       </div>
 
       <div class="flow-status-hero">
@@ -10491,7 +10491,7 @@ body.daily-report-view{
   <div class="health-path">
     <div class="health-row">
       <div class="health-icon">FM</div>
-      <div class="health-copy"><b>19FM001 Flowmeter</b><span>น้ำเสียเข้าระบบบำบัด</span></div>
+      <div class="health-copy"><b>19FM006 Flowmeter</b><span>น้ำออกจากระบบบำบัด SED1-2</span></div>
       <strong class="health-ok">ONLINE</strong>
     </div>
     <div class="health-row">
@@ -10595,7 +10595,7 @@ body.daily-report-view{
   </div>
   <div class="field-group">
     <label>จุดตรวจวัด</label>
-    <div class="field-value">บ่อพักน้ำเสีย 2 · 19FM001</div>
+    <div class="field-value">บ่อพักน้ำเสีย 2 · 19FM006</div>
   </div>
   <div class="field-group">
     <label>Flow Setting</label>
@@ -11195,10 +11195,10 @@ const ALERT_DEMOS={
   warning:{level:'warning',levelText:'COD ALERT · WARNING',headline:'ตรวจพบค่า COD สูงกว่าช่วงปกติ',code:'WARNING · COD > 13,000 mg/L',title:'ค่า COD สูงกว่าช่วงปกติ',desc:'ระบบตรวจพบค่า COD สูงกว่าค่าปกติที่กำหนด กรุณาตรวจสอบสภาวะน้ำเสียและติดตามค่าต่อเนื่อง',value:'14,200',unit:'mg/L',limit:'เกณฑ์แจ้งเตือน · COD > 13,000 mg/L',action:'ระบบจะแจ้งผู้ปฏิบัติงานและเพิ่มความถี่ในการติดตามค่า COD'},
   high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Inlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
   critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Inlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'},
-  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำกว่าค่ากำหนด',code:'LOW FLOW · 19FM001',title:'อัตราการไหลต่ำกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow ต่ำกว่าช่วงการทำงานที่กำหนด อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ค่า Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
-  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงกว่าค่ากำหนด',code:'HIGH FLOW · 19FM001',title:'อัตราการไหลสูงกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow สูงกว่าช่วงการทำงานที่กำหนด อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ค่า Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
-  flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก 19FM001',code:'NO FLOW / DATA STALE · 19FM001',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
-  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'ตรวจพบการเปลี่ยนแปลงของ Flow อย่างรวดเร็ว',code:'RAPID CHANGE · 19FM001',title:'ค่า Flow เปลี่ยนแปลงเร็วผิดปกติ',desc:'ตรวจพบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'อัตราการเปลี่ยนแปลงสูงกว่าค่าที่กำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะหน้างานทันที'}
+  flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำกว่าค่ากำหนด',code:'LOW FLOW · 19FM006',title:'อัตราการไหลต่ำกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow ต่ำกว่าช่วงการทำงานที่กำหนด อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ค่า Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
+  flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงกว่าค่ากำหนด',code:'HIGH FLOW · 19FM006',title:'อัตราการไหลสูงกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow สูงกว่าช่วงการทำงานที่กำหนด อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ค่า Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบ Inlet Flow, Pump และ Valve Setting'},
+  flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก 19FM006',code:'NO FLOW / DATA STALE · 19FM006',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
+  flow_rapid:{level:'high',levelText:'FLOW ALERT · RAPID CHANGE',headline:'ตรวจพบการเปลี่ยนแปลงของ Flow อย่างรวดเร็ว',code:'RAPID CHANGE · 19FM006',title:'ค่า Flow เปลี่ยนแปลงเร็วผิดปกติ',desc:'ตรวจพบการเปลี่ยนแปลงของ Flow ในช่วงเวลาสั้น อาจเกิดจากการเปิด-ปิดวาล์ว การทำงานของปั๊ม หรือสภาวะน้ำเข้าเปลี่ยนฉับพลัน',value:'+16.4',unit:'m³/h',limit:'อัตราการเปลี่ยนแปลงสูงกว่าค่าที่กำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบสภาวะหน้างานทันที'}
 };
 function showDemoAlert(type){
   const d=ALERT_DEMOS[type]||ALERT_DEMOS.critical;
@@ -11502,7 +11502,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       'รอบการบันทึก: 05:00 → 05:00 ของวันถัดไป',
       'โรงงาน: NRT 1',
       'แผนก/ฝ่าย: บ่อบำบัดน้ำเสีย',
-      'จุดตรวจวัด: บ่อพักน้ำเสีย 2 · 19FM001',
+      'จุดตรวจวัด: บ่อพักน้ำเสีย 2 · 19FM006',
       'Flow Setting: 13.0 m³/h',
       '',
       'รายละเอียด Flow รายชั่วโมง',
@@ -11575,7 +11575,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         </div>
 
         <div class="preview-info-grid structured-info">
-          <div><small>จุดตรวจวัด</small><b>บ่อพักน้ำเสีย 2 · 19FM001</b></div>
+          <div><small>จุดตรวจวัด</small><b>บ่อพักน้ำเสีย 2 · 19FM006</b></div>
           <div><small>Flow Setting</small><b id="previewFlowSettingValue">13.0 m³/h</b></div>
           <div><small>ปริมาณน้ำรวม</small><b>301.0 m³/day</b></div>
           <div><small>สถานะระบบ</small><b>ปกติ</b></div>
@@ -12430,7 +12430,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const d=parse(r.id);
       return `<article class="history-report-card${r.id===selectedId?' selected':''}" data-id="${r.id}">
         <div class="history-date-tile"><b>${String(d.getDate()).padStart(2,'0')}</b><span>ก.ย. ${String(d.getFullYear()+543).slice(-2)}</span></div>
-        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · บ่อพักน้ำเสีย 2 · 19FM001</span><em>${r.status}</em></div>
+        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · บ่อพักน้ำเสีย 2 · 19FM006</span><em>${r.status}</em></div>
         <div class="history-card-actions">
           <button class="history-open" data-open="${r.id}">เปิดรายงาน</button>
           <button data-pdf="${r.id}">PDF</button>
@@ -12519,7 +12519,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
 
     const info=[...root.querySelectorAll('.preview-info-grid > div')];
-    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · 19FM001';
+    if(info[0]?.querySelector('b')) info[0].querySelector('b').textContent='บ่อพักน้ำเสีย 2 · 19FM006';
     if(info[1]?.querySelector('b')) info[1].querySelector('b').textContent=`${r.setting.toFixed(1)} m³/h`;
     if(info[2]?.querySelector('b')) info[2].querySelector('b').textContent=`${r.volume.toFixed(1)} m³/day`;
     if(info[3]?.querySelector('b')) info[3].querySelector('b').textContent='ปกติ';
@@ -12723,7 +12723,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const summary=[
       ['ใบบันทึกและสรุปการไหลน้ำเสียประจำวัน'],['เลขที่เอกสาร',r.doc],['วันที่รายงาน',th(r.id)],
       ['รอบรายงาน',`05:00 ${th(r.id)} ถึง 05:00 ${th(nextISO(r.id))}`],['โรงงาน','NRT 1'],
-      ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · 19FM001'],['Flow Setting',r.setting],
+      ['แผนก/ฝ่าย','บ่อบำบัดน้ำเสีย'],['จุดตรวจวัด','บ่อพักน้ำเสีย 2 · 19FM006'],['Flow Setting',r.setting],
       [],['ปริมาณน้ำรวม',r.volume,'m³/day'],['Flow เฉลี่ย',r.avg,'m³/h'],['Flow ต่ำสุด',r.min,'m³/h'],['Flow สูงสุด',r.max,'m³/h'],
       ['COD ล่าสุด',11800,'mg/L'],['Zinc ล่าสุด',354,'mg/L']
     ];
@@ -13209,6 +13209,274 @@ document.addEventListener('DOMContentLoaded',()=>{
   follower.style.top='50%';
   follower.style.transform='translate(-50%,-50%)';
 });
+</script>
+
+
+<script>
+/* V15.141 — REAL DATA BUS: Supabase -> Trend + Hourly Log + Daily Summary
+   Uses real rows from public.flow_readings only. No demo/static Flow values are used by these sections.
+   Hourly record rule: first valid reading in each hour of the 05:00→05:00 operating cycle.
+   The current Trend hour is refreshed from the latest live reading.
+*/
+(function(){
+  const CFG={
+    URL:'https://nxzntoqjwffwckqtdysx.supabase.co',
+    KEY:'sb_publishable_c7UsiLQBDH4wfP8SCiETVg_aN5unW0S',
+    TABLE:'flow_readings',
+    DEVICE:'WWTP-FLOW-01',
+    SETTING:13.0,
+    REFRESH_MS:60000
+  };
+  const HOUR=3600000;
+  const TZ=7*HOUR;
+  let cycle=null;
+  let hourly=[];
+  let liveLatest=null;
+  let loading=false;
+
+  function thaiParts(date){
+    const d=new Date(date.getTime()+TZ);
+    return {y:d.getUTCFullYear(),m:d.getUTCMonth(),day:d.getUTCDate(),h:d.getUTCHours(),min:d.getUTCMinutes()};
+  }
+  function getCycle(now=new Date()){
+    const p=thaiParts(now);
+    let startMs=Date.UTC(p.y,p.m,p.day,5-7,0,0,0);
+    if(now.getTime()<startMs) startMs-=24*HOUR;
+    return {start:new Date(startMs),end:new Date(startMs+24*HOUR)};
+  }
+  function thDate(date){
+    const d=new Date(date.getTime()+TZ);
+    return `${String(d.getUTCDate()).padStart(2,'0')}/${String(d.getUTCMonth()+1).padStart(2,'0')}/${d.getUTCFullYear()+543}`;
+  }
+  function enDate(date){
+    return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',day:'2-digit',month:'short',year:'numeric'}).format(date);
+  }
+  function thTime(date){
+    return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(date);
+  }
+  function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function baseUrl(){return CFG.URL.replace(/\/$/,'')+'/rest/v1/'+encodeURIComponent(CFG.TABLE);}
+
+  async function api(params){
+    params.set('apikey',CFG.KEY);
+    const res=await fetch(baseUrl()+'?'+params.toString(),{headers:{Accept:'application/json'},cache:'no-store'});
+    if(!res.ok){
+      const body=await res.text().catch(()=> '');
+      throw new Error(`Supabase ${res.status}${body?' · '+body.slice(0,160):''}`);
+    }
+    return res.json();
+  }
+
+  async function firstReading(start,end){
+    const q=new URLSearchParams({
+      select:'id,created_at,device_id,flow_m3h',
+      device_id:'eq.'+CFG.DEVICE,
+      created_at:'gte.'+start.toISOString(),
+      order:'created_at.asc',
+      limit:'1'
+    });
+    q.append('created_at','lt.'+end.toISOString());
+    const rows=await api(q);
+    if(!Array.isArray(rows)||!rows.length) return null;
+    const r=rows[0],v=Number(r.flow_m3h),ts=new Date(r.created_at);
+    return Number.isFinite(v)&&Number.isFinite(ts.getTime())?{id:r.id,flow:v,timestamp:ts}:null;
+  }
+
+  function slotCountForNow(now=new Date()){
+    const idx=Math.floor((now.getTime()-cycle.start.getTime())/HOUR);
+    return Math.max(0,Math.min(24,idx));
+  }
+
+  async function loadHourly(){
+    if(loading) return;
+    loading=true;
+    try{
+      cycle=getCycle();
+      const maxSlot=slotCountForNow();
+      const jobs=[];
+      for(let i=0;i<=maxSlot;i++){
+        const s=new Date(cycle.start.getTime()+i*HOUR);
+        const e=new Date(s.getTime()+HOUR);
+        jobs.push(firstReading(s,e).then(row=>row?{slot:i,slotTime:s,...row}:null));
+      }
+      const result=await Promise.all(jobs);
+      hourly=result.filter(Boolean).sort((a,b)=>a.slot-b.slot);
+      renderAll();
+    }catch(err){
+      console.error('[WWT Real Hourly]',err);
+      renderLoadError(err);
+    }finally{loading=false;}
+  }
+
+  function trendRows(){
+    const map=new Map(hourly.map(r=>[r.slot,{...r}]));
+    if(liveLatest&&cycle){
+      const idx=Math.floor((liveLatest.timestamp.getTime()-cycle.start.getTime())/HOUR);
+      if(idx>=0&&idx<=24){
+        const slotTime=new Date(cycle.start.getTime()+idx*HOUR);
+        map.set(idx,{slot:idx,slotTime,flow:liveLatest.flow,timestamp:liveLatest.timestamp,live:true});
+      }
+    }
+    return [...map.values()].sort((a,b)=>a.slot-b.slot);
+  }
+
+  function statusFor(r){
+    return r.live?'LIVE':'บันทึกแล้ว';
+  }
+
+  function renderTrend(){
+    const svg=document.querySelector('#flowTrendSection svg');
+    if(!svg||!cycle) return;
+    const rows=trendRows();
+    const W=1960,H=285,L=68,R=34,T=40,B=54;
+    const plotW=W-L-R, plotH=H-T-B;
+    let vals=rows.map(r=>r.flow).filter(Number.isFinite);
+    let min=vals.length?Math.min(...vals,CFG.SETTING):0;
+    let max=vals.length?Math.max(...vals,CFG.SETTING):10;
+    if(max-min<2){min-=1;max+=1;} else {const pad=(max-min)*.18;min-=pad;max+=pad;}
+    min=Math.max(0,Math.floor(min)); max=Math.ceil(max);
+    if(max<=min)max=min+1;
+    const x=i=>L+(i/24)*plotW;
+    const y=v=>T+(max-v)/(max-min)*plotH;
+    const yTicks=5;
+    let hgrid='';
+    for(let i=0;i<=yTicks;i++){
+      const v=min+(max-min)*(i/yTicks), yy=y(v);
+      hgrid+=`<line class="premium-grid-h" x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}"/><text class="premium-y-label" x="${L-14}" y="${(yy+3).toFixed(1)}" text-anchor="end">${v.toFixed(max-min<=5?1:0)}</text>`;
+    }
+    let vgrid='';
+    for(let i=0;i<=24;i++){
+      const xx=x(i), d=new Date(cycle.start.getTime()+i*HOUR);
+      vgrid+=`<line class="premium-grid-v" x1="${xx.toFixed(1)}" y1="${T}" x2="${xx.toFixed(1)}" y2="${H-B}"/><text class="premium-x-label" x="${xx.toFixed(1)}" y="266" text-anchor="middle">${thTime(d)}</text>`;
+    }
+    let line='';
+    rows.forEach((r,i)=>{line+=(i?' L ':'M ')+x(r.slot).toFixed(1)+' '+y(r.flow).toFixed(1)});
+    let area='';
+    if(rows.length>=2){
+      const first=rows[0],last=rows[rows.length-1];
+      area=line+` L ${x(last.slot).toFixed(1)} ${H-B} L ${x(first.slot).toFixed(1)} ${H-B} Z`;
+    }
+    const pts=rows.map(r=>{
+      const xx=x(r.slot),yy=y(r.flow),label=r.flow.toFixed(1),title=`${thTime(r.slotTime)} · ${label} m³/h${r.live?' · LIVE':' · REAL DATA'}`;
+      return `<g class="premium-hour-point"><circle cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" r="5"/><text x="${xx.toFixed(1)}" y="${(yy-13).toFixed(1)}" text-anchor="middle">${label}</text><title>${esc(title)}</title></g>`;
+    }).join('');
+    svg.innerHTML=`<defs><linearGradient id="premiumFlowArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#376b4a" stop-opacity=".22"/><stop offset="72%" stop-color="#6e9a7c" stop-opacity=".08"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs>${hgrid}${vgrid}${area?`<path class="premium-flow-area" d="${area}"/>`:''}${line?`<path class="premium-flow-line" d="${line}"/>`:''}${pts}${rows.length?'':`<text x="980" y="145" text-anchor="middle" class="premium-y-label">ยังไม่มีข้อมูลจริงในรอบนี้</text>`}`;
+    const count=document.getElementById('trendPointCount');
+    if(count)count.textContent=`${rows.length} จุด · REAL DATA`;
+    const label=document.getElementById('trendPeriodLabel');
+    if(label)label.textContent=`${thDate(cycle.start)} 05:00 → ${thDate(cycle.end)} 05:00`;
+  }
+
+  function rowHtml(r){
+    return `<div class="hourly-row"><span>${thDate(r.slotTime)}</span><time>${thTime(r.slotTime)}</time><b>${r.flow.toFixed(1)} <small>m³/h</small></b><em>${statusFor(r)}</em></div>`;
+  }
+
+  function renderHourlyLog(){
+    const preview=document.getElementById('hourlyPreview');
+    const full=document.getElementById('hourlyFull');
+    if(preview){
+      preview.innerHTML=hourly.length?hourly.slice(0,3).map(rowHtml).join(''):'<div class="hourly-row"><span>—</span><time>—</time><b>ยังไม่มีข้อมูลจริง <small></small></b><em>WAITING</em></div>';
+    }
+    if(full)full.innerHTML=hourly.slice(3).map(rowHtml).join('');
+    const period=document.querySelector('#flowLogSection .period b');
+    if(period&&cycle)period.innerHTML=`${thDate(cycle.start)} <strong>05:00</strong> <i>→</i> ${thDate(cycle.end)} <strong>05:00</strong>`;
+    const btn=document.getElementById('viewDayBtn')||document.querySelector('#flowLogSection .view-day');
+    if(btn)btn.style.display=hourly.length>3?'flex':'none';
+  }
+
+  function calcStats(){
+    const vals=hourly.map(r=>r.flow).filter(Number.isFinite);
+    if(!vals.length)return {count:0,avg:null,min:null,max:null,volume:null};
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    const min=Math.min(...vals),max=Math.max(...vals);
+    // Hourly snapshots represent one hour each. For current hour, count only elapsed fraction.
+    const now=new Date();
+    let volume=0;
+    for(const r of hourly){
+      const slotStart=r.slotTime.getTime();
+      const slotEnd=slotStart+HOUR;
+      const covered=Math.max(0,Math.min(slotEnd,now.getTime(),cycle.end.getTime())-slotStart)/HOUR;
+      volume+=r.flow*Math.min(1,covered);
+    }
+    return {count:vals.length,avg,min,max,volume};
+  }
+
+  function renderDaily(){
+    if(!cycle)return;
+    const s=calcStats();
+    const tbody=document.querySelector('#dailySummarySection .modern-hourly-table tbody');
+    if(tbody){
+      tbody.innerHTML=hourly.length?hourly.map(r=>`<tr><td>${thDate(r.slotTime)}</td><td>${thTime(r.slotTime)}</td><td><b>${r.flow.toFixed(1)}</b> m³/h</td><td>${CFG.SETTING.toFixed(1)} m³/h</td><td><span class="row-status">บันทึกจริง</span></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;padding:22px">ยังไม่มีข้อมูลจริงในรอบนี้</td></tr>';
+    }
+    const overview=[...document.querySelectorAll('#dailySummarySection .daily-overview-strip .dos-item b')];
+    const ov=[s.volume,s.avg,s.min,s.max];
+    ov.forEach((v,i)=>{if(overview[i])overview[i].textContent=Number.isFinite(v)?v.toFixed(1):'—';});
+    const totals=[...document.querySelectorAll('#dailySummarySection .daily-total-grid > div b')];
+    [s.volume,s.avg,s.min,s.max,CFG.SETTING].forEach((v,i)=>{if(totals[i])totals[i].textContent=Number.isFinite(v)?v.toFixed(1):'—';});
+    const fields=[...document.querySelectorAll('#dailySummarySection .daily-form-fields .field-value')];
+    if(fields[0])fields[0].textContent=enDate(cycle.start);
+    if(fields[5])fields[5].textContent=CFG.SETTING.toFixed(1)+' m³/h';
+    const fs=document.getElementById('fsCurrentValue');if(fs)fs.textContent=CFG.SETTING.toFixed(1);
+    const df=document.getElementById('dailyFlowSettingValue');if(df)df.textContent=CFG.SETTING.toFixed(1)+' m³/h';
+    const subtitle=document.querySelector('#dailySummarySection .eform-head-main p');
+    if(subtitle)subtitle.textContent=`วันที่รายงาน ${thDate(cycle.start)} · รอบรายงาน 05:00 ของวันที่ ${thDate(cycle.start)} ถึง 05:00 ของวันที่ ${thDate(cycle.end)}`;
+    const note=document.getElementById('dailyNote');
+    if(note&&/ตัวอย่างข้อมูลจำลอง/.test(note.value))note.value='ระบบบันทึกข้อมูลอัตโนมัติจากข้อมูลจริงใน Supabase ตามรอบ 05:00–05:00';
+  }
+
+  function renderAll(){renderTrend();renderHourlyLog();renderDaily();}
+
+  function renderLoading(){
+    const p=document.getElementById('hourlyPreview');if(p)p.innerHTML='<div class="hourly-row"><span>—</span><time>—</time><b>กำลังโหลดข้อมูลจริง <small></small></b><em>SYNC</em></div>';
+    const f=document.getElementById('hourlyFull');if(f)f.innerHTML='';
+    const tb=document.querySelector('#dailySummarySection .modern-hourly-table tbody');if(tb)tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:22px">กำลังโหลดข้อมูลจริงจาก Supabase...</td></tr>';
+  }
+  function renderLoadError(err){
+    const msg='โหลดข้อมูลจริงไม่สำเร็จ';
+    const p=document.getElementById('hourlyPreview');if(p)p.innerHTML=`<div class="hourly-row"><span>—</span><time>—</time><b>${msg} <small></small></b><em>ERROR</em></div>`;
+    const tb=document.querySelector('#dailySummarySection .modern-hourly-table tbody');if(tb)tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:22px">${msg}</td></tr>`;
+  }
+
+  function onLive(e){
+    const d=e?.detail||{};
+    const flow=Number(d.flow),ts=new Date(d.timestamp||Date.now());
+    if(!Number.isFinite(flow)||!Number.isFinite(ts.getTime()))return;
+    liveLatest={flow,timestamp:ts};
+    // Rebuild only the Trend immediately. Hourly records remain the first real reading of each hour.
+    renderTrend();
+  }
+
+  async function refreshIfNeeded(){
+    const next=getCycle();
+    if(!cycle||next.start.getTime()!==cycle.start.getTime()){
+      cycle=next;hourly=[];liveLatest=null;renderLoading();await loadHourly();return;
+    }
+    const expected=slotCountForNow();
+    const have=new Set(hourly.map(r=>r.slot));
+    const missing=[];
+    for(let i=0;i<=expected;i++)if(!have.has(i))missing.push(i);
+    if(!missing.length){renderAll();return;}
+    try{
+      const rows=await Promise.all(missing.map(async i=>{
+        const s=new Date(cycle.start.getTime()+i*HOUR),e=new Date(s.getTime()+HOUR);
+        const r=await firstReading(s,e);return r?{slot:i,slotTime:s,...r}:null;
+      }));
+      hourly=[...hourly,...rows.filter(Boolean)].sort((a,b)=>a.slot-b.slot);
+      renderAll();
+    }catch(err){console.error('[WWT Real Hourly refresh]',err);}
+  }
+
+  window.WWTRealData={refresh:loadHourly,getHourly:()=>hourly.map(r=>({...r})),getCycle:()=>cycle&&({start:cycle.start.toISOString(),end:cycle.end.toISOString()})};
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    cycle=getCycle();
+    renderLoading();
+    window.addEventListener('wwt:flow-realtime',onLive);
+    // Run after older demo/report initializers so real data wins the initial render.
+    setTimeout(loadHourly,250);
+    setInterval(refreshIfNeeded,CFG.REFRESH_MS);
+  });
+})();
 </script>
 
 </body></html>
