@@ -10452,7 +10452,7 @@ body.daily-report-view{
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
-  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง แล้วคำนวณเป็นค่ารายชั่วโมงอัตโนมัติ <b id="flowLogLoadedCount"></b></div>
+  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง · โหลดต่อเนื่องเกิน 1,000 records ได้แล้ว <b id="flowLogLoadedCount"></b></div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -13356,35 +13356,42 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   async function fetchCycleReadings(start,end){
-    // Supabase/PostgREST commonly caps a response to 1,000 rows.
-    // ESP32 sends every few seconds, so one operating day can easily exceed that.
-    // Fetch in pages so later hours (14:00, 15:00, 16:00, ...) are not lost.
+    // ESP32 sends every few seconds and Supabase can cap each response at 1,000 rows.
+    // Use keyset pagination by primary-key id instead of OFFSET so later records
+    // (including the current 16:00 hour) cannot disappear at the page boundary.
     const PAGE_SIZE=1000;
-    let offset=0;
     const all=[];
+    let lastId=null;
+    let page=0;
 
     while(true){
       const q=new URLSearchParams({
         select:'id,created_at,device_id,flow_m3h,input_voltage',
         device_id:'eq.'+CFG.DEVICE,
         created_at:'gte.'+start.toISOString(),
-        order:'created_at.asc',
-        offset:String(offset),
+        order:'id.asc',
         limit:String(PAGE_SIZE)
       });
       q.append('created_at','lt.'+end.toISOString());
+      if(lastId!==null) q.append('id','gt.'+lastId);
 
       const rows=await api(q);
       if(!Array.isArray(rows) || !rows.length) break;
 
       all.push(...rows);
+
+      const id=Number(rows[rows.length-1]?.id);
+      if(!Number.isFinite(id) || id===lastId) break;
+      lastId=id;
+
       if(rows.length < PAGE_SIZE) break;
 
-      offset += PAGE_SIZE;
-
-      // Safety guard. More than 100k samples/day would indicate a configuration issue.
-      if(offset >= 100000) break;
+      page++;
+      if(page>=100) break; // safety guard
     }
+
+    // Preserve chronological order for hourly integration.
+    all.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
 
     return all.map(r=>{
       const flow=Number(r.flow_m3h);
@@ -13465,6 +13472,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     try{
       cycle=activeCycle();
       const readings=await fetchCycleReadings(cycle.start,cycle.end);
+      console.info('[WWT Flow Log] fetched records:',readings.length,'last id:',readings.length?readings[readings.length-1].id:'-');
       hourly=aggregateHourly(readings);
       renderAll();
     }catch(err){
@@ -14041,8 +14049,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       const raw=localStorage.getItem('wwtQualityLiveData');
       if(raw){
         const data=JSON.parse(raw);
-        if(typeof data.cod!=='undefined') out.cod=Number(data.cod);
-        if(typeof data.zinc!=='undefined') out.zinc=Number(data.zinc);
+        if(typeof data.cod!=='undefined' && data.cod!=='' && data.cod!==null && Number.isFinite(Number(data.cod))) out.cod=Number(data.cod);
+        if(typeof data.zinc!=='undefined' && data.zinc!=='' && data.zinc!==null && Number.isFinite(Number(data.zinc))) out.zinc=Number(data.zinc);
       }
     }catch(e){}
     if(window.WWTQualitySource && typeof window.WWTQualitySource.getData==='function'){
@@ -14062,18 +14070,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     const codCard = cards.find(c => /COD/i.test(c.querySelector('.qhead span')?.textContent || ''));
     const zincCard = cards.find(c => /ZINC/i.test(c.querySelector('.qhead span')?.textContent || ''));
 
-    // Always animate from zero on each page load so the user sees movement every time.
-    const bootData = {
-      cod: codCard ? toNumber(codCard.querySelector('.qval')?.textContent) : undefined,
-      zinc: zincCard ? toNumber(zincCard.querySelector('.qval')?.textContent) : undefined
-    };
+    // Keep the intended card defaults instead of reading the temporary 0
+    // written by the first animation initializer.
+    // These are display defaults until a real COD/ZINC data source is connected.
+    const DEFAULT_QUALITY = { cod:11800, zinc:354 };
     const live = readLiveQuality();
-    if(Number.isFinite(live.cod)) bootData.cod = live.cod;
-    if(Number.isFinite(live.zinc)) bootData.zinc = live.zinc;
 
-    if(Number.isFinite(bootData.cod)) window.WWTQualityCards.set('cod', 0, {animate:false});
-    if(Number.isFinite(bootData.zinc)) window.WWTQualityCards.set('zinc', 0, {animate:false});
+    const bootData = {
+      cod: Number.isFinite(live.cod) ? live.cod : DEFAULT_QUALITY.cod,
+      zinc: Number.isFinite(live.zinc) ? live.zinc : DEFAULT_QUALITY.zinc
+    };
 
+    // Animate smoothly from 0 to the intended value.
+    window.WWTQualityCards.set('cod', 0, {animate:false});
+    window.WWTQualityCards.set('zinc', 0, {animate:false});
     setTimeout(()=>{ window.WWTQualityCards.setData(bootData, {duration:1400}); }, 160);
 
     let previous = JSON.stringify(window.WWTQualityCards.get?.() || {});
