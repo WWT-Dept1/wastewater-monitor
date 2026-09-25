@@ -10688,6 +10688,53 @@ body.daily-report-view{
 
 <div class="paper-sheet modern-sheet eform-sheet">
 
+<div class="legacy-wwt-wrap" id="legacyWWTForm">
+  <div class="legacy-wwt-head">
+    <div class="legacy-brand-box"><b>NRT</b><span>NATURAL RUBBER THREAD CO.,LTD</span></div>
+    <div class="legacy-title-box"><small>FORM</small><h3>ใบบันทึกน้ำเข้าระบบ</h3></div>
+    <div class="legacy-doc-box"><div><span>รหัส</span><b>F-WWT-003</b></div><div><span>REV.</span><b>05</b></div><div><span>วันที่</span><b id="legacyReportDate">—</b></div></div>
+  </div>
+  <div class="legacy-wwt-note">AUTO RECORD · ระบบกรอกข้อมูลจาก Sensor/Supabase อัตโนมัติ · จุดที่ยังไม่มี Sensor จะแสดง NO DATA · พนักงานตรวจสอบ หมายเหตุ และลงชื่อเท่านั้น</div>
+  <div class="legacy-table-scroll">
+    <table class="legacy-wwt-table">
+      <thead>
+        <tr>
+          <th rowspan="3" class="time-col">เวลา</th>
+          <th colspan="3">น้ำเข้าระบบบำบัด<br><small>Flow Setting <b class="legacy-setting-static">10</b> m³/h</small></th>
+          <th colspan="3">ถังรองรับอากาศ 1<br><small>Flow Setting <b class="legacy-setting-static">5</b> m³/h</small></th>
+          <th colspan="3">ถังรองรับอากาศ 2<br><small>Flow Setting <b class="legacy-setting-static">5</b> m³/h</small></th>
+          <th colspan="3" class="auto-group">น้ำออกจากระบบบำบัด SED1-2<br><small>19FM006 · Flow Setting <b id="legacySedSetting">13.0</b> m³/h · AUTO</small></th>
+        </tr>
+        <tr>
+          <th>Flow</th><th>Total</th><th>Actual</th>
+          <th>Flow</th><th>Total</th><th>Actual</th>
+          <th>Flow</th><th>Total</th><th>Actual</th>
+          <th class="auto-col">Flow</th><th class="auto-col">Total</th><th>Actual</th>
+        </tr>
+        <tr class="unit-row">
+          <th>m³/h</th><th>m³</th><th>m³</th>
+          <th>m³/h</th><th>m³</th><th>m³</th>
+          <th>m³/h</th><th>m³</th><th>m³</th>
+          <th class="auto-col">m³/h</th><th class="auto-col">m³*</th><th>m³</th>
+        </tr>
+      </thead>
+      <tbody id="legacyWWTBody"></tbody>
+      <tfoot>
+        <tr>
+          <th>รวม/สรุป</th>
+          <td colspan="9" class="legacy-foot-note">AUTO = ข้อมูลจริงจากระบบ · NO DATA = จุดที่ยังไม่ได้เชื่อม Sensor</td>
+          <td id="legacyAvgFlow">—</td><td id="legacyTotalVolume">—</td><td id="legacyActualVolume">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="legacy-form-foot">
+    <span>* Total ฝั่ง 19FM006 คำนวณสะสมจาก Flow รายชั่วโมง และ Actual คำนวณอัตโนมัติด้วยสูตร Total ปัจจุบัน − Total ก่อนหน้า</span>
+    <div><b>ผู้ตรวจสอบ/ยืนยัน</b> ____________________ <b>เวลา</b> __________</div>
+  </div>
+</div>
+
+
 
       
 <div class="sheet-section-head">
@@ -13478,5 +13525,304 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 })();
 </script>
+
+
+<style>
+/* V15.141 — smooth animated top quality cards (COD/ZINC) */
+.quality .q.smooth-quality-card{position:relative;overflow:hidden}
+.quality .q.smooth-quality-card .qval{font-variant-numeric:tabular-nums;white-space:nowrap}
+.quality .q.smooth-quality-card .qval small{margin-left:4px}
+.quality .q.smooth-quality-card .gauge{
+  --pct:0;
+  width:86px;height:86px;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:linear-gradient(145deg,#eef3ee,#dfe8e2);
+  box-shadow:6px 6px 13px #D0D8E4,-6px -6px 13px #fff,inset 2px 2px 5px #DBE1EB;
+}
+.quality .q.smooth-quality-card .gauge::before{
+  content:"";position:absolute;inset:8px;border-radius:50%;
+  background:conic-gradient(from -90deg,#56a06d calc(var(--pct) * 1%), #d9e6dd 0);
+  box-shadow:inset 0 0 0 1px rgba(66,107,73,.08);
+}
+.quality .q.smooth-quality-card .gauge::after{
+  content:"";position:absolute;inset:16px;border-radius:50%;
+  background:var(--bg, #EEF1E9);
+  box-shadow:inset 3px 3px 8px rgba(190,200,193,.28), inset -3px -3px 8px rgba(255,255,255,.95);
+}
+.quality .q.smooth-quality-card .gauge b{position:relative;z-index:2;font-size:14px;color:#264c34}
+.quality .q.smooth-quality-card .qhead .ok{transition:color .35s ease, opacity .35s ease}
+</style>
+<script>
+/* V15.141 — smooth animated top quality cards (COD/ZINC) */
+(function(){
+  const STORAGE_KEY='wwtQualityCardValuesV1';
+  const LIMITS={cod:13000,zinc:500};
+  const PERCENT_CAP={cod:100,zinc:100};
+  const cardsMap={};
+
+  const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+  const ease=(t)=> t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+  const toNumber=(text)=>{
+    const n=parseFloat(String(text||'').replace(/,/g,'').replace(/[^0-9.-]/g,''));
+    return Number.isFinite(n)?n:0;
+  };
+  const formatValue=(metric, value)=>{
+    if(metric==='cod') return Math.round(value).toLocaleString('en-US');
+    if(metric==='zinc') return Math.round(value).toLocaleString('en-US');
+    return Number(value).toFixed(1);
+  };
+  const computePercent=(metric, value)=>{
+    const limit = LIMITS[metric] || 100;
+    return clamp((Number(value)||0) / limit * 100, 0, PERCENT_CAP[metric] || 100);
+  };
+  function updateStatus(card, metric, value){
+    const statusEl=card.querySelector('.qhead .ok');
+    if(!statusEl) return;
+    if(metric==='cod'){
+      if(value>20000){ statusEl.textContent='● วิกฤต'; statusEl.style.color='#b32020'; }
+      else if(value>18000){ statusEl.textContent='● สูง'; statusEl.style.color='#c96b22'; }
+      else if(value>13000){ statusEl.textContent='● เฝ้าระวัง'; statusEl.style.color='#b48600'; }
+      else { statusEl.textContent='● ปกติ'; statusEl.style.color='#0E7A5F'; }
+      return;
+    }
+    if(metric==='zinc'){
+      if(value>500){ statusEl.textContent='● เฝ้าระวัง'; statusEl.style.color='#b48600'; }
+      else { statusEl.textContent='● ปกติ'; statusEl.style.color='#0E7A5F'; }
+    }
+  }
+  function setGauge(card, pct){
+    const gauge=card.querySelector('.gauge');
+    if(!gauge) return;
+    gauge.style.setProperty('--pct', String(clamp(pct,0,100)));
+    const label=gauge.querySelector('b');
+    if(label) label.textContent=Math.round(pct)+'%';
+  }
+  function renderCard(card, metric, value){
+    const qval=card.querySelector('.qval');
+    if(qval){
+      const unit=(qval.querySelector('small')?.textContent||'').trim() || 'mg/L';
+      qval.innerHTML = formatValue(metric, value) + ' <small>' + unit + '</small>';
+    }
+    setGauge(card, computePercent(metric, value));
+    updateStatus(card, metric, value);
+    card.dataset.currentValue=String(value);
+  }
+  function animateCard(card, metric, to, opts={}){
+    const qval=card.querySelector('.qval');
+    const gauge=card.querySelector('.gauge');
+    const duration=opts.duration || 1100;
+    const from=Number.isFinite(opts.from) ? opts.from : toNumber(card.dataset.currentValue || qval?.textContent || 0);
+    if(card._wwtRaf){ cancelAnimationFrame(card._wwtRaf); }
+    const start=performance.now();
+    const tick=(now)=>{
+      const p=clamp((now-start)/duration,0,1);
+      const e=ease(p);
+      const value=from + (to-from)*e;
+      renderCard(card, metric, value);
+      if(gauge){
+        const pct=computePercent(metric, value);
+        gauge.style.setProperty('--pct', String(pct));
+      }
+      if(p<1){ card._wwtRaf=requestAnimationFrame(tick); }
+      else {
+        renderCard(card, metric, to);
+        saveState();
+      }
+    };
+    card._wwtRaf=requestAnimationFrame(tick);
+  }
+  function saveState(){
+    const state={};
+    Object.entries(cardsMap).forEach(([metric,card])=>{
+      const val=toNumber(card.dataset.currentValue || 0);
+      state[metric]=val;
+    });
+    try{ sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function loadState(){
+    try{ return JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; }
+  }
+  function detectMetric(card){
+    const head=(card.querySelector('.qhead span')?.textContent || '').toUpperCase();
+    if(head.includes('COD')) return 'cod';
+    if(head.includes('ZINC')) return 'zinc';
+    return null;
+  }
+  function initCards(){
+    const stored=loadState();
+    document.querySelectorAll('.quality > .q').forEach(card=>{
+      const metric=detectMetric(card);
+      if(!metric) return;
+      cardsMap[metric]=card;
+      card.classList.add('smooth-quality-card');
+      const target=toNumber(card.querySelector('.qval')?.textContent || 0);
+      const from = Number.isFinite(stored[metric]) ? stored[metric] : 0;
+      card.dataset.currentValue=String(from);
+      renderCard(card, metric, from);
+      requestAnimationFrame(()=>animateCard(card, metric, target, {from, duration:1000}));
+    });
+  }
+  function setMetric(metric, value, options={}){
+    const card=cardsMap[metric];
+    const v=Number(value);
+    if(!card || !Number.isFinite(v)) return false;
+    if(options.animate===false){ renderCard(card, metric, v); saveState(); return true; }
+    animateCard(card, metric, v, {from:toNumber(card.dataset.currentValue||0), duration:options.duration||900});
+    return true;
+  }
+  window.WWTQualityCards={
+    set(metric, value, options={}){ return setMetric(String(metric||'').toLowerCase(), value, options); },
+    setData(data={}, options={}){
+      if(typeof data.cod!=='undefined') setMetric('cod', data.cod, options);
+      if(typeof data.zinc!=='undefined') setMetric('zinc', data.zinc, options);
+    },
+    get(){
+      const out={};
+      Object.entries(cardsMap).forEach(([metric,card])=>{ out[metric]=toNumber(card.dataset.currentValue||0); });
+      return out;
+    }
+  };
+  document.addEventListener('DOMContentLoaded', initCards);
+})();
+</script>
+
+
+<style>
+/* V15.142 — legacy F-WWT-003 digital form based on the user's paper record */
+.legacy-wwt-wrap{margin:0 0 22px;background:#fff;border:1px solid #2e2e2e;color:#1e1e1e;font-family:"Noto Sans Thai","Tahoma",sans-serif;box-shadow:0 10px 24px rgba(44,57,48,.08)}
+.legacy-wwt-head{display:grid;grid-template-columns:170px 1fr 220px;border-bottom:2px solid #333;min-height:88px}
+.legacy-brand-box,.legacy-title-box,.legacy-doc-box{padding:9px 12px;display:flex;align-items:center;justify-content:center;text-align:center}
+.legacy-brand-box{border-right:1px solid #333;flex-direction:column}.legacy-brand-box b{font:900 34px/1 Arial,sans-serif;letter-spacing:-.08em}.legacy-brand-box span{font:700 7px Arial,sans-serif;margin-top:3px}
+.legacy-title-box{border-right:1px solid #333;flex-direction:column}.legacy-title-box small{font:700 11px Arial,sans-serif}.legacy-title-box h3{margin:5px 0 0;font-size:21px}
+.legacy-doc-box{display:grid;grid-template-columns:1fr 72px;gap:0;padding:0}.legacy-doc-box>div{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:1px solid #333;border-right:1px solid #333;font-size:10px}.legacy-doc-box>div:last-child{grid-column:1/-1;border-bottom:0}.legacy-doc-box span{font-weight:700}.legacy-doc-box b{font-weight:800}
+.legacy-wwt-note{padding:7px 10px;border-bottom:1px solid #333;background:#f3f7f3;font-size:9px;font-weight:700;color:#526457}
+.legacy-table-scroll{overflow:auto}.legacy-wwt-table{width:100%;min-width:1180px;border-collapse:collapse;table-layout:fixed;font-size:9px;background:#fff}
+.legacy-wwt-table th,.legacy-wwt-table td{border:1px solid #333;padding:4px 3px;text-align:center;vertical-align:middle;height:27px}
+.legacy-wwt-table thead th{background:#f0f0ea;font-weight:800}.legacy-wwt-table .time-col{width:62px}.legacy-wwt-table thead small{font-size:8px;font-weight:700}.legacy-setting{width:32px;border:0;border-bottom:1px dotted #555;background:transparent;text-align:center;font:800 9px inherit;outline:0}.legacy-wwt-table .unit-row th{font-size:8px;font-weight:600;color:#555;padding:2px}
+.legacy-wwt-table td.manual-cell{padding:0;background:#fff}.legacy-manual-input{width:100%;height:100%;min-height:26px;border:0;background:transparent;text-align:center;font:700 10px "Noto Sans Thai",sans-serif;outline:0}.legacy-manual-input:focus{background:#fff9d9;box-shadow:inset 0 0 0 2px #d5bd62}
+.legacy-wwt-table .auto-group,.legacy-wwt-table .auto-col,.legacy-wwt-table td.auto-cell{background:#edf7ef}.legacy-wwt-table td.auto-cell{font-weight:800;color:#245437}.legacy-wwt-table td.missing{color:#93a197;font-weight:600}.legacy-wwt-table tfoot th,.legacy-wwt-table tfoot td{background:#f0f0ea;font-weight:800}.legacy-foot-note{text-align:left!important;padding-left:10px!important;color:#59645d;font-size:8px}.legacy-form-foot{display:flex;justify-content:space-between;gap:18px;padding:9px 12px 12px;font-size:8px;line-height:1.5}.legacy-form-foot>span{max-width:62%;color:#59645d}.legacy-form-foot>div{white-space:nowrap}
+@media(max-width:760px){.legacy-wwt-head{grid-template-columns:110px 1fr}.legacy-doc-box{grid-column:1/-1;border-top:1px solid #333}.legacy-brand-box b{font-size:25px}.legacy-title-box h3{font-size:16px}.legacy-form-foot{display:block}.legacy-form-foot>span{display:block;max-width:none;margin-bottom:8px}}
+@media print{.legacy-wwt-wrap{box-shadow:none;margin:0;border:1px solid #000;break-inside:avoid}.legacy-table-scroll{overflow:visible}.legacy-wwt-table{min-width:0;font-size:7px}.legacy-wwt-table th,.legacy-wwt-table td{padding:2px 1px;height:20px}.legacy-manual-input{font-size:7px}.legacy-form-foot{font-size:7px}}
+</style>
+
+<script>
+/* V15.144 — AUTO F-WWT-003: Actual = Total current - Total previous */
+(function(){
+  function pad(n){return String(n).padStart(2,'0')}
+  function thDate(d){const x=new Date(d);return `${pad(x.getDate())}/${pad(x.getMonth()+1)}/${x.getFullYear()+543}`}
+  function timeLabel(slot){return pad((5+slot)%24)+':00'}
+  function noDataCell(){return '<td class="legacy-no-data" title="ยังไม่ได้เชื่อม Sensor">NO DATA</td>'}
+  function autoCell(v, cls=''){return `<td class="auto-cell ${cls}">${v}</td>`}
+
+  function render(){
+    const body=document.getElementById('legacyWWTBody');if(!body)return;
+    const api=window.WWTRealData;
+    const rows=api?.getHourly?.()||[];
+    const cyc=api?.getCycle?.();
+    const map=new Map(rows.map(r=>[Number(r.slot),r]));
+
+    let cumulative=0;
+    let previousTotal=null;
+    let sumFlow=0;
+    let flowCount=0;
+    let totalActual=0;
+    let actualCount=0;
+    let html='';
+
+    for(let slot=0;slot<24;slot++){
+      const r=map.get(slot);
+      const flow=r&&Number.isFinite(Number(r.flow))?Number(r.flow):null;
+
+      let currentTotal=null;
+      let actual=null;
+
+      if(flow!=null){
+        cumulative += flow;
+        currentTotal = cumulative;
+        sumFlow += flow;
+        flowCount++;
+
+        if(previousTotal!=null){
+          actual = currentTotal - previousTotal;
+          totalActual += actual;
+          actualCount++;
+        }
+
+        previousTotal = currentTotal;
+      }
+
+      html+=`<tr><th>${timeLabel(slot)}</th>`;
+
+      for(let i=0;i<9;i++) html+=noDataCell();
+
+      if(flow!=null){
+        html+=autoCell(flow.toFixed(1),'legacy-live-auto');
+        html+=autoCell(currentTotal.toFixed(1),'legacy-live-auto');
+        html+=actual!=null
+          ? autoCell(actual.toFixed(1),'legacy-actual-auto')
+          : autoCell('—','missing');
+      }else{
+        html+=autoCell('—','missing');
+        html+=autoCell('—','missing');
+        html+=autoCell('—','missing');
+      }
+
+      html+='</tr>';
+    }
+
+    body.innerHTML=html;
+
+    const avg=document.getElementById('legacyAvgFlow');
+    if(avg) avg.textContent=flowCount?(sumFlow/flowCount).toFixed(1):'—';
+
+    const total=document.getElementById('legacyTotalVolume');
+    if(total) total.textContent=flowCount?cumulative.toFixed(1):'—';
+
+    const actualTotal=document.getElementById('legacyActualVolume');
+    if(actualTotal) actualTotal.textContent=actualCount?totalActual.toFixed(1):'—';
+
+    const date=document.getElementById('legacyReportDate');
+    if(date&&cyc?.start) date.textContent=thDate(cyc.start);
+
+    const set=document.getElementById('legacySedSetting');
+    const existing=document.getElementById('dailyFlowSettingValue')?.textContent?.match(/[\d.]+/);
+    if(set&&existing) set.textContent=Number(existing[0]).toFixed(1);
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(render,900);
+    setInterval(render,60000);
+    window.addEventListener('wwt:flow-realtime',()=>setTimeout(render,250));
+  });
+
+  window.WWTLegacyForm={refresh:render};
+})();
+</script>
+
+
+<style>
+/* V15.142 — fix COD/ZINC smooth gauge conflict with legacy .gauge:before rules */
+.quality .q.smooth-quality-card .gauge::before{
+  border:0 !important;
+  border-left:0 !important;
+  box-shadow:none !important;
+  background:conic-gradient(from -90deg,#56a06d calc(var(--pct) * 1%), #d9e6dd 0) !important;
+}
+.quality .q.smooth-quality-card .gauge::after{
+  border:0 !important;
+  box-shadow:inset 3px 3px 8px rgba(190,200,193,.28), inset -3px -3px 8px rgba(255,255,255,.95) !important;
+}
+</style>
+
+
+<style>
+/* V15.143 — automatic record mode: no numeric entry by employees */
+.legacy-setting-static{display:inline-block;min-width:25px;padding:0 3px;border-bottom:1px solid #666;font-weight:900;color:#234b32}
+.legacy-wwt-table td.legacy-no-data{background:#f4f5f3!important;color:#9aa39c!important;font-size:7px!important;font-weight:800!important;letter-spacing:.05em}
+.legacy-wwt-table td.legacy-live-auto{background:#e2f3e6!important;color:#174b2c!important;box-shadow:inset 0 0 0 1px rgba(44,109,64,.08)}
+.legacy-wwt-note{display:flex;align-items:center;gap:7px;background:#edf7ef!important;color:#31523a!important}
+.legacy-wwt-note:before{content:'AUTO';display:inline-grid;place-items:center;padding:3px 6px;border-radius:999px;background:#2f6847;color:#fff;font:900 7px Inter,sans-serif;letter-spacing:.08em}
+/* Hide any legacy numeric-entry controls if older styles/markup survive */
+#legacyWWTForm .legacy-manual-input,#legacyWWTForm input.legacy-setting{display:none!important}
+</style>
 
 </body></html>
