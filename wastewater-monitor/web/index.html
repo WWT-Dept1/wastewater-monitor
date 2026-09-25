@@ -10443,9 +10443,16 @@ body.daily-report-view{
     <div class="period">
       <small>RECORD PERIOD</small>
       <b>13/09/2569 <strong>05:00</strong> <i>→</i> 14/09/2569 <strong>05:00</strong></b>
+      <div class="history-controls">
+        <button type="button" id="historyPrevDay" aria-label="Previous day">‹</button>
+        <input type="date" id="historyDateInput" aria-label="เลือกวันที่ย้อนหลัง">
+        <button type="button" id="historyNextDay" aria-label="Next day">›</button>
+        <button type="button" id="historyTodayBtn">วันนี้</button>
+      </div>
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
+  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง แล้วคำนวณเป็นค่ารายชั่วโมงอัตโนมัติ</div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -13278,7 +13285,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script>
 /* V15.141 — REAL DATA BUS: Supabase -> Trend + Hourly Log + Daily Summary
    Uses real rows from public.flow_readings only. No demo/static Flow values are used by these sections.
-   Hourly record rule: first valid reading in each hour of the 05:00→05:00 operating cycle.
+   Hourly record rule: use ALL real readings inside each hour of the 05:00→05:00 operating cycle.
    The current Trend hour is refreshed from the latest live reading.
 */
 (function(){
@@ -13296,6 +13303,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   let hourly=[];
   let liveLatest=null;
   let loading=false;
+  let selectedCycleDate=null; // YYYY-MM-DD (Bangkok date); null = current cycle
 
   function thaiParts(date){
     const d=new Date(date.getTime()+TZ);
@@ -13306,6 +13314,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     let startMs=Date.UTC(p.y,p.m,p.day,5-7,0,0,0);
     if(now.getTime()<startMs) startMs-=24*HOUR;
     return {start:new Date(startMs),end:new Date(startMs+24*HOUR)};
+  }
+  function isoBangkokDate(date){
+    const p=thaiParts(date);
+    return `${p.y}-${String(p.m+1).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`;
+  }
+  function cycleFromDateString(ymd){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(ymd||''))) return getCycle();
+    const [y,m,d]=ymd.split('-').map(Number);
+    const startMs=Date.UTC(y,m-1,d,5-7,0,0,0);
+    return {start:new Date(startMs),end:new Date(startMs+24*HOUR)};
+  }
+  function activeCycle(){
+    return selectedCycleDate ? cycleFromDateString(selectedCycleDate) : getCycle();
+  }
+  function isCurrentCycle(){
+    if(!cycle) return true;
+    return cycle.start.getTime()===getCycle().start.getTime();
   }
   function thDate(date){
     const d=new Date(date.getTime()+TZ);
@@ -13330,19 +13355,74 @@ document.addEventListener('DOMContentLoaded',()=>{
     return res.json();
   }
 
-  async function firstReading(start,end){
+  async function fetchCycleReadings(start,end){
     const q=new URLSearchParams({
       select:'id,created_at,device_id,flow_m3h',
       device_id:'eq.'+CFG.DEVICE,
       created_at:'gte.'+start.toISOString(),
       order:'created_at.asc',
-      limit:'1'
+      limit:'10000'
     });
     q.append('created_at','lt.'+end.toISOString());
     const rows=await api(q);
-    if(!Array.isArray(rows)||!rows.length) return null;
-    const r=rows[0],v=Number(r.flow_m3h),ts=new Date(r.created_at);
-    return Number.isFinite(v)&&Number.isFinite(ts.getTime())?{id:r.id,flow:v,timestamp:ts}:null;
+    if(!Array.isArray(rows)) return [];
+    return rows.map(r=>{
+      const flow=Number(r.flow_m3h);
+      const timestamp=new Date(r.created_at);
+      return Number.isFinite(flow)&&Number.isFinite(timestamp.getTime())
+        ? {id:r.id,flow,timestamp}
+        : null;
+    }).filter(Boolean);
+  }
+
+  function aggregateHourly(readings){
+    const buckets=new Map();
+
+    for(const r of readings){
+      const slot=Math.floor((r.timestamp.getTime()-cycle.start.getTime())/HOUR);
+      if(slot<0||slot>24) continue;
+      if(!buckets.has(slot)) buckets.set(slot,[]);
+      buckets.get(slot).push(r);
+    }
+
+    const out=[];
+    for(const [slot,list] of [...buckets.entries()].sort((a,b)=>a[0]-b[0])){
+      list.sort((a,b)=>a.timestamp-b.timestamp);
+
+      const slotTime=new Date(cycle.start.getTime()+slot*HOUR);
+      const slotEnd=new Date(Math.min(
+        slotTime.getTime()+HOUR,
+        cycle.end.getTime(),
+        isCurrentCycle() ? Date.now() : cycle.end.getTime()
+      ));
+
+      const avgFlow=list.reduce((sum,r)=>sum+r.flow,0)/list.length;
+
+      // คำนวณปริมาตรจากข้อมูลจริงทุกจุดภายในชั่วโมง
+      // ใช้ค่าล่าสุดค้างไว้จนถึง sample ถัดไป (last-value hold)
+      let volume=0;
+      for(let i=0;i<list.length;i++){
+        const current=list[i];
+        const nextTime=i+1<list.length
+          ? Math.min(list[i+1].timestamp.getTime(),slotEnd.getTime())
+          : slotEnd.getTime();
+        const dtHours=Math.max(0,nextTime-current.timestamp.getTime())/HOUR;
+        volume+=current.flow*dtHours;
+      }
+
+      out.push({
+        slot,
+        slotTime,
+        flow:avgFlow,
+        volume,
+        sampleCount:list.length,
+        firstTimestamp:list[0].timestamp,
+        lastTimestamp:list[list.length-1].timestamp,
+        timestamp:list[list.length-1].timestamp
+      });
+    }
+
+    return out;
   }
 
   function slotCountForNow(now=new Date()){
@@ -13354,16 +13434,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(loading) return;
     loading=true;
     try{
-      cycle=getCycle();
-      const maxSlot=slotCountForNow();
-      const jobs=[];
-      for(let i=0;i<=maxSlot;i++){
-        const s=new Date(cycle.start.getTime()+i*HOUR);
-        const e=new Date(s.getTime()+HOUR);
-        jobs.push(firstReading(s,e).then(row=>row?{slot:i,slotTime:s,...row}:null));
-      }
-      const result=await Promise.all(jobs);
-      hourly=result.filter(Boolean).sort((a,b)=>a.slot-b.slot);
+      cycle=activeCycle();
+      const readings=await fetchCycleReadings(cycle.start,cycle.end);
+      hourly=aggregateHourly(readings);
       renderAll();
     }catch(err){
       console.error('[WWT Real Hourly]',err);
@@ -13373,7 +13446,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function trendRows(){
     const map=new Map(hourly.map(r=>[r.slot,{...r}]));
-    if(liveLatest&&cycle){
+    if(liveLatest&&cycle&&isCurrentCycle()){
       const idx=Math.floor((liveLatest.timestamp.getTime()-cycle.start.getTime())/HOUR);
       if(idx>=0&&idx<=24){
         const slotTime=new Date(cycle.start.getTime()+idx*HOUR);
@@ -13384,7 +13457,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function statusFor(r){
-    return r.live?'LIVE':'บันทึกแล้ว';
+    if(r.live) return 'LIVE';
+    if(Number.isFinite(r.sampleCount)) return `บันทึกแล้ว · ${r.sampleCount} จุด`;
+    return 'บันทึกแล้ว';
   }
 
   function renderTrend(){
@@ -13433,16 +13508,23 @@ document.addEventListener('DOMContentLoaded',()=>{
   function enrichHourlyRows(rows){
     let cumulative=0;
     let previousTotal=null;
+
     return (rows||[]).map(r=>{
-      const flow = Number(r.flow);
-      const next = {...r, total:null, actual:null};
-      if(Number.isFinite(flow)){
-        cumulative += flow;
-        next.total = cumulative;
-        if(previousTotal!=null){
-          next.actual = cumulative - previousTotal;
-        }
-        previousTotal = cumulative;
+      const flow=Number(r.flow);
+      const volume=Number(r.volume);
+      const next={...r,total:null,actual:null};
+
+      if(Number.isFinite(volume)){
+        cumulative+=volume;
+        next.total=cumulative;
+        next.actual=previousTotal!=null ? cumulative-previousTotal : volume;
+        previousTotal=cumulative;
+      }else if(Number.isFinite(flow)){
+        // fallback สำหรับข้อมูลเก่าที่ไม่มี volume
+        cumulative+=flow;
+        next.total=cumulative;
+        next.actual=previousTotal!=null ? cumulative-previousTotal : flow;
+        previousTotal=cumulative;
       }
       return next;
     });
@@ -13479,15 +13561,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!vals.length)return {count:0,avg:null,min:null,max:null,volume:null};
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
     const min=Math.min(...vals),max=Math.max(...vals);
-    // Hourly snapshots represent one hour each. For current hour, count only elapsed fraction.
-    const now=new Date();
-    let volume=0;
-    for(const r of hourly){
-      const slotStart=r.slotTime.getTime();
-      const slotEnd=slotStart+HOUR;
-      const covered=Math.max(0,Math.min(slotEnd,now.getTime(),cycle.end.getTime())-slotStart)/HOUR;
-      volume+=r.flow*Math.min(1,covered);
-    }
+    // ปริมาตรใช้ข้อมูลจริงทุก sample ในแต่ละชั่วโมง
+    const volume=hourly.reduce(
+      (sum,r)=>sum+(Number.isFinite(Number(r.volume))?Number(r.volume):0),
+      0
+    );
     return {count:vals.length,avg,min,max,volume};
   }
 
@@ -13528,6 +13606,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function onLive(e){
+    if(selectedCycleDate) return;
     const d=e?.detail||{};
     const flow=Number(d.flow),ts=new Date(d.timestamp||Date.now());
     if(!Number.isFinite(flow)||!Number.isFinite(ts.getTime()))return;
@@ -13537,32 +13616,77 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   async function refreshIfNeeded(){
+    // Historical dates stay fixed until user changes date.
+    if(selectedCycleDate) return;
+
     const next=getCycle();
     if(!cycle||next.start.getTime()!==cycle.start.getTime()){
-      cycle=next;hourly=[];liveLatest=null;renderLoading();await loadHourly();return;
+      cycle=next;
+      hourly=[];
+      liveLatest=null;
+      renderLoading();
     }
-    const expected=slotCountForNow();
-    const have=new Set(hourly.map(r=>r.slot));
-    const missing=[];
-    for(let i=0;i<=expected;i++)if(!have.has(i))missing.push(i);
-    if(!missing.length){renderAll();return;}
-    try{
-      const rows=await Promise.all(missing.map(async i=>{
-        const s=new Date(cycle.start.getTime()+i*HOUR),e=new Date(s.getTime()+HOUR);
-        const r=await firstReading(s,e);return r?{slot:i,slotTime:s,...r}:null;
-      }));
-      hourly=[...hourly,...rows.filter(Boolean)].sort((a,b)=>a.slot-b.slot);
-      renderAll();
-    }catch(err){console.error('[WWT Real Hourly refresh]',err);}
+    // Reload all real samples so readings received between hours are included.
+    await loadHourly();
   }
 
-  window.WWTRealData={refresh:loadHourly,getHourly:()=>hourly.map(r=>({...r})),getCycle:()=>cycle&&({start:cycle.start.toISOString(),end:cycle.end.toISOString()})};
+  function shiftHistoryDay(delta){
+    const base=selectedCycleDate || isoBangkokDate(getCycle().start);
+    const [y,m,d]=base.split('-').map(Number);
+    const dt=new Date(Date.UTC(y,m-1,d)+delta*24*HOUR);
+    selectedCycleDate=`${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,'0')}-${String(dt.getUTCDate()).padStart(2,'0')}`;
+    const input=document.getElementById('historyDateInput');
+    if(input) input.value=selectedCycleDate;
+    liveLatest=null;
+    renderLoading();
+    loadHourly();
+  }
+
+  function setHistoryDate(ymd){
+    const current=isoBangkokDate(getCycle().start);
+    selectedCycleDate=(ymd&&ymd!==current)?ymd:null;
+    const input=document.getElementById('historyDateInput');
+    if(input) input.value=ymd||current;
+    liveLatest=null;
+    renderLoading();
+    loadHourly();
+  }
+
+  window.WWTRealData={
+    refresh:loadHourly,
+    getHourly:()=>hourly.map(r=>({...r})),
+    getCycle:()=>cycle&&({start:cycle.start.toISOString(),end:cycle.end.toISOString()}),
+    setDate:setHistoryDate,
+    previousDay:()=>shiftHistoryDay(-1),
+    nextDay:()=>shiftHistoryDay(1),
+    today:()=>setHistoryDate(isoBangkokDate(getCycle().start))
+  };
 
   document.addEventListener('DOMContentLoaded',()=>{
     cycle=getCycle();
+
+    const input=document.getElementById('historyDateInput');
+    const prev=document.getElementById('historyPrevDay');
+    const next=document.getElementById('historyNextDay');
+    const today=document.getElementById('historyTodayBtn');
+    const currentDate=isoBangkokDate(cycle.start);
+
+    if(input){
+      input.value=currentDate;
+      // Allow choosing prior dates and today; no future records.
+      input.max=currentDate;
+      input.addEventListener('change',()=>setHistoryDate(input.value));
+    }
+    prev?.addEventListener('click',()=>shiftHistoryDay(-1));
+    next?.addEventListener('click',()=>{
+      const base=selectedCycleDate||currentDate;
+      if(base>=currentDate) return;
+      shiftHistoryDay(1);
+    });
+    today?.addEventListener('click',()=>setHistoryDate(currentDate));
+
     renderLoading();
     window.addEventListener('wwt:flow-realtime',onLive);
-    // Run after older demo/report initializers so real data wins the initial render.
     setTimeout(loadHourly,250);
     setInterval(refreshIfNeeded,CFG.REFRESH_MS);
   });
@@ -13966,6 +14090,53 @@ document.addEventListener('DOMContentLoaded',()=>{
   .hourly-head span:first-child,.hourly-row>span:first-child{display:none!important}
   .hourly-head span:nth-child(6),.hourly-row em{justify-self:end!important}
   .hourly-row>b,.hourly-row>.hourly-total,.hourly-row>.hourly-actual{font-size:13px!important}
+}
+</style>
+
+
+<style>
+/* V15.148 — Flow Log uses every real reading inside the hour */
+.flowlog-data-note{
+  margin:0 30px 8px;
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:8px;
+  font-weight:700;
+  color:#587064;
+  background:rgba(226,239,228,.55);
+  border:1px solid rgba(49,92,57,.08);
+}
+@media(max-width:700px){
+  .flowlog-data-note{margin:0 18px 8px}
+}
+</style>
+
+
+<style>
+/* V15.149 — Flow Log historical date browsing */
+#flowLogSection .history-controls{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  margin-top:9px;
+}
+#flowLogSection .history-controls input,
+#flowLogSection .history-controls button{
+  height:30px;
+  border:1px solid rgba(49,92,57,.14);
+  border-radius:10px;
+  background:rgba(244,247,242,.92);
+  color:#24472f;
+  font:800 10px "Noto Sans Thai","Tahoma",sans-serif;
+  box-shadow:inset 1px 1px 3px rgba(89,111,91,.08),1px 2px 5px rgba(80,98,82,.08);
+}
+#flowLogSection .history-controls input{padding:0 9px}
+#flowLogSection .history-controls button{min-width:32px;padding:0 10px;cursor:pointer}
+#flowLogSection .history-controls button:hover{background:#e4eee3}
+#flowLogSection .history-controls #historyTodayBtn{min-width:52px}
+@media(max-width:700px){
+  #flowLogSection .history-controls{justify-content:flex-start;flex-wrap:wrap}
 }
 </style>
 
