@@ -10452,7 +10452,7 @@ body.daily-report-view{
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
-  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง แล้วคำนวณเป็นค่ารายชั่วโมงอัตโนมัติ</div>
+  <div class="flowlog-data-note">ใช้ข้อมูลจริงทุกจุดที่ ESP32 ส่งเข้า Supabase ระหว่างชั่วโมง แล้วคำนวณเป็นค่ารายชั่วโมงอัตโนมัติ <b id="flowLogLoadedCount"></b></div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -13356,21 +13356,48 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   async function fetchCycleReadings(start,end){
-    const q=new URLSearchParams({
-      select:'id,created_at,device_id,flow_m3h',
-      device_id:'eq.'+CFG.DEVICE,
-      created_at:'gte.'+start.toISOString(),
-      order:'created_at.asc',
-      limit:'10000'
-    });
-    q.append('created_at','lt.'+end.toISOString());
-    const rows=await api(q);
-    if(!Array.isArray(rows)) return [];
-    return rows.map(r=>{
+    // Supabase/PostgREST commonly caps a response to 1,000 rows.
+    // ESP32 sends every few seconds, so one operating day can easily exceed that.
+    // Fetch in pages so later hours (14:00, 15:00, 16:00, ...) are not lost.
+    const PAGE_SIZE=1000;
+    let offset=0;
+    const all=[];
+
+    while(true){
+      const q=new URLSearchParams({
+        select:'id,created_at,device_id,flow_m3h,input_voltage',
+        device_id:'eq.'+CFG.DEVICE,
+        created_at:'gte.'+start.toISOString(),
+        order:'created_at.asc',
+        offset:String(offset),
+        limit:String(PAGE_SIZE)
+      });
+      q.append('created_at','lt.'+end.toISOString());
+
+      const rows=await api(q);
+      if(!Array.isArray(rows) || !rows.length) break;
+
+      all.push(...rows);
+      if(rows.length < PAGE_SIZE) break;
+
+      offset += PAGE_SIZE;
+
+      // Safety guard. More than 100k samples/day would indicate a configuration issue.
+      if(offset >= 100000) break;
+    }
+
+    return all.map(r=>{
       const flow=Number(r.flow_m3h);
+      const voltage=Number(r.input_voltage);
       const timestamp=new Date(r.created_at);
-      return Number.isFinite(flow)&&Number.isFinite(timestamp.getTime())
-        ? {id:r.id,flow,timestamp}
+
+      return Number.isFinite(flow) && Number.isFinite(timestamp.getTime())
+        ? {
+            id:r.id,
+            flow,
+            voltage:Number.isFinite(voltage)?voltage:null,
+            timestamp
+          }
         : null;
     }).filter(Boolean);
   }
@@ -13418,7 +13445,9 @@ document.addEventListener('DOMContentLoaded',()=>{
         sampleCount:list.length,
         firstTimestamp:list[0].timestamp,
         lastTimestamp:list[list.length-1].timestamp,
-        timestamp:list[list.length-1].timestamp
+        timestamp:list[list.length-1].timestamp,
+        minFlow:Math.min(...list.map(x=>x.flow)),
+        maxFlow:Math.max(...list.map(x=>x.flow))
       });
     }
 
@@ -13459,7 +13488,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   function statusFor(r){
     if(r.live) return 'LIVE';
     if(Number.isFinite(r.sampleCount)) return `บันทึกแล้ว · ${r.sampleCount} จุด`;
-    return 'บันทึกแล้ว';
+    return 'NO DATA';
   }
 
   function renderTrend(){
@@ -13546,6 +13575,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     const preview=document.getElementById('hourlyPreview');
     const full=document.getElementById('hourlyFull');
     const detailed=enrichHourlyRows(hourly);
+    const loadedCount=document.getElementById('flowLogLoadedCount');
+    if(loadedCount){
+      const n=hourly.reduce((s,r)=>s+(Number(r.sampleCount)||0),0);
+      loadedCount.textContent=n?`· โหลดแล้ว ${n.toLocaleString('en-US')} records`:'· NO DATA';
+    }
     if(preview){
       preview.innerHTML=detailed.length?detailed.slice(0,3).map(rowHtml).join(''):emptyRow('ยังไม่มีข้อมูลจริง');
     }
@@ -14095,7 +14129,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <style>
-/* V15.148 — Flow Log uses every real reading inside the hour */
+/* V15.150 — Flow Log uses every real reading + paginated Supabase fetch */
 .flowlog-data-note{
   margin:0 30px 8px;
   padding:8px 10px;
