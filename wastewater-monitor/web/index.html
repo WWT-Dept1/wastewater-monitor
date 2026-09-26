@@ -10211,10 +10211,6 @@ body.daily-report-view{
         <button class="connection-demo-open" id="connectionDemoOpen" type="button">TEST CONNECTION</button>
       </div>
     </div>
-    <div class="flow-setting-inline compact-fsi" aria-label="Flow Setting">
-      <span class="fsi-label">FLOW SETTING</span>
-      <div class="fsi-value">13.0 <small>m³/h</small></div>
-    </div>
   </div>
 </div>
 <div class="connection-banner" id="connectionBanner" role="status" aria-live="polite"></div>
@@ -15093,6 +15089,14 @@ document.addEventListener('DOMContentLoaded',()=>{
 @media(max-width:700px){
   .presentation-data-legend{margin:0 16px 10px;font-size:7px}
   .presentation-data-legend span{min-height:22px;padding:0 7px}
+}
+</style>
+
+
+<style>
+/* Main Outlet Flow card only: Flow Setting removed per request */
+.hero .flow .display.live-display-clean .live-value-row{
+  grid-template-columns:1fr!important;
 }
 </style>
 
