@@ -12078,19 +12078,44 @@ document.addEventListener('DOMContentLoaded',()=>{
       const name=document.getElementById(nameId);
       if(!box||!name)return;
       box.classList.toggle('signed',!!signed[key]);
-      if(signed[key]){
-        name.textContent=signed[key].name||'ลงชื่อแล้ว';
-        name.classList.add('signed-script');
-      }else{
-        name.textContent='รอการลงชื่อ';
-        name.classList.remove('signed-script');
-      }
+
+      // Remove only generated signature preview elements before re-render.
+      box.querySelector('.formal-signature-image')?.remove();
+      box.querySelector('.formal-signer-name')?.remove();
       box.querySelector('.sig-meta')?.remove();
+
       if(signed[key]){
+        // The large area is the real electronic signature drawn on canvas.
+        if(signed[key].signatureImage){
+          const img=document.createElement('img');
+          img.className='formal-signature-image';
+          img.src=signed[key].signatureImage;
+          img.alt='ลายเซ็นอิเล็กทรอนิกส์';
+          box.insertBefore(img,name);
+          name.style.display='none';
+        }else{
+          // Old records created before signature images were stored.
+          name.textContent='ลายเซ็นเดิม';
+          name.classList.remove('signed-script');
+          name.style.display='';
+        }
+
+        // Real full name must be shown BELOW the signature line.
+        const fullName=document.createElement('div');
+        fullName.className='formal-signer-name';
+        fullName.textContent=signed[key].name||'';
+        const caption=box.querySelector('.sig-caption');
+        if(caption) box.insertBefore(fullName,caption);
+        else box.appendChild(fullName);
+
         const meta=document.createElement('div');
         meta.className='sig-meta';
         meta.textContent='✓ ลงชื่ออิเล็กทรอนิกส์แล้ว · '+new Date(signed[key].time||Date.now()).toLocaleString('th-TH');
         box.appendChild(meta);
+      }else{
+        name.textContent='รอการลงชื่อ';
+        name.classList.remove('signed-script');
+        name.style.display='';
       }
     });
   }
@@ -12363,7 +12388,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!document.getElementById('inlineConfirm').checked){err.textContent='กรุณายืนยันว่าตรวจสอบข้อมูลแล้ว';err.classList.add('show');return}
     if(!hasInk){err.textContent='กรุณาลงลายเซ็น';err.classList.add('show');return}
 
-    signed[r.key]={name:currentEmployee.name,code:currentEmployee.code,time:new Date().toISOString(),reportId:signatureReportId};
+    const signatureImage=canvas.toDataURL('image/png');
+    signed[r.key]={
+      name:currentEmployee.name,
+      code:currentEmployee.code,
+      time:new Date().toISOString(),
+      reportId:signatureReportId,
+      signatureImage
+    };
     saveSigned();
     renderSigned();updateState();syncFormalSignatureBoxes();
     document.getElementById('inlineSignForm').hidden=true;
@@ -15494,5 +15526,39 @@ document.addEventListener('DOMContentLoaded',()=>{
 </style>
 
 
+
+
+<style>
+/* Signature document display only:
+   large box = actual electronic signature image
+   below line = employee's real full name */
+.signature-board .sig-box{
+  min-height:132px!important;
+}
+.signature-board .formal-signature-image{
+  display:block;
+  width:88%;
+  max-width:260px;
+  height:58px;
+  object-fit:contain;
+  object-position:center;
+  margin:2px auto 3px;
+}
+.signature-board .sig-box.signed .sig-mark{
+  min-height:0!important;
+}
+.signature-board .formal-signer-name{
+  text-align:center;
+  margin-top:4px;
+  font:800 10px/1.35 "Noto Sans Thai",sans-serif;
+  color:#111;
+}
+.signature-board .sig-line{
+  margin-top:3px!important;
+}
+.signature-board .sig-caption{
+  padding-top:3px!important;
+}
+</style>
 
 </body></html>
