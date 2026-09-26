@@ -12041,7 +12041,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     C:{label:"กะกลางคืน C / C+",start:22,end:5,period:"22:00–05:00",slot:"พนักงานกะกลางคืน"}
   };
 
-  const emptySigned=()=>({A:null,B:null,C:null,reviewer:null,deputy:null,head:null});
+  const emptySigned=()=>({
+    A:null,A_review:null,
+    B:null,B_review:null,
+    C:null,C_review:null,
+    reviewer:null, /* legacy/final reviewer alias for existing document box */
+    deputy:null,
+    head:null
+  });
   let signatureReportId='current';
   let historicalSigning=false;
   let historicalShift='A';
@@ -12060,7 +12067,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   let currentShift='A', currentEmployee=null, hasInk=false;
 
   function signedHasAny(s){
-    return !!(s&&(s.A||s.B||s.C||s.reviewer||s.deputy||s.head));
+    return !!(s&&(s.A||s.A_review||s.B||s.B_review||s.C||s.C_review||s.reviewer||s.deputy||s.head));
   }
 
   function syncFormalSignatureBoxes(){
@@ -12068,7 +12075,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       ['A','sigShiftABox','sigShiftAName'],
       ['B','sigShiftBBox','sigShiftBName'],
       ['C','sigShiftCBox','sigShiftCName'],
-      ['reviewer','sigAssistantBox','sigAssistantName'],
+      ['C_review','sigAssistantBox','sigAssistantName'],
       ['deputy','sigDeputyBox','sigDeputyName'],
       ['head','sigHeadBox','sigHeadName']
     ];
@@ -12164,9 +12171,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=nowTH(),h=Number(p.hour);
     currentShift=h>=5&&h<14?'A':h>=14&&h<22?'B':'C';
     document.getElementById('inlineClock').textContent=`${p.hour}:${p.minute}`;
-    document.getElementById('inlineShift').textContent=historicalSigning
-      ? `ย้อนหลัง · ${SHIFTS[historicalShift].label}`
-      : SHIFTS[currentShift].label;
+
+    const next=nextWorkflowStage();
+    document.getElementById('inlineShift').textContent=next
+      ? `${next.label}`
+      : 'ลงชื่อครบแล้ว';
   }
   tick();setInterval(tick,1000);
 
@@ -12232,30 +12241,81 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=nowTH();
     return `${String(c.start).padStart(2,'0')}:00–${p.hour}:00`;
   }
-  function employeesComplete(){return ['A','B','C'].every(k=>signed[k])}
+
+  function workflowStages(){
+    return [
+      {id:'A',shift:'A',type:'employee',label:'พนักงานกะ A / A+',title:'ผู้บันทึกกะ A / A+'},
+      {id:'A_review',shift:'A',type:'reviewer',label:'ผู้ช่วยควบคุมกะ A / A+',title:'ผู้ช่วยควบคุม A / A+'},
+      {id:'B',shift:'B',type:'employee',label:'พนักงานกะ B',title:'ผู้บันทึกกะ B'},
+      {id:'B_review',shift:'B',type:'reviewer',label:'ผู้ช่วยควบคุมกะ B',title:'ผู้ช่วยควบคุม B'},
+      {id:'C',shift:'C',type:'employee',label:'พนักงานกะ C / C+',title:'ผู้บันทึกกะ C / C+'},
+      {id:'C_review',shift:'C',type:'reviewer',label:'ผู้ช่วยควบคุมกะ C / C+',title:'ผู้ช่วยควบคุม C / C+'},
+      {id:'deputy',shift:null,type:'deputy',label:'รองหัวหน้าแผนก',title:'รองหัวหน้าแผนก'},
+      {id:'head',shift:null,type:'head',label:'หัวหน้าแผนก',title:'หัวหน้าแผนก'}
+    ];
+  }
+
+  function nextWorkflowStage(){
+    return workflowStages().find(s=>!signed[s.id]) || null;
+  }
+
+  function stageRoleMatches(emp,stage){
+    if(!stage) return false;
+    if(stage.type==='employee') return emp.role==='employee';
+    if(stage.type==='reviewer') return emp.role==='shift_reviewer' || emp.role==='reviewer';
+    if(stage.type==='deputy') return emp.role==='deputy';
+    if(stage.type==='head') return emp.role==='head';
+    return false;
+  }
+
+  function stageRows(stage){
+    if(!stage) return rowsAll();
+    if(stage.shift) return rowsShiftToCurrentHour(stage.shift);
+    return rowsAll();
+  }
+
+  function workflowLabel(){
+    const n=nextWorkflowStage();
+    return n ? `ขั้นตอนถัดไป · ${n.label}` : 'ลงชื่อครบทุกขั้นตอนแล้ว';
+  }
 
   function route(emp){
-    const shiftKey=historicalSigning ? historicalShift : currentShift;
-    const c=SHIFTS[shiftKey];
-    if(emp.role==='employee'){
-      return {title:c.slot,text:`${c.label} · ${reviewPeriodToCurrentHour(shiftKey)}`,rows:rowsShiftToCurrentHour(shiftKey),can:!signed[shiftKey],key:shiftKey};
+    const stage=nextWorkflowStage();
+
+    if(!stage){
+      return {
+        title:'เอกสารลงชื่อครบแล้ว',
+        text:'ครบทุกขั้นตอน',
+        rows:rowsAll(),
+        can:false,
+        key:null,
+        reason:'เอกสารนี้ลงชื่อและอนุมัติครบทุกขั้นตอนแล้ว'
+      };
     }
-    if(emp.role==='shift_reviewer'){
-      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:reviewPeriodToCurrentHour(shiftKey),rows:rowsShiftToCurrentHour(shiftKey),can:!signed[shiftKey],key:shiftKey};
+
+    const rows=stageRows(stage);
+    const text=stage.shift
+      ? `${SHIFTS[stage.shift].label} · ${historicalSigning ? SHIFTS[stage.shift].period : reviewPeriodToCurrentHour(stage.shift)}`
+      : 'รอบ 05:00–05:00';
+
+    if(!stageRoleMatches(emp,stage)){
+      return {
+        title:stage.title,
+        text,
+        rows,
+        can:false,
+        key:stage.id,
+        reason:`ขั้นตอนถัดไปคือ ${stage.label}`
+      };
     }
-    if(emp.role==='reviewer'){
-      return {title:'ผู้ตรวจสอบเอกสารประจำวัน',text:'รอบ 05:00–05:00',rows:rowsAll(),can:employeesComplete()&&!signed.reviewer,key:'reviewer',
-        reason:!employeesComplete()?'พนักงานทั้ง 3 กะยังลงชื่อไม่ครบ':''};
-    }
-    if(emp.role==='deputy'){
-      return {title:'รองหัวหน้าแผนก',text:'อนุมัติเอกสาร',rows:rowsAll(),can:!!signed.reviewer&&!signed.deputy,key:'deputy',
-        reason:!signed.reviewer?'รอผู้ตรวจสอบลงชื่อก่อน':''};
-    }
-    if(emp.role==='head'){
-      return {title:'หัวหน้าแผนก',text:'อนุมัติขั้นสุดท้าย',rows:rowsAll(),can:!!signed.deputy&&!signed.head,key:'head',
-        reason:!signed.deputy?'รอรองหัวหน้าแผนกลงชื่อก่อน':''};
-    }
-    return {title:'เจ้าหน้าที่เอกสาร',text:'ดูเอกสาร',rows:rowsAll(),can:false,key:null,reason:'ตำแหน่งนี้ไม่มีช่องลงชื่อ'};
+
+    return {
+      title:stage.title,
+      text,
+      rows,
+      can:true,
+      key:stage.id
+    };
   }
 
   function renderRows(rows){
@@ -12273,20 +12333,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   function renderSigned(){
     const arr=[];
-    ['A','B','C'].forEach(k=>{if(signed[k])arr.push([SHIFTS[k].slot,signed[k].name])});
-    if(signed.reviewer)arr.push(['ผู้ตรวจสอบ',signed.reviewer.name]);
-    if(signed.deputy)arr.push(['รองหัวหน้าแผนก',signed.deputy.name]);
-    if(signed.head)arr.push(['หัวหน้าแผนก',signed.head.name]);
+    workflowStages().forEach(stage=>{
+      const s=signed[stage.id];
+      if(s) arr.push([stage.label,s.name]);
+    });
     document.getElementById('inlineSignedList').innerHTML=arr.map(x=>`<div class="inline-signed-row"><span>${x[0]}</span><b>${x[1]}</b><em>ลงชื่อแล้ว</em></div>`).join('');
   }
   function updateState(){
-    let s='รอตรวจสอบ';
-    if(employeesComplete())s='รอผู้ตรวจสอบ';
-    if(signed.reviewer)s='รออนุมัติ';
-    if(signed.deputy)s='รอหัวหน้าอนุมัติ';
-    if(signed.head)s='อนุมัติแล้ว';
+    const next=nextWorkflowStage();
+    const s=next ? `รอ ${next.label}` : 'อนุมัติแล้ว';
     document.getElementById('inlineDocState').textContent=s;
     const chip=document.querySelector('.eform-status-chip');if(chip)chip.textContent=s;
+    tick();
   }
 
   const canvas=document.getElementById('inlineSignatureCanvas'),ctx=canvas.getContext('2d');
@@ -12396,12 +12454,46 @@ document.addEventListener('DOMContentLoaded',()=>{
       reportId:signatureReportId,
       signatureImage
     };
+    // Compatibility: after the final shift reviewer (C/C+) signs,
+    // mirror that signature into the legacy reviewer slot used elsewhere.
+    if(r.key==='C_review'){
+      signed.reviewer={...signed[r.key]};
+    }
+
     saveSigned();
-    renderSigned();updateState();syncFormalSignatureBoxes();
+    renderSigned();
+    updateState();
+    syncFormalSignatureBoxes();
+
+    const completedTitle=r.title;
+    const completedName=currentEmployee.name;
+    const next=nextWorkflowStage();
+
+    // Advance the screen immediately. Do not keep showing A/A+ after it is complete.
+    codeInput.value='';
+    currentEmployee=null;
+    document.getElementById('inlineLookupState').textContent='0/8–9';
+    document.getElementById('inlineLookupState').className='';
+    document.getElementById('inlinePersonCard').hidden=true;
+    document.getElementById('inlineRoute').hidden=true;
     document.getElementById('inlineSignForm').hidden=true;
+    document.getElementById('inlineReviewContent').hidden=true;
+    document.getElementById('inlineReviewEmpty').hidden=false;
+    clearSig();
+
+    const pp=document.getElementById('cleanPeriodPill');
+    if(pp) pp.textContent=next ? next.label : 'ลงชื่อครบแล้ว';
+
     const msg=document.getElementById('inlineAccessMsg');
-    msg.hidden=false;msg.style.background='#e2f1e6';msg.style.borderColor='#b8d1be';msg.style.color='#285e3b';
-    msg.textContent=`ลงชื่อสำเร็จ · ${r.title} · ${currentEmployee.name}`;
+    msg.hidden=false;
+    msg.style.background='#e2f1e6';
+    msg.style.borderColor='#b8d1be';
+    msg.style.color='#285e3b';
+    msg.textContent=next
+      ? `ลงชื่อสำเร็จ · ${completedTitle} · ${completedName} · ขั้นตอนถัดไป: ${next.label}`
+      : `ลงชื่อสำเร็จ · ${completedTitle} · ${completedName} · เอกสารอนุมัติครบแล้ว`;
+
+    codeInput.focus();
   });
 
   updateState();
@@ -15558,6 +15650,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 }
 .signature-board .sig-caption{
   padding-top:3px!important;
+}
+</style>
+
+
+<style>
+/* Signature workflow only */
+#inlineShift{
+  white-space:normal!important;
+  text-align:center!important;
+  line-height:1.25!important;
 }
 </style>
 
