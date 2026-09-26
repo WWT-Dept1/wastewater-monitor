@@ -10213,8 +10213,13 @@ body.daily-report-view{
     </div>
   </div>
 </div>
-<div class="connection-banner" id="connectionBanner" role="status" aria-live="polite"></div>
-<div class="flowdial"></div><div class="flowdial-center"><div>Δ FLOW<b>-0.5</b><small>m³/h · ต่ำกว่า Setting 3.8%</small></div></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
+<div class="data-status-orb" id="dataStatusOrb" data-state="live" aria-label="Data connection status">
+  <small>DATA LINK</small>
+  <b id="dataStatusText">LIVE</b>
+  <span>SUPABASE</span>
+  <em id="dataStatusTime">--:--:--</em>
+</div>
+<div class="connection-banner" id="connectionBanner" role="status" aria-live="polite"></div><div class="flowline"><svg viewBox="0 0 700 40" preserveAspectRatio="none"><path d="M0 25 C60 22 80 12 135 18 S220 31 275 20 S365 11 420 20 S520 29 700 15" fill="none" stroke="#0E7A5F" stroke-width="1.5"/><path d="M0 31 H700" stroke="#B8CBC3" stroke-width=".6" stroke-dasharray="3 6"/></svg></div></div><div class="quality"><div class="q"><div class="qhead"><span>COD · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">11,800 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ COD &gt; 13,000 mg/L · สูง &gt; 18,000 · วิกฤต &gt; 20,000</div></div><div class="gauge"><b>91%</b></div></div></div><div class="q"><div class="qhead"><span>ZINC · OUTLET</span><span class="ok">● ปกติ</span></div><div class="qbody"><div><div class="qval">354 <small>mg/L</small></div><div class="ref">แจ้งเตือนเมื่อ Zinc &gt; 500 mg/L</div></div><div class="gauge"><b>71%</b></div></div></div></div>
 </section>
 <section class="lower">
 
@@ -15099,5 +15104,153 @@ document.addEventListener('DOMContentLoaded',()=>{
   grid-template-columns:1fr!important;
 }
 </style>
+
+
+<style>
+/* Main Outlet Flow card only: remove Δ FLOW / Setting comparison indicator */
+.hero .flow > .flowdial,
+.hero .flow > .flowdial-center{
+  display:none!important;
+}
+</style>
+
+
+<style>
+/* Main Outlet Flow card only — fill former Setting/Delta area with real connection status */
+.hero .flow .data-status-orb{
+  position:absolute;
+  right:7.5%;
+  top:50%;
+  transform:translateY(-38%);
+  width:154px;
+  height:154px;
+  border-radius:50%;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  z-index:4;
+  background:rgba(248,251,248,.84);
+  border:1px solid rgba(49,92,57,.12);
+  box-shadow:
+    10px 12px 26px rgba(68,91,76,.10),
+    -8px -8px 22px rgba(255,255,255,.92),
+    inset 0 0 0 7px rgba(233,242,235,.52);
+  font-family:"Noto Sans Thai","Segoe UI",Tahoma,sans-serif;
+}
+.hero .flow .data-status-orb small{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.13em;
+  color:#7a8e82;
+  line-height:1;
+}
+.hero .flow .data-status-orb b{
+  margin-top:8px;
+  font-size:25px;
+  font-weight:900;
+  line-height:1;
+  color:#2e7550;
+  letter-spacing:-.03em;
+}
+.hero .flow .data-status-orb span{
+  margin-top:7px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#657a6e;
+}
+.hero .flow .data-status-orb em{
+  margin-top:4px;
+  font-size:9px;
+  font-style:normal;
+  font-weight:800;
+  color:#83958b;
+  font-variant-numeric:tabular-nums;
+}
+.hero .flow .data-status-orb[data-state="delayed"]{
+  background:rgba(255,249,229,.88);
+  border-color:rgba(179,132,28,.20);
+  box-shadow:
+    10px 12px 26px rgba(115,87,31,.09),
+    -8px -8px 22px rgba(255,255,255,.92),
+    inset 0 0 0 7px rgba(248,235,191,.52);
+}
+.hero .flow .data-status-orb[data-state="delayed"] b{color:#a27113}
+.hero .flow .data-status-orb[data-state="offline"]{
+  background:rgba(255,239,237,.90);
+  border-color:rgba(190,91,80,.20);
+  box-shadow:
+    10px 12px 26px rgba(115,61,54,.09),
+    -8px -8px 22px rgba(255,255,255,.92),
+    inset 0 0 0 7px rgba(246,216,212,.55);
+}
+.hero .flow .data-status-orb[data-state="offline"] b{color:#b5574e}
+
+@media(max-width:700px){
+  .hero .flow .data-status-orb{
+    width:102px;
+    height:102px;
+    right:16px;
+    top:150px;
+    transform:none;
+    box-shadow:
+      6px 8px 16px rgba(68,91,76,.10),
+      -5px -5px 15px rgba(255,255,255,.90),
+      inset 0 0 0 5px rgba(233,242,235,.52);
+  }
+  .hero .flow .data-status-orb small{font-size:7px}
+  .hero .flow .data-status-orb b{font-size:17px;margin-top:5px}
+  .hero .flow .data-status-orb span{font-size:7px;margin-top:5px}
+  .hero .flow .data-status-orb em{font-size:7px;margin-top:3px}
+}
+</style>
+
+<script>
+/* Mirror the existing real connection status into the new DATA LINK indicator. */
+(function(){
+  function syncDataStatusOrb(){
+    const orb=document.getElementById('dataStatusOrb');
+    const row=document.getElementById('liveConnectionRow');
+    const stateText=document.getElementById('connectionState');
+    const clock=document.getElementById('flowLiveClock');
+    const orbText=document.getElementById('dataStatusText');
+    const orbTime=document.getElementById('dataStatusTime');
+    if(!orb) return;
+
+    let state=(row?.dataset?.state || '').toLowerCase();
+    const txt=(stateText?.textContent || '').trim().toUpperCase();
+
+    if(!state){
+      if(txt.includes('OFFLINE')) state='offline';
+      else if(txt.includes('DELAY')) state='delayed';
+      else state='live';
+    }
+    if(state==='stale') state='delayed';
+
+    orb.dataset.state=state;
+    if(orbText){
+      orbText.textContent =
+        state==='offline' ? 'OFFLINE' :
+        state==='delayed' ? 'DELAYED' : 'LIVE';
+    }
+    if(orbTime) orbTime.textContent=(clock?.textContent || '--:--:--').trim();
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    syncDataStatusOrb();
+    const row=document.getElementById('liveConnectionRow');
+    const stateText=document.getElementById('connectionState');
+    const clock=document.getElementById('flowLiveClock');
+    const obs=new MutationObserver(syncDataStatusOrb);
+    if(row) obs.observe(row,{attributes:true,attributeFilter:['data-state'],subtree:true,childList:true,characterData:true});
+    if(stateText) obs.observe(stateText,{subtree:true,childList:true,characterData:true});
+    if(clock) obs.observe(clock,{subtree:true,childList:true,characterData:true});
+    setInterval(syncDataStatusOrb,1000);
+  });
+})();
+</script>
 
 </body></html>
