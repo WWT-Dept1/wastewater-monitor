@@ -10412,21 +10412,42 @@ body.daily-report-view{
 
       <div class="quality-status-note">
         <i></i>
-        <div><b>ค่าปัจจุบันอยู่ในช่วงปกติ</b><span>ระบบพร้อมแจ้งเตือนเมื่อค่าเกินเกณฑ์ที่กำหนด</span></div>
+        <div>
+          <b>ค่าปัจจุบันอยู่ในช่วงปกติ</b>
+          <span>ระบบพร้อมแจ้งเตือนทั้ง COD และ Zinc เมื่อค่าเกินเกณฑ์ พร้อมคำแนะนำให้ตรวจสอบและปรับอัตราการฟีดสารเคมีให้เหมาะสม</span>
+        </div>
       </div>
 
-      <div class="monitor-actions">
-        <button type="button" class="test-alert compact-toggle inner-test clean-test-btn premium-test-btn" id="toggleAlertDemo">
-          <i>!</i>
-          <span>จำลองระดับ COD</span>
-        </button>
+      <div class="quality-actions-grid">
+        <div class="monitor-actions quality-action-block">
+          <button type="button" class="test-alert compact-toggle inner-test clean-test-btn premium-test-btn" id="toggleAlertDemo">
+            <i>!</i>
+            <span>จำลองระดับ COD</span>
+          </button>
 
-        <div class="alert-test-popup clean-cod-popup" id="alertTestPopup">
-          <div class="alert-test-popup-head">เลือกระดับ COD ที่ต้องการทดสอบ</div>
-          <div class="alert-test-popup-buttons">
-            <button type="button" class="alert-test warning-test" data-alert="warning">ระวัง</button>
-            <button type="button" class="alert-test high-test" data-alert="high">สูง</button>
-            <button type="button" class="alert-test critical-test" data-alert="critical">วิกฤต</button>
+          <div class="alert-test-popup clean-cod-popup" id="alertTestPopup">
+            <div class="alert-test-popup-head">เลือกระดับ COD ที่ต้องการทดสอบ</div>
+            <div class="alert-test-popup-buttons">
+              <button type="button" class="alert-test warning-test" data-alert="warning">ระวัง</button>
+              <button type="button" class="alert-test high-test" data-alert="high">สูง</button>
+              <button type="button" class="alert-test critical-test" data-alert="critical">วิกฤต</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="monitor-actions quality-action-block">
+          <button type="button" class="test-alert compact-toggle inner-test clean-test-btn premium-test-btn" id="toggleZincAlertDemo">
+            <i>!</i>
+            <span>จำลองระดับ Zinc</span>
+          </button>
+
+          <div class="alert-test-popup clean-cod-popup" id="zincAlertTestPopup">
+            <div class="alert-test-popup-head">เลือกระดับ Zinc ที่ต้องการทดสอบ</div>
+            <div class="alert-test-popup-buttons">
+              <button type="button" class="alert-test warning-test" data-zinc-alert="zinc_warning">ระวัง</button>
+              <button type="button" class="alert-test high-test" data-zinc-alert="zinc_high">สูง</button>
+              <button type="button" class="alert-test critical-test" data-zinc-alert="zinc_critical">วิกฤต</button>
+            </div>
           </div>
         </div>
       </div>
@@ -10452,7 +10473,7 @@ body.daily-report-view{
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
-  <div class="flowlog-data-note">บันทึกอัตโนมัติทุกชั่วโมงที่นาที :30 เช่น 14:30 → 15:30 → 16:30 · ใช้ข้อมูลจริงจาก Supabase <b id="flowLogLoadedCount"></b></div>
+  <div class="flowlog-data-note">บันทึกทุกชั่วโมงที่นาที :30 · FLOW RATE = ค่าเฉลี่ยข้อมูลจริงตลอด 1 ชั่วโมง · TOTAL/ACTUAL คำนวณจากข้อมูลจริงทั้งช่วง <b id="flowLogLoadedCount"></b></div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -11177,38 +11198,34 @@ function scheduleWarningPattern(level){
   const alert=document.getElementById('criticalAlert');
   if(!alert?.classList.contains('show')) return;
 
-  /* LOW / warning: serious repeating industrial warning pattern */
+  /* WARNING / yellow:
+     clear double-beep pattern with a pause, similar to common industrial HMI alarms.
+     This is a recognisable alarm pattern, not a claim of certification to a specific standard. */
   if(level==='warning'){
-    tone(720,.18,.24,'square',0);
-    tone(920,.18,.25,'square',.24);
-    tone(720,.18,.24,'square',.48);
-    tone(920,.28,.26,'square',.72);
-
-    // Repeat clearly but not as aggressively as critical/red.
-    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1280));
-
-    // Hardware vibration where the browser/device supports Vibration API.
-    if(navigator.vibrate){
-      navigator.vibrate([320,110,320,110,520]);
-    }
+    tone(880,.22,.22,'sine',0);
+    tone(880,.22,.22,'sine',.34);
+    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1700));
+    if(navigator.vibrate) navigator.vibrate([220,140,220]);
     return;
   }
 
-  /* HIGH / rapid change: urgent alternating triple tone */
+  /* HIGH / orange:
+     faster alternating high-low pattern for increased urgency. */
   if(level==='high'){
-    tone(760,.19,.19,'square',0);
-    tone(980,.19,.19,'square',.25);
-    tone(760,.24,.20,'square',.50);
-    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1350));
-    if(navigator.vibrate) navigator.vibrate([260,100,260,100,360]);
+    tone(1000,.18,.22,'square',0);
+    tone(760,.18,.22,'square',.24);
+    tone(1000,.18,.22,'square',.48);
+    warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1300));
+    if(navigator.vibrate) navigator.vibrate([260,100,260,100,260]);
     return;
   }
 
-  /* CRITICAL / no signal: repeating two-stage siren sweep */
-  sirenSweep(760,1380,.72,.21,0);
-  sirenSweep(1380,760,.72,.21,.76);
-  warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1580));
-  if(navigator.vibrate) navigator.vibrate([500,120,500,120,800]);
+  /* CRITICAL / red:
+     repeating rising/falling siren sweep, visually and audibly distinct from warning/high. */
+  sirenSweep(700,1450,.78,.23,0);
+  sirenSweep(1450,700,.78,.23,.82);
+  warningTimers.push(setTimeout(()=>scheduleWarningPattern(level),1760));
+  if(navigator.vibrate) navigator.vibrate([520,120,520,120,760]);
 }
 
 async function startCriticalWarning(level='critical'){
@@ -11254,9 +11271,12 @@ document.getElementById("viewDayBtn")?.addEventListener("click",function(){
 });
 </script><script>
 const ALERT_DEMOS={
-  warning:{level:'warning',levelText:'คำเตือน · ต้องตรวจสอบ',headline:'ตรวจพบค่า COD สูงกว่าช่วงปกติ',code:'WARNING · COD > 13,000 mg/L',title:'ค่า COD สูงกว่าช่วงปกติ',desc:'ระบบตรวจพบค่า COD สูงกว่าค่าปกติที่กำหนด กรุณาตรวจสอบสภาวะน้ำเสียและติดตามค่าต่อเนื่อง',value:'14,200',unit:'mg/L',limit:'เกณฑ์แจ้งเตือน · COD > 13,000 mg/L',action:'ระบบจะแจ้งผู้ปฏิบัติงานและเพิ่มความถี่ในการติดตามค่า COD'},
-  high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'ระบบจะลด Outlet Flow ตามค่าที่กำหนด และติดตาม COD อย่างต่อเนื่อง'},
-  critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'ระบบจะลด Outlet Flow อัตโนมัติ และติดตามค่า COD จนกลับสู่ช่วงปกติ'},
+  warning:{level:'warning',levelText:'คำเตือน · ต้องตรวจสอบ',headline:'ตรวจพบค่า COD สูงกว่าช่วงปกติ',code:'WARNING · COD > 13,000 mg/L',title:'ค่า COD สูงกว่าช่วงปกติ',desc:'ระบบตรวจพบค่า COD สูงกว่าค่าปกติที่กำหนด กรุณาตรวจสอบสภาวะน้ำเสียและติดตามค่าต่อเนื่อง',value:'14,200',unit:'mg/L',limit:'เกณฑ์แจ้งเตือน · COD > 13,000 mg/L',action:'แนะนำให้ตรวจสอบระบบเติมสารเคมี และปรับอัตราการฟีดสารเคมีให้เหมาะสม พร้อมเพิ่มความถี่ในการติดตามค่า COD'},
+  high:{level:'high',levelText:'คำเตือนระดับสูง',headline:'ตรวจพบค่า COD สูงผิดปกติ',code:'ระดับสูง · COD > 18,000 mg/L',title:'ค่า COD สูงผิดปกติ',desc:'ระบบตรวจพบค่า COD อยู่ในระดับสูง และเตรียมการตอบสนองเพื่อลดภาระเข้าสู่ระบบบำบัด',value:'18,600',unit:'mg/L',limit:'เกณฑ์ระดับสูง · COD > 18,000 mg/L',action:'แนะนำให้ปรับอัตราการฟีดสารเคมีเพิ่มขึ้นตามขั้นตอน, ตรวจสอบการกวนผสม, และติดตาม COD อย่างต่อเนื่อง'},
+  critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต',headline:'ตรวจพบคุณภาพน้ำผิดปกติรุนแรง',code:'วิกฤต · COD > 20,000 mg/L',title:'ค่า COD สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า COD สูงเกินเกณฑ์วิกฤต และเข้าสู่ขั้นตอนตอบสนองอัตโนมัติ',value:'20,480',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · COD > 20,000 mg/L',action:'แนะนำให้ปรับอัตราการฟีดสารเคมีทันที, ตรวจสอบระบบเติมสารเคมี และลดภาระเข้าสู่ระบบจนกว่าค่าจะกลับสู่ช่วงปกติ'},
+  zinc_warning:{level:'warning',levelText:'คำเตือน · Zinc เริ่มสูง',headline:'ตรวจพบค่า Zinc สูงกว่าช่วงปกติ',code:'WARNING · Zinc > 500 mg/L',title:'ค่า Zinc สูงกว่าช่วงปกติ',desc:'ระบบตรวจพบค่า Zinc สูงกว่าค่าปกติที่กำหนด ควรติดตามแนวโน้มและตรวจสอบประสิทธิภาพการปรับสภาพน้ำ',value:'560',unit:'mg/L',limit:'เกณฑ์แจ้งเตือน · Zinc > 500 mg/L',action:'แนะนำให้ตรวจสอบสารเคมีที่ใช้ตกตะกอน/ปรับสภาพ และปรับอัตราการฟีดสารเคมีอย่างค่อยเป็นค่อยไป'},
+  zinc_high:{level:'high',levelText:'คำเตือนระดับสูง · Zinc',headline:'ตรวจพบค่า Zinc สูงผิดปกติ',code:'ระดับสูง · Zinc > 800 mg/L',title:'ค่า Zinc สูงผิดปกติ',desc:'ระบบตรวจพบค่า Zinc อยู่ในระดับสูงกว่าปกติอย่างชัดเจน อาจต้องเร่งการตอบสนองด้านเคมีและตรวจสอบแหล่งกำเนิดน้ำเสีย',value:'840',unit:'mg/L',limit:'เกณฑ์ระดับสูง · Zinc > 800 mg/L',action:'แนะนำให้ปรับอัตราการฟีดสารเคมีเพิ่มขึ้น, ตรวจสอบ pH/การกวนผสม, และเฝ้าดูค่า Zinc ต่อเนื่อง'},
+  zinc_critical:{level:'critical',levelText:'คำเตือนระดับวิกฤต · Zinc',headline:'ตรวจพบค่า Zinc สูงรุนแรง',code:'วิกฤต · Zinc > 1,000 mg/L',title:'ค่า Zinc สูงเกินเกณฑ์วิกฤต',desc:'ระบบตรวจพบค่า Zinc สูงเกินเกณฑ์วิกฤต ต้องตรวจสอบระบบปรับสภาพและการเติมสารเคมีโดยทันที',value:'1,080',unit:'mg/L',limit:'เกณฑ์ระดับวิกฤต · Zinc > 1,000 mg/L',action:'แนะนำให้ปรับอัตราการฟีดสารเคมีทันทีตามขั้นตอนควบคุม, ตรวจสอบระบบตกตะกอน/ปรับสภาพ และลดภาระการปล่อยน้ำออกจนกว่าค่าจะกลับสู่เกณฑ์'},
   flow_low:{level:'warning',levelText:'FLOW ALERT · LOW FLOW',headline:'ตรวจพบอัตราการไหลต่ำกว่าค่ากำหนด',code:'LOW FLOW · 19FM006',title:'อัตราการไหลต่ำกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow ต่ำกว่าช่วงการทำงานที่กำหนด อาจเกิดจากปั๊มหยุด วาล์วปิด ท่ออุดตัน หรือปริมาณน้ำเข้าระบบลดลง',value:'2.8',unit:'m³/h',limit:'ค่า Flow ต่ำกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบปั๊ม วาล์ว ท่อ และสัญญาณจาก Flowmeter'},
   flow_high:{level:'high',levelText:'FLOW ALERT · HIGH FLOW',headline:'ตรวจพบอัตราการไหลสูงกว่าค่ากำหนด',code:'HIGH FLOW · 19FM006',title:'อัตราการไหลสูงกว่าค่ากำหนด',desc:'ตรวจพบค่า Flow สูงกว่าช่วงการทำงานที่กำหนด อาจเกิดจากน้ำเข้าระบบเพิ่ม วาล์วเปิดมากขึ้น หรือการตั้งค่าการเดินระบบเปลี่ยนแปลง',value:'28.6',unit:'m³/h',limit:'ค่า Flow สูงกว่าค่าที่ระบบกำหนด',action:'ระบบจะแจ้งผู้ปฏิบัติงานให้ตรวจสอบ Outlet Flow, Pump และ Valve Setting'},
   flow_nosignal:{level:'critical',levelText:'FLOW ALERT · NO SIGNAL',headline:'ไม่พบข้อมูล Flow จาก 19FM006',code:'NO FLOW / DATA STALE · 19FM006',title:'Flow หายหรือสัญญาณขาด',desc:'ระบบไม่ได้รับข้อมูล Flow ตามเวลาที่กำหนด อาจเกิดจากไฟเลี้ยง อุปกรณ์ สายสัญญาณ ESP32 หรือการเชื่อมต่อเครือข่าย',value:'—',unit:'m³/h',limit:'ไม่พบข้อมูลใหม่จากอุปกรณ์',action:'ระบบจะแจ้งเตือนทันทีและให้ตรวจสอบ MV110, สาย 4–20 mA, ESP32 และเครือข่าย'},
@@ -11288,24 +11308,43 @@ function showDemoAlert(type){
 document.addEventListener('DOMContentLoaded',function(){
   const popup=document.getElementById('alertTestPopup');
   const toggle=document.getElementById('toggleAlertDemo');
+  const zincPopup=document.getElementById('zincAlertTestPopup');
+  const zincToggle=document.getElementById('toggleZincAlertDemo');
   const detailBtn=document.getElementById('toggleAlertDetails');
   const detailPanel=document.getElementById('alertDetailPanel');
+
   detailBtn?.addEventListener('click',function(){
     const open=detailPanel?.classList.toggle('open');
     detailBtn.classList.toggle('open',!!open);
     popup?.classList.remove('show');
+    zincPopup?.classList.remove('show');
   });
+
   toggle?.addEventListener('click',function(e){
     e.stopPropagation();
     popup?.classList.toggle('show');
+    zincPopup?.classList.remove('show');
   });
+
+  zincToggle?.addEventListener('click',function(e){
+    e.stopPropagation();
+    zincPopup?.classList.toggle('show');
+    popup?.classList.remove('show');
+  });
+
   document.querySelectorAll('.alert-test[data-alert]').forEach(btn=>btn.addEventListener('click',()=>{
     popup?.classList.remove('show');
     showDemoAlert(btn.dataset.alert);
   }));
+
+  document.querySelectorAll('.alert-test[data-zinc-alert]').forEach(btn=>btn.addEventListener('click',()=>{
+    zincPopup?.classList.remove('show');
+    showDemoAlert(btn.dataset.zincAlert);
+  }));
+
   document.addEventListener('click',function(e){
-    if(!popup || !toggle) return;
-    if(!popup.contains(e.target) && !toggle.contains(e.target)) popup.classList.remove('show');
+    if(popup && toggle && !popup.contains(e.target) && !toggle.contains(e.target)) popup.classList.remove('show');
+    if(zincPopup && zincToggle && !zincPopup.contains(e.target) && !zincToggle.contains(e.target)) zincPopup.classList.remove('show');
   });
 });
 </script>
@@ -13293,7 +13332,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script>
 /* V15.141 — REAL DATA BUS: Supabase -> Trend + Hourly Log + Daily Summary
    Uses real rows from public.flow_readings only. No demo/static Flow values are used by these sections.
-   Hourly record rule: commit one record every hour at minute :30 (05:30, 06:30, …, 04:30) using real Supabase readings.
+   Hourly record rule: commit one record every hour at minute :30; Flow Rate is the average of ALL real readings in the preceding full hour.
    The current Trend hour is refreshed from the latest live reading.
 */
 (function(){
@@ -13443,16 +13482,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 
       if(!list.length) continue;
 
-      // Reading nearest to the exact :30 target becomes the displayed Flow Rate.
-      let nearest=list[0];
-      let nearestDiff=Math.abs(nearest.timestamp.getTime()-targetMs);
-      for(const r of list){
-        const diff=Math.abs(r.timestamp.getTime()-targetMs);
-        if(diff<nearestDiff){
-          nearest=r;
-          nearestDiff=diff;
-        }
-      }
+      // Restore the original hourly calculation method:
+      // FLOW RATE = average of every real flow reading inside the full 1-hour window.
+      // Example:
+      //   record 15:30 = average of all readings from 14:30:00 -> 15:30:00
+      // This prevents one transient 0/outlier from becoming the whole hourly value.
+      const avgFlow=list.reduce((sum,r)=>sum+r.flow,0)/list.length;
 
       // Integrate every real reading in the interval for Actual/volume.
       let volume=0;
@@ -13469,12 +13504,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       out.push({
         slot,
         slotTime:targetTime,
-        flow:nearest.flow,
+        flow:avgFlow,
         volume,
         sampleCount:list.length,
         firstTimestamp:list[0].timestamp,
         lastTimestamp:list[list.length-1].timestamp,
-        timestamp:nearest.timestamp,
+        timestamp:list[list.length-1].timestamp,
         minFlow:Math.min(...list.map(x=>x.flow)),
         maxFlow:Math.max(...list.map(x=>x.flow)),
         targetMinute:30
@@ -13506,21 +13541,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function trendRows(){
     const map=new Map(hourly.map(r=>[r.slot,{...r}]));
-    if(liveLatest&&cycle&&isCurrentCycle()){
-      // Hourly record is committed only at :30, so do not create a premature
-      // 16:30 row while the current clock is still before 16:30.
-      const firstTarget=cycle.start.getTime()+(30*60*1000);
-      const idx=Math.floor((liveLatest.timestamp.getTime()-firstTarget)/HOUR);
-      if(idx>=0&&idx<24){
-        const slotTime=new Date(firstTarget+idx*HOUR);
-        if(liveLatest.timestamp.getTime()>=slotTime.getTime()){
-          const existing=map.get(idx);
-          if(existing){
-            map.set(idx,{...existing,flow:liveLatest.flow,timestamp:liveLatest.timestamp,live:true});
-          }
-        }
-      }
-    }
+    // Trend intentionally uses the same committed hourly averages as Flow Log.
+    // Do not overwrite a recorded hourly average with an arbitrary LIVE sample.
+    
     return [...map.values()].sort((a,b)=>a.slot-b.slot);
   }
 
@@ -14715,6 +14738,309 @@ document.addEventListener('DOMContentLoaded',()=>{
   font-weight:900!important;
   color:#fff3b0!important;
   letter-spacing:.025em!important;
+}
+</style>
+
+
+<style>
+/* V15.153 — MOBILE ONLY: fix squeezed/overlapping buttons */
+@media (max-width:700px){
+
+  /* -------------------------------------------------
+     SMART ALERT CENTER
+     "สถานะและการทดสอบ" must occupy a real full row.
+     The parent is a 2-column grid, which previously
+     squeezed this button into the 44px icon column.
+  -------------------------------------------------- */
+  #alertCenterSection .arc-normal,
+  .alert-response-center .arc-normal{
+    grid-template-columns:44px minmax(0,1fr)!important;
+  }
+
+  #alertCenterSection #toggleAlertDetails,
+  .alert-response-center #toggleAlertDetails{
+    grid-column:1 / -1!important;
+    grid-row:auto!important;
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 28px!important;
+    align-items:center!important;
+    gap:10px!important;
+
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+
+    margin:10px 0 0!important;
+    padding:0 14px 0 16px!important;
+    box-sizing:border-box!important;
+    border-radius:16px!important;
+  }
+
+  #alertCenterSection #toggleAlertDetails span,
+  .alert-response-center #toggleAlertDetails span{
+    display:block!important;
+    min-width:0!important;
+    margin:0!important;
+    font-size:13px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-align:left!important;
+  }
+
+  #alertCenterSection #toggleAlertDetails i,
+  .alert-response-center #toggleAlertDetails i{
+    display:grid!important;
+    place-items:center!important;
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    margin:0!important;
+    border-radius:10px!important;
+    font-size:20px!important;
+    line-height:1!important;
+  }
+
+  /* -------------------------------------------------
+     FLOW LOG DATE CONTROLS
+     Prevent the next arrow button from sitting over
+     the selected date text on iPhone/Safari.
+  -------------------------------------------------- */
+  #flowLogSection .history-controls{
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr) 44px 68px!important;
+    column-gap:9px!important;
+    row-gap:0!important;
+    align-items:center!important;
+    width:100%!important;
+    overflow:visible!important;
+  }
+
+  #flowLogSection .history-controls > *{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  #flowLogSection #historyPrevDay,
+  #flowLogSection #historyNextDay{
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    font-size:18px!important;
+    line-height:1!important;
+    z-index:1!important;
+  }
+
+  #flowLogSection #historyTodayBtn{
+    width:68px!important;
+    min-width:68px!important;
+    max-width:68px!important;
+    height:44px!important;
+    padding:0 8px!important;
+    font-size:12px!important;
+    white-space:nowrap!important;
+  }
+
+  #flowLogSection #historyDateInput{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:44px!important;
+    padding:0 12px!important;
+
+    font-size:12px!important;
+    line-height:44px!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+
+    border-radius:14px!important;
+    z-index:0!important;
+  }
+}
+
+/* Very narrow phones: keep controls readable by placing "วันนี้" on row 2 */
+@media (max-width:390px){
+  #flowLogSection .history-controls{
+    grid-template-columns:44px minmax(0,1fr) 44px!important;
+    row-gap:8px!important;
+  }
+
+  #flowLogSection #historyTodayBtn{
+    grid-column:1 / -1!important;
+    justify-self:stretch!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+</style>
+
+
+<style>
+/* V15.200 — Zinc alert support + cleaner mobile typography/borders */
+.quality-actions-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+.quality-action-block{position:relative}
+.quality-action-block .alert-test-popup{z-index:30}
+.quality-status-note{
+  align-items:flex-start!important;
+}
+.quality-status-note b,
+.quality-status-note span,
+.quality-metric-card,
+.clean-detail-btn,
+#flowLogSection .period,
+#flowLogSection .history-controls input,
+#flowLogSection .history-controls button,
+#flowLogSection .hourly-head span,
+#flowLogSection .hourly-row,
+#flowLogSection .flowlog-data-note{
+  font-family:"Noto Sans Thai","IBM Plex Sans Thai","Segoe UI",Tahoma,sans-serif!important;
+  letter-spacing:0!important;
+}
+#toggleAlertDemo.premium-test-btn::before,
+#toggleZincAlertDemo.premium-test-btn::before{
+  display:none!important;
+}
+#toggleAlertDemo.premium-test-btn,
+#toggleZincAlertDemo.premium-test-btn,
+#toggleFlowAlertDemo.premium-test-btn,
+#toggleAlertDetails{
+  border:1px solid rgba(49,92,57,.12)!important;
+}
+#toggleAlertDetails{
+  box-shadow:6px 6px 14px rgba(110,121,103,.14),-6px -6px 14px rgba(255,255,255,.82)!important;
+}
+#toggleAlertDetails span{
+  font-size:14px!important;
+  font-weight:800!important;
+}
+#toggleAlertDetails i{
+  font-size:20px!important;
+}
+#flowLogSection .period,
+#flowLogSection .history-controls input,
+#flowLogSection .history-controls button,
+#alertCenterSection .premium-monitor-card,
+#alertCenterSection .quality-status-note,
+#alertCenterSection .flow-status-hero,
+#alertCenterSection .premium-line-row,
+#alertCenterSection .quality-metric-card{
+  border:1px solid rgba(49,92,57,.10)!important;
+}
+#flowLogSection #historyDateInput{
+  appearance:none;
+  -webkit-appearance:none;
+  background-clip:padding-box!important;
+}
+@media (max-width:700px){
+  .quality-actions-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  #toggleAlertDemo.premium-test-btn,
+  #toggleZincAlertDemo.premium-test-btn,
+  #toggleFlowAlertDemo.premium-test-btn{
+    height:50px!important;
+    min-height:50px!important;
+    max-height:50px!important;
+    padding:0 14px!important;
+    border-radius:15px!important;
+  }
+  #toggleAlertDemo.premium-test-btn span,
+  #toggleZincAlertDemo.premium-test-btn span,
+  #toggleFlowAlertDemo.premium-test-btn span{
+    font-size:12px!important;
+    line-height:1.2!important;
+  }
+  #toggleAlertDemo.premium-test-btn i,
+  #toggleZincAlertDemo.premium-test-btn i,
+  #toggleFlowAlertDemo.premium-test-btn i{
+    width:26px!important;
+    height:26px!important;
+    min-width:26px!important;
+  }
+  #alertCenterSection .arc-normal{
+    margin:12px 16px 18px!important;
+    padding:18px 16px!important;
+  }
+  #alertCenterSection .arc-check{
+    width:52px!important;
+    height:52px!important;
+    font-size:28px!important;
+  }
+  #alertCenterSection .arc-normal-copy b{
+    font-size:18px!important;
+    line-height:1.22!important;
+  }
+  #alertCenterSection .arc-normal-copy span{
+    font-size:11px!important;
+    line-height:1.5!important;
+    color:#56695f!important;
+  }
+  #alertCenterSection #toggleAlertDetails{
+    margin-top:12px!important;
+    height:46px!important;
+    min-height:46px!important;
+    padding:0 14px!important;
+    border-radius:15px!important;
+  }
+  #alertCenterSection #toggleAlertDetails span{
+    font-size:12px!important;
+    white-space:normal!important;
+  }
+  #flowLogSection .period{
+    padding:16px 14px!important;
+  }
+  #flowLogSection .period b{
+    font-size:14px!important;
+  }
+  #flowLogSection .history-controls input,
+  #flowLogSection .history-controls button{
+    font-size:12px!important;
+    border-radius:14px!important;
+  }
+  #flowLogSection .flowlog-data-note{
+    font-size:10px!important;
+    line-height:1.45!important;
+  }
+  #flowLogSection .hourly-head span{
+    font-size:9px!important;
+    color:#6b7f73!important;
+  }
+  #flowLogSection .hourly-row{
+    font-size:12px!important;
+  }
+}
+@media (max-width:390px){
+  #alertCenterSection .arc-head h2{
+    font-size:26px!important;
+  }
+  #toggleAlertDetails span{
+    font-size:11px!important;
+  }
+  #flowLogSection .hourly-title>div:first-child b{
+    font-size:34px!important;
+  }
 }
 </style>
 
