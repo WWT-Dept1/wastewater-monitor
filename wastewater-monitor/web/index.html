@@ -10229,13 +10229,13 @@ body.daily-report-view{
     <div>
       <small>FLOW ANALYTICS</small>
       <h2>24-Hour Flow Trend</h2>
-      <p>Flow รายชั่วโมงครบทั้งรอบ 05:00 → 05:00</p>
+      <p>Flow ทุก 30 นาที ครบทั้งรอบ 05:00 → 05:00</p>
     </div>
 
     <div class="premium-trend-actions">
       <span class="premium-period" id="trendPeriodLabel">กำลังอัปเดตวันที่...</span>
       <div class="premium-nav">
-        <b id="trendPointCount">25 จุด · ทุกชั่วโมง</b>
+        <b id="trendPointCount">48 จุด · ทุก 30 นาที</b>
         <button type="button" id="trendScrollLeft" aria-label="เลื่อนกราฟซ้าย">‹</button>
         <button type="button" id="trendScrollRight" aria-label="เลื่อนกราฟขวา">›</button>
       </div>
@@ -10269,7 +10269,7 @@ body.daily-report-view{
 
     <div class="premium-scroll-note">
       <span>←</span>
-      เลื่อนซ้าย–ขวาเพื่อดูข้อมูลครบทุกชั่วโมง
+      เลื่อนซ้าย–ขวาเพื่อดูข้อมูลครบทุก 30 นาที
       <span>→</span>
     </div>
   </div>
@@ -10278,7 +10278,7 @@ body.daily-report-view{
     <div><small>AVERAGE</small><b>12.8</b><span>m³/h</span></div>
     <div><small>MIN</small><b>10.5</b><span>m³/h</span></div>
     <div><small>PEAK</small><b>15.1</b><span>m³/h</span></div>
-    <div><small>DATA POINTS</small><b>25</b><span>hourly</span></div>
+    <div><small>DATA POINTS</small><b>25</b><span>30 min</span></div>
   </div>
 </section>
 
@@ -10474,7 +10474,7 @@ body.daily-report-view{
     </div>
   </div>
   <div class="hourly-head"><span>DATE</span><span>TIME</span><span>FLOW RATE</span><span>TOTAL</span><span>ACTUAL</span><span>STATUS</span></div>
-  <div class="flowlog-data-note">บันทึกทุกชั่วโมงที่นาที :30 · FLOW RATE = ค่าเฉลี่ยข้อมูลจริงตลอด 1 ชั่วโมง · TOTAL/ACTUAL คำนวณจากข้อมูลจริงทั้งช่วง <b id="flowLogLoadedCount"></b></div>
+  <div class="flowlog-data-note">บันทึกทุก 30 นาที · FLOW RATE = ค่าเฉลี่ยข้อมูลจริงในแต่ละช่วง 30 นาที · TOTAL/ACTUAL คำนวณจากข้อมูลจริงทั้งช่วง <b id="flowLogLoadedCount"></b></div>
   <div id="hourlyPreview">
 <div class="hourly-row"><span>13/09/2569</span><time>05:00</time><b>12.1 <small>m³/h</small></b><em>NORMAL</em></div>
 <div class="hourly-row"><span>13/09/2569</span><time>06:00</time><b>12.4 <small>m³/h</small></b><em>NORMAL</em></div>
@@ -13244,7 +13244,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script>
 /* V15.141 — REAL DATA BUS: Supabase -> Trend + Hourly Log + Daily Summary
    Uses real rows from public.flow_readings only. No demo/static Flow values are used by these sections.
-   Hourly record rule: commit one record every hour at minute :30; Flow Rate is the average of ALL real readings in the preceding full hour.
+   30-minute record rule: commit one record every 30 minutes; Flow Rate is the average of valid real readings in the preceding 30-minute interval.
    The current Trend hour is refreshed from the latest live reading.
 */
 (function(){
@@ -13369,39 +13369,62 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function aggregateHourly(readings){
-    // บันทึกรายชั่วโมงที่นาที :30
-    // ตัวอย่าง 14:30 → 15:30 → 16:30
-    // Flow Rate ใช้ค่าจริงที่อยู่ใกล้เวลาบันทึก :30 ที่สุด
-    // Actual/Volume ใช้ข้อมูลจริงทั้งหมดตั้งแต่รอบ :30 ก่อนหน้า ถึง :30 ปัจจุบัน
+    // บันทึกทุก 30 นาที:
+    // 05:30 = ค่าเฉลี่ยช่วง 05:00–05:30
+    // 06:00 = ค่าเฉลี่ยช่วง 05:30–06:00
+    // 06:30 = ค่าเฉลี่ยช่วง 06:00–06:30
+    //
+    // ตัด sample ที่สัญญาณต่ำผิดปกติ (เช่น 0.142 V) ออกจากค่าเฉลี่ย
+    // เพราะค่าดังกล่าวเป็นสัญญาณ loop หลุด/ผิดปกติ ไม่ใช่ Flow = 0 จริง
     const out=[];
+    const HALF_HOUR=30*60*1000;
     const nowLimit=isCurrentCycle()?Date.now():cycle.end.getTime();
-    const firstTarget=cycle.start.getTime()+(30*60*1000); // 05:30
-
     const sorted=(readings||[]).slice().sort((a,b)=>a.timestamp-b.timestamp);
+    const SIGNAL_VALID_MIN_V=0.30;
 
-    for(let slot=0;slot<24;slot++){
-      const targetMs=firstTarget+(slot*HOUR);
-      if(targetMs>cycle.end.getTime() || targetMs>nowLimit) break;
+    for(let slot=0;slot<48;slot++){
+      const windowStart=cycle.start.getTime()+(slot*HALF_HOUR);
+      const windowEnd=windowStart+HALF_HOUR;
 
-      const targetTime=new Date(targetMs);
-      const windowStart=slot===0 ? cycle.start.getTime() : targetMs-HOUR;
-      const windowEnd=targetMs;
+      // ยังไม่บันทึกช่วงที่ยังไม่จบ
+      if(windowEnd>cycle.end.getTime() || windowEnd>nowLimit) break;
 
-      const list=sorted.filter(r=>{
+      const rawList=sorted.filter(r=>{
         const t=r.timestamp.getTime();
-        return t>=windowStart && t<=windowEnd;
+        return t>=windowStart && t<windowEnd;
       });
 
-      if(!list.length) continue;
+      // ถ้ามี voltage ให้คัด sample สัญญาณต่ำผิดปกติออก
+      const list=rawList.filter(r=>{
+        return r.voltage==null || !Number.isFinite(Number(r.voltage)) || Number(r.voltage)>=SIGNAL_VALID_MIN_V;
+      });
 
-      // Restore the original hourly calculation method:
-      // FLOW RATE = average of every real flow reading inside the full 1-hour window.
-      // Example:
-      //   record 15:30 = average of all readings from 14:30:00 -> 15:30:00
-      // This prevents one transient 0/outlier from becoming the whole hourly value.
+      if(!list.length){
+        // มี record แต่ทั้งหมดเป็นสัญญาณผิดปกติ ให้ถือว่า NO DATA
+        if(rawList.length){
+          out.push({
+            slot,
+            slotTime:new Date(windowEnd),
+            flow:null,
+            volume:null,
+            sampleCount:0,
+            invalidSampleCount:rawList.length,
+            firstTimestamp:null,
+            lastTimestamp:null,
+            timestamp:null,
+            minFlow:null,
+            maxFlow:null,
+            targetMinute:new Date(windowEnd).getMinutes(),
+            noData:true,
+            signalInvalid:true
+          });
+        }
+        continue;
+      }
+
       const avgFlow=list.reduce((sum,r)=>sum+r.flow,0)/list.length;
 
-      // Integrate every real reading in the interval for Actual/volume.
+      // Integrate volume only from valid samples inside this 30-minute interval.
       let volume=0;
       for(let i=0;i<list.length;i++){
         const current=list[i];
@@ -13415,16 +13438,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 
       out.push({
         slot,
-        slotTime:targetTime,
+        slotTime:new Date(windowEnd),
         flow:avgFlow,
         volume,
         sampleCount:list.length,
+        invalidSampleCount:Math.max(0,rawList.length-list.length),
         firstTimestamp:list[0].timestamp,
         lastTimestamp:list[list.length-1].timestamp,
         timestamp:list[list.length-1].timestamp,
         minFlow:Math.min(...list.map(x=>x.flow)),
         maxFlow:Math.max(...list.map(x=>x.flow)),
-        targetMinute:30
+        targetMinute:new Date(windowEnd).getMinutes()
       });
     }
 
@@ -13432,8 +13456,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function slotCountForNow(now=new Date()){
-    const idx=Math.floor((now.getTime()-cycle.start.getTime())/HOUR);
-    return Math.max(0,Math.min(24,idx));
+    const HALF_HOUR=30*60*1000;
+    const idx=Math.floor((now.getTime()-cycle.start.getTime())/HALF_HOUR);
+    return Math.max(0,Math.min(48,idx));
   }
 
   async function loadHourly(){
@@ -13461,49 +13486,78 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function statusFor(r){
     if(r.live) return 'LIVE';
-    if(Number.isFinite(r.sampleCount)) return `บันทึกแล้ว · ${r.sampleCount} จุด`;
+    if(r.signalInvalid) return `SIGNAL INVALID · ${r.invalidSampleCount||0} จุด`;
+    if(Number.isFinite(r.sampleCount) && r.sampleCount>0) return `บันทึกแล้ว · ${r.sampleCount} จุด`;
     return 'NO DATA';
   }
 
   function renderTrend(){
     const svg=document.querySelector('#flowTrendSection svg');
     if(!svg||!cycle) return;
-    const rows=trendRows();
-    const W=1960,H=285,L=68,R=34,T=40,B=54;
+
+    const rows=trendRows().filter(r=>Number.isFinite(Number(r.flow)));
+    const W=3000,H=285,L=68,R=34,T=40,B=54;
     const plotW=W-L-R, plotH=H-T-B;
-    let vals=rows.map(r=>r.flow).filter(Number.isFinite);
+
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+    svg.setAttribute('width',String(W));
+    svg.setAttribute('height',String(H));
+    const canvas=svg.closest('.premium-trend-canvas');
+    if(canvas) canvas.style.width=W+'px';
+
+    let vals=rows.map(r=>Number(r.flow)).filter(Number.isFinite);
     let min=vals.length?Math.min(...vals,CFG.SETTING):0;
     let max=vals.length?Math.max(...vals,CFG.SETTING):10;
-    if(max-min<2){min-=1;max+=1;} else {const pad=(max-min)*.18;min-=pad;max+=pad;}
-    min=Math.max(0,Math.floor(min)); max=Math.ceil(max);
+    if(max-min<2){min-=1;max+=1;}
+    else{const pad=(max-min)*.18;min-=pad;max+=pad;}
+    min=Math.max(0,Math.floor(min));
+    max=Math.ceil(max);
     if(max<=min)max=min+1;
-    const x=i=>L+(i/24)*plotW;
+
+    // 48 half-hour intervals across the 24-hour cycle.
+    // slot 0 ends at 05:30, slot 1 ends at 06:00 ... slot 47 ends at 05:00 next day.
+    const xSlot=slot=>L+(((slot+1)/48)*plotW);
+    const xBoundary=i=>L+((i/48)*plotW);
     const y=v=>T+(max-v)/(max-min)*plotH;
+
     const yTicks=5;
     let hgrid='';
     for(let i=0;i<=yTicks;i++){
       const v=min+(max-min)*(i/yTicks), yy=y(v);
       hgrid+=`<line class="premium-grid-h" x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}"/><text class="premium-y-label" x="${L-14}" y="${(yy+3).toFixed(1)}" text-anchor="end">${v.toFixed(max-min<=5?1:0)}</text>`;
     }
+
     let vgrid='';
-    for(let i=0;i<=24;i++){
-      const xx=x(i), d=new Date(cycle.start.getTime()+i*HOUR);
+    for(let i=0;i<=48;i++){
+      const xx=xBoundary(i);
+      const d=new Date(cycle.start.getTime()+i*(30*60*1000));
+      // Show every half-hour label; scroll area is intentionally wide.
       vgrid+=`<line class="premium-grid-v" x1="${xx.toFixed(1)}" y1="${T}" x2="${xx.toFixed(1)}" y2="${H-B}"/><text class="premium-x-label" x="${xx.toFixed(1)}" y="266" text-anchor="middle">${thTime(d)}</text>`;
     }
+
     let line='';
-    rows.forEach((r,i)=>{line+=(i?' L ':'M ')+x(r.slot).toFixed(1)+' '+y(r.flow).toFixed(1)});
+    rows.forEach((r,i)=>{
+      line+=(i?' L ':'M ')+xSlot(r.slot).toFixed(1)+' '+y(Number(r.flow)).toFixed(1);
+    });
+
     let area='';
     if(rows.length>=2){
       const first=rows[0],last=rows[rows.length-1];
-      area=line+` L ${x(last.slot).toFixed(1)} ${H-B} L ${x(first.slot).toFixed(1)} ${H-B} Z`;
+      area=line+` L ${xSlot(last.slot).toFixed(1)} ${H-B} L ${xSlot(first.slot).toFixed(1)} ${H-B} Z`;
     }
+
     const pts=rows.map(r=>{
-      const xx=x(r.slot),yy=y(r.flow),label=r.flow.toFixed(1),title=`${thTime(r.slotTime)} · ${label} m³/h${r.live?' · LIVE':' · REAL DATA'}`;
+      const xx=xSlot(r.slot), yy=y(Number(r.flow)), label=Number(r.flow).toFixed(1);
+      const invalid=r.invalidSampleCount?` · ตัดสัญญาณผิดปกติ ${r.invalidSampleCount} จุด`:'';
+      const title=`${thTime(r.slotTime)} · ${label} m³/h · ค่าเฉลี่ย 30 นาที${invalid}`;
       return `<g class="premium-hour-point"><circle cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" r="5"/><text x="${xx.toFixed(1)}" y="${(yy-13).toFixed(1)}" text-anchor="middle">${label}</text><title>${esc(title)}</title></g>`;
     }).join('');
-    svg.innerHTML=`<defs><linearGradient id="premiumFlowArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#376b4a" stop-opacity=".22"/><stop offset="72%" stop-color="#6e9a7c" stop-opacity=".08"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs>${hgrid}${vgrid}${area?`<path class="premium-flow-area" d="${area}"/>`:''}${line?`<path class="premium-flow-line" d="${line}"/>`:''}${pts}${rows.length?'':`<text x="980" y="145" text-anchor="middle" class="premium-y-label">ยังไม่มีข้อมูลจริงในรอบนี้</text>`}`;
+
+    svg.innerHTML=`<defs><linearGradient id="premiumFlowArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#376b4a" stop-opacity=".22"/><stop offset="72%" stop-color="#6e9a7c" stop-opacity=".08"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs>${hgrid}${vgrid}${area?`<path class="premium-flow-area" d="${area}"/>`:''}${line?`<path class="premium-flow-line" d="${line}"/>`:''}${pts}${rows.length?'':`<text x="${W/2}" y="145" text-anchor="middle" class="premium-y-label">ยังไม่มีข้อมูลจริงในรอบนี้</text>`}`;
+
     const count=document.getElementById('trendPointCount');
-    if(count)count.textContent=`${rows.length} จุด · REAL DATA`;
+    if(count)count.textContent=`${rows.length} จุด · ทุก 30 นาที · REAL DATA`;
+
     const label=document.getElementById('trendPeriodLabel');
     if(label)label.textContent=`${thDate(cycle.start)} 05:00 → ${thDate(cycle.end)} 05:00`;
   }
@@ -13513,8 +13567,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     let previousTotal=null;
 
     return (rows||[]).map(r=>{
-      const flow=Number(r.flow);
-      const volume=Number(r.volume);
+      const flow=r.flow==null?null:Number(r.flow);
+      const volume=r.volume==null?null:Number(r.volume);
       const next={...r,total:null,actual:null};
 
       if(Number.isFinite(volume)){
@@ -13534,10 +13588,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function rowHtml(r){
-    const flowText = Number.isFinite(r.flow) ? `${r.flow.toFixed(1)} <small>m³/h</small>` : `— <small>m³/h</small>`;
-    const totalText = Number.isFinite(r.total) ? `${r.total.toFixed(1)} <small>m³</small>` : `— <small>m³</small>`;
-    const actualText = Number.isFinite(r.actual) ? `${r.actual.toFixed(1)} <small>m³</small>` : `— <small>m³</small>`;
-    const actualCls = Number.isFinite(r.actual) ? 'hourly-actual' : 'hourly-actual muted';
+    const flowText = r.flow!==null&&Number.isFinite(Number(r.flow)) ? `${Number(r.flow).toFixed(1)} <small>m³/h</small>` : `— <small>m³/h</small>`;
+    const totalText = r.total!==null&&Number.isFinite(Number(r.total)) ? `${Number(r.total).toFixed(1)} <small>m³</small>` : `— <small>m³</small>`;
+    const actualText = r.actual!==null&&Number.isFinite(Number(r.actual)) ? `${Number(r.actual).toFixed(1)} <small>m³</small>` : `— <small>m³</small>`;
+    const actualCls = r.actual!==null&&Number.isFinite(Number(r.actual)) ? 'hourly-actual' : 'hourly-actual muted';
     return `<div class="hourly-row"><span>${thDate(r.slotTime)}</span><time>${thTime(r.slotTime)}</time><b>${flowText}</b><strong class="hourly-total">${totalText}</strong><strong class="${actualCls}">${actualText}</strong><em>${statusFor(r)}</em></div>`;
   }
 
@@ -13623,7 +13677,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const flow=Number(d.flow),ts=new Date(d.timestamp||Date.now());
     if(!Number.isFinite(flow)||!Number.isFinite(ts.getTime()))return;
     liveLatest={flow,timestamp:ts};
-    // Rebuild only the Trend immediately. Hourly records remain the first real reading of each hour.
+    // Rebuild only the Trend immediately. 30-minute records remain committed only after each 30-minute interval is complete.
     renderTrend();
   }
 
@@ -15431,6 +15485,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   white-space:nowrap;
 }
 #dailySummarySection .row-status:has(*){}
+</style>
+
+
+<style>
+#flowLogSection .hourly-row em{
+  white-space:normal;
+}
 </style>
 
 </body></html>
