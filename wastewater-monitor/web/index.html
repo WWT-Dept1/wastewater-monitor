@@ -11027,7 +11027,6 @@ body.daily-report-view{
         <strong id="inlineShift">--</strong>
       </div>
     </div>
-
     <label class="clean-code-label">รหัสพนักงานผู้ตรวจสอบ</label>
     <div class="inline-code-wrap clean-code-wrap">
       <input type="text" id="inlineEmployeeCode" inputmode="numeric" maxlength="9" placeholder="กรอกรหัสพนักงาน">
@@ -12042,7 +12041,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     C:{label:"กะกลางคืน C / C+",start:22,end:5,period:"22:00–05:00",slot:"พนักงานกะกลางคืน"}
   };
 
-  const signed={A:null,B:null,C:null,reviewer:null,deputy:null,head:null};
+  const emptySigned=()=>({A:null,B:null,C:null,reviewer:null,deputy:null,head:null});
+  let signatureReportId='current';
+  let historicalSigning=false;
+  let historicalShift='A';
+
+  function loadSigned(reportId){
+    try{
+      const raw=JSON.parse(localStorage.getItem('wwt-signatures-'+reportId)||'null');
+      return raw ? {...emptySigned(),...raw} : emptySigned();
+    }catch(e){return emptySigned()}
+  }
+  function saveSigned(){
+    try{localStorage.setItem('wwt-signatures-'+signatureReportId,JSON.stringify(signed))}catch(e){}
+  }
+
+  let signed=loadSigned(signatureReportId);
   let currentShift='A', currentEmployee=null, hasInk=false;
 
   function nowTH(){
@@ -12056,7 +12070,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=nowTH(),h=Number(p.hour);
     currentShift=h>=5&&h<14?'A':h>=14&&h<22?'B':'C';
     document.getElementById('inlineClock').textContent=`${p.hour}:${p.minute}`;
-    document.getElementById('inlineShift').textContent=SHIFTS[currentShift].label;
+    document.getElementById('inlineShift').textContent=historicalSigning
+      ? `ย้อนหลัง · ${SHIFTS[historicalShift].label}`
+      : SHIFTS[currentShift].label;
   }
   tick();setInterval(tick,1000);
 
@@ -12069,7 +12085,17 @@ document.addEventListener('DOMContentLoaded',()=>{
       return {date:td[0].textContent.trim(),time,hour,flow,setting:td[3].textContent.trim(),status:td[4].textContent.trim()};
     }).filter(Boolean);
   }
+  function rowsForFullShift(k){
+    const rows=rowsAll();
+    const c=SHIFTS[k];
+    return rows.filter(r=>{
+      const h=r.hour;
+      return c.start<c.end ? (h>=c.start&&h<c.end) : (h>=c.start||h<c.end);
+    });
+  }
+
   function rowsShiftToCurrentHour(k){
+    if(historicalSigning) return rowsForFullShift(k);
     const rows=rowsAll();
     const c=SHIFTS[k];
     const p=nowTH();
@@ -12108,18 +12134,20 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function reviewPeriodToCurrentHour(k){
     const c=SHIFTS[k];
+    if(historicalSigning) return c.period;
     const p=nowTH();
     return `${String(c.start).padStart(2,'0')}:00–${p.hour}:00`;
   }
   function employeesComplete(){return ['A','B','C'].every(k=>signed[k])}
 
   function route(emp){
-    const c=SHIFTS[currentShift];
+    const shiftKey=historicalSigning ? historicalShift : currentShift;
+    const c=SHIFTS[shiftKey];
     if(emp.role==='employee'){
-      return {title:c.slot,text:`${c.label} · ${reviewPeriodToCurrentHour(currentShift)}`,rows:rowsShiftToCurrentHour(currentShift),can:!signed[currentShift],key:currentShift};
+      return {title:c.slot,text:`${c.label} · ${reviewPeriodToCurrentHour(shiftKey)}`,rows:rowsShiftToCurrentHour(shiftKey),can:!signed[shiftKey],key:shiftKey};
     }
     if(emp.role==='shift_reviewer'){
-      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:reviewPeriodToCurrentHour(currentShift),rows:rowsShiftToCurrentHour(currentShift),can:!signed[currentShift],key:currentShift};
+      return {title:`ผู้ตรวจสอบประจำ${c.label}`,text:reviewPeriodToCurrentHour(shiftKey),rows:rowsShiftToCurrentHour(shiftKey),can:!signed[shiftKey],key:shiftKey};
     }
     if(emp.role==='reviewer'){
       return {title:'ผู้ตรวจสอบเอกสารประจำวัน',text:'รอบ 05:00–05:00',rows:rowsAll(),can:employeesComplete()&&!signed.reviewer,key:'reviewer',
@@ -12266,7 +12294,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!document.getElementById('inlineConfirm').checked){err.textContent='กรุณายืนยันว่าตรวจสอบข้อมูลแล้ว';err.classList.add('show');return}
     if(!hasInk){err.textContent='กรุณาลงลายเซ็น';err.classList.add('show');return}
 
-    signed[r.key]={name:currentEmployee.name,code:currentEmployee.code,time:new Date().toISOString()};
+    signed[r.key]={name:currentEmployee.name,code:currentEmployee.code,time:new Date().toISOString(),reportId:signatureReportId};
+    saveSigned();
     renderSigned();updateState();
     document.getElementById('inlineSignForm').hidden=true;
     const msg=document.getElementById('inlineAccessMsg');
@@ -12497,13 +12526,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   const base=[12.1,12.4,12.6,12.8,12.3,12.5,12.7,12.9,13.1,12.8,12.6,12.4,12.7,13.0,13.3,13.8,15.1,13.9,13.1,12.5,11.9,10.5,11.2,11.8,12.2];
   const hours=Array.from({length:25},(_,i)=>String((5+i)%24).padStart(2,'0')+':00');
   const REPORTS=[
-    {id:'2026-09-13',doc:'F-WWT-FLOW-2026-000019',setting:13.0,volume:301.0,avg:12.6,min:10.5,max:15.1,status:'พร้อมตรวจสอบ',offset:0},
-    {id:'2026-09-12',doc:'F-WWT-FLOW-2026-000018',setting:13.0,volume:308.0,avg:12.8,min:10.9,max:14.8,status:'ตรวจสอบแล้ว',offset:.2},
-    {id:'2026-09-11',doc:'F-WWT-FLOW-2026-000017',setting:12.5,volume:296.0,avg:12.3,min:10.4,max:14.5,status:'ตรวจสอบแล้ว',offset:-.25},
-    {id:'2026-09-10',doc:'F-WWT-FLOW-2026-000016',setting:13.0,volume:314.0,avg:13.1,min:11.1,max:15.0,status:'อนุมัติแล้ว',offset:.45},
-    {id:'2026-09-09',doc:'F-WWT-FLOW-2026-000015',setting:12.5,volume:302.0,avg:12.6,min:10.8,max:14.7,status:'อนุมัติแล้ว',offset:.05},
-    {id:'2026-09-08',doc:'F-WWT-FLOW-2026-000014',setting:12.0,volume:289.0,avg:12.0,min:10.2,max:14.2,status:'อนุมัติแล้ว',offset:-.55},
-    {id:'2026-09-07',doc:'F-WWT-FLOW-2026-000013',setting:12.0,volume:294.0,avg:12.2,min:10.3,max:14.4,status:'อนุมัติแล้ว',offset:-.35}
+    {id:'2026-09-25',doc:'F-WWT-FLOW-2026-000025',setting:13.0,volume:0,avg:0,min:0,max:0,status:'',offset:0},
+    {id:'2026-09-24',doc:'F-WWT-FLOW-2026-000024',setting:13.0,volume:0,avg:0,min:0,max:0,status:'TEST DAY',offset:-.15}
   ];
   let selectedId=REPORTS[0].id;
 
@@ -12533,6 +12557,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   detailTab.onclick=()=>setTab('detail');
   historyTab.onclick=()=>setTab('history');
 
+  function historySignatureStatus(id){
+    try{
+      const s=JSON.parse(localStorage.getItem('wwt-signatures-'+id)||'{}');
+      if(s.head) return 'อนุมัติแล้ว';
+      if(s.deputy) return 'รอหัวหน้าอนุมัติ';
+      if(s.reviewer) return 'รออนุมัติ';
+      if(s.A||s.B||s.C) return 'กำลังลงชื่อ';
+    }catch(e){}
+    return id==='2026-09-24' ? 'TEST DAY' : '';
+  }
+
   function renderHistory(){
     const q=(search.value||'').trim().toLowerCase();
     const dt=(dateFilter.value||'').trim();
@@ -12545,7 +12580,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const d=parse(r.id);
       return `<article class="history-report-card${r.id===selectedId?' selected':''}" data-id="${r.id}">
         <div class="history-date-tile"><b>${String(d.getDate()).padStart(2,'0')}</b><span>ก.ย. ${String(d.getFullYear()+543).slice(-2)}</span></div>
-        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · น้ำออกจากระบบบำบัด SED1-2 · 19FM006</span><em>${r.status}</em></div>
+        <div class="history-report-copy"><small>${r.doc}</small><b>รายงานวันที่ ${th(r.id)}</b><span>05:00 → 05:00 วันถัดไป · น้ำออกจากระบบบำบัด SED1-2 · 19FM006</span>${historySignatureStatus(r.id)?`<em>${historySignatureStatus(r.id)}</em>`:''}</div>
         <div class="history-card-actions">
           <button class="history-open" data-open="${r.id}">เปิดรายงาน</button>
           <button data-pdf="${r.id}">PDF</button>
@@ -12587,9 +12622,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     const id=e.target.dataset.open||e.target.dataset.pdf||e.target.dataset.xlsx||e.target.closest('[data-id]')?.dataset.id;
     if(!id)return;
     const r=REPORTS.find(x=>x.id===id);if(!r)return;
-    if(e.target.dataset.pdf){e.stopPropagation();applyReport(r);setTab('detail');await exportPdf(r);return}
-    if(e.target.dataset.xlsx){e.stopPropagation();exportXlsx(r);return}
-    applyReport(r);setTab('detail');card.scrollIntoView({behavior:'smooth',block:'start'});
+
+    if(e.target.dataset.pdf){
+      e.stopPropagation();applyReport(r);setTab('detail');await exportPdf(r);return;
+    }
+    if(e.target.dataset.xlsx){
+      e.stopPropagation();exportXlsx(r);return;
+    }
+    applyReport(r);
+    setTab('detail');
+    card.scrollIntoView({behavior:'smooth',block:'start'});
   };
 
   function busy(title,sub){
@@ -15129,5 +15171,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 })();
 </script>
+
 
 </body></html>
